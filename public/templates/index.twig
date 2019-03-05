@@ -1,0 +1,238 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="robots" content="index, follow" />
+  <meta name="googlebot" content="index,follow">
+  <meta name="google" content="notranslate">
+
+  <title id="index.title">{{ site.title }}</title>
+
+  <link href="img/logo/favicon.ico" rel="shortcut icon" type="image/x-icon">
+
+  <!-- Bootstrap's CSS -->
+  <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="custom.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- navbar -->
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+
+    <a class="navbar-brand" href="#">
+      <img src="img/logo/brand.png" width="30" height="30" class="d-inline-block align-top">
+      {{ site.name }}
+    </a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbar">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item" id="navItemManager" style="display: none;">
+          <a class="nav-link" style="cursor: pointer;">{{ nav.itemManager }}</a>
+        </li>
+        <li class="nav-item" id="navLabelCreator" style="display: none;">
+          <a class="nav-link" style="cursor: pointer;">{{ nav.labelCreator }}</a>
+        </li>
+        <li class="nav-item" id="navItemListCreator" style="display: none;">
+          <a class="nav-link" style="cursor: pointer;">{{ nav.itemListCreator }}</a>
+        </li>
+        <li class="nav-item" id="navStatistic" style="display: none;">
+          <a class="nav-link" style="cursor: pointer;">{{ nav.statistic }}</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav justify-content-end">
+        <li class="nav-item" id="navLogout" style="display: none;">
+          <a class="nav-link" style="cursor: pointer;">{{ nav.logout }}</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- content -->
+  <div class="container" id="indexContent">
+
+    <div class="row align-items-center" style="height: 500px;">
+      <div class="col"></div>
+      <div class="col-6">
+        Seite wird geladen ...
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+        </div>
+      </div>
+      <div class="col"></div>
+    </div>
+
+  </div>
+
+  <!-- modal -->
+  <div class="modal" id="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" id="modalContent">
+        Dialog wird geladen ...
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <hr>
+  <footer class="container">
+    <p class="text-center">
+      <small>
+        <a href="http://www.netcup.de/">hosted by netcup.de</a> -
+        <a href="http://www.getbootstrap.com/" target="_blank">used Bootstrap</a> -
+        <a href="https://www.jquery.com/" target="_blank">used jQuery</a> -
+        <a href="http://www.fatcow.com/free-icons" target="_blank">used FatCow Icons</a> -
+        <a href="https://www.designevo.com/" title="Free Online Logo Maker" target="_blank">used DesignEvo</a>
+      </small>
+    </p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.5.1" integrity="sha384-No98+HWmcVSVom7aBLtufw7PjXbxuz986TBTXtsL89tvXmC/9AAnM07PHcWTiRxP" crossorigin="anonymous"></script>
+  <script src="bootstrap/js/bootstrap.min.js"></script>
+  <script src="js/itemState.js"></script>
+  <script>
+    jQuery.fn.extend({
+      disable: function(state) {
+        return this.each(function() {
+          this.disabled = state;
+        });
+      }
+    });
+
+    function adminIsLoggendIn() {
+      $('#navStatistic').show();
+      $('#navLogout').show();
+    }
+
+    function userIsLoggedIn() {
+      $('#navItemManager').show();
+      $('#navLabelCreator').show();
+      $('#navItemListCreator').show();
+      $('#navLogout').show();
+    }
+
+    function userIsLoggedOut() {
+      $('#navItemManager').hide();
+      $('#navLabelCreator').hide();
+      $('#navItemListCreator').hide();
+      $('#navStatistic').hide();
+      $('#navLogout').hide();
+    }
+
+    function loadContent(identifier) {
+
+      if (identifier === 'public') {
+        $('#indexContent').load('{{ frontend.content.public }}');
+      }
+
+      if (identifier === 'itemManager') {
+        $('#indexContent').load('{{ frontend.content.itemManager }}');
+        $('#navItemManager').addClass('active');
+      } else {
+        $('#navItemManager').removeClass('active');
+      }
+
+      if (identifier === 'labelCreator') {
+        $('#indexContent').load('{{ frontend.content.labelCreator }}');
+        $('#navLabelCreator').addClass('active');
+      } else {
+        $('#navLabelCreator').removeClass('active');
+      }
+
+      if (identifier === 'itemListCreator') {
+        $('#indexContent').load('{{ frontend.content.itemListCreator }}');
+        $('#navItemListCreator').addClass('active');
+      } else {
+        $('#navItemListCreator').removeClass('active');
+      }
+
+      if (identifier === 'statistic') {
+        $('#indexContent').load('{{ frontend.content.statistic }}');
+        $('#navStatistic').addClass('active');
+      } else {
+        $('#navStatistic').removeClass('active');
+      }
+    }
+
+    function loadSureModal(type, handleYesClick, handleNoClick) {
+      $('#modalContent').load('{{ frontend.modal.sure }}/' + type, function() {
+        if (handleYesClick) {
+          $('#yesButtonOnSureModal').on('click', handleYesClick);
+        }
+        if (handleNoClick) {
+          $('#noButtonOnSureModal').on('click', handleNoClick);
+        }
+        $('#modal').modal('show');
+      });
+    }
+
+    function loadModal(url) {
+      $('#modalContent').load(url, function() {
+        $('#modal').modal('show');
+      });
+    }
+
+    $('#navItemManager').on('click', function() {
+      loadContent('itemManager');
+    });
+
+    $('#navLabelCreator').on('click', function() {
+      loadContent('labelCreator');
+    });
+
+    $('#navItemListCreator').on('click', function() {
+      loadContent('itemListCreator');
+    });
+
+    $('#navStatistic').on('click', function() {
+      loadContent('statistic');
+    });
+
+    $('#navLogout').on('click', function() {
+      $.ajax({
+        url: '{{ backend.url.auth }}',
+        method: 'DELETE'
+      }).always(function() {
+        userIsLoggedOut();
+        loadContent('public');
+      });
+    });
+
+    $.get(
+      '{{ backend.url.auth }}',
+      null,
+      function(data) {
+        if (data.authenticated) {
+          if (data.admin) {
+            adminIsLoggendIn();
+            loadContent('statistic');
+          } else {
+            userIsLoggedIn();
+            loadContent('itemManager');
+          }
+        } else {
+          userIsLoggedOut();
+          loadContent('public');
+        }
+      },
+      'json');
+  </script>
+
+</body>
+
+</html>

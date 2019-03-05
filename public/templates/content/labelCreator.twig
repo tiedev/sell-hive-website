@@ -1,0 +1,307 @@
+<!doctype html>
+
+<h1>{{ title }}</h1>
+
+<br />
+
+<div class="card-deck">
+
+  <div class="card border-success">
+    <h4 class="card-header border-success">Erstellen</h4>
+    <div class="card-body">
+
+      <p>
+        <div class="btn-group d-flex" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-sm w-100 btn-secondary" id="showTestInfoButton">Testrahmen</button>
+          <button type="button" class="btn btn-sm w-100 btn-secondary" id="showLabelInfoButton">Etiketten</button>
+        </div>
+      </p>
+
+      <div id="selectInfo">
+        <p class="text-center">
+          <img src="img/icons/arrow_divide.png" />
+        </p>
+
+        <p class="card-text text-center">
+          Bitte wählen ...
+        </p>
+
+        <p class="card-text">
+          Mit einem
+          <span class="badge badge-success">Testrahmen</span>
+          kannst du die Ausrichtung der Etiketten beim Drucken überprüfen und ggf. anpassen.
+        </p>
+
+        <p class="card-text">
+          Unter
+          <span class="badge badge-success">Etiketten</span>
+          werden Deine eintragenen Spiele in ein PDF zum Druck verpackt.
+        </p>
+      </div>
+
+      <div id="testInfo" class="d-none">
+        <p class="card-text">
+          Um die Ausrichtung beim Druck der Etiketten auf den Etikettenbogen zu überprüfen kannst du hier einen Testrahmen generieren lassen. Diesen druckst Du auf einen Etikettenbogen und überprüfst, ob die Testrahmen mit den den Etiketten
+          übereinstimmen.
+          Gegebenenfalls kannst Du hier dann die Ausrichtung korrigieren.
+        </p>
+
+        <p class="card-text">
+          Hier kannst Du einen Testrahmen mit der aktuellen Ausrichtung erstellen:
+        </p>
+
+        <p>
+          <button type="submit" class="btn btn-primary btn-sm" id="generateTestPdfButton">Testrahmen generieren</button>
+        </p>
+
+        <p class="card-text">
+          Falls etwas nicht passt, kann hier für die nächste Generierung nachgebessert werden:
+        </p>
+
+        <p>
+          <button type="submit" class="btn btn-primary btn-sm" id="editSettingsButton">Ausrichtung bearbeiten</button>
+        </p>
+      </div>
+
+      <div id="labelInfo" class="d-none">
+
+        <p class="card-text">
+          Für
+          <span id="itemCountUnlabeled">?</span>
+          von
+          <span id="itemCount">?</span>
+          Spielen wurden noch keine Etiketten erstellt:
+        </p>
+
+        <p>
+          <!-- TODO disable when there are no labels to generate -->
+          <button type="submit" class="btn btn-primary btn-sm" id="generateLabelsButton">Etiketten generieren</button>
+        </p>
+
+        <p class="card-text">
+          Falls Du einen bereits angebrochenen Etikettenbogen verwenden möchtest, kannst Du per Klick das erste Etikett positionieren:
+        </p>
+
+        <table class="table table-sm table-bordered table-hover" id="preview">
+          <tbody>
+            {% for row in 0..8 %}
+            <tr class="text-center">
+              {% for col in 0..2 %}
+              <td data-label-id="{{ col + row * 3 }}" style="width:33%">
+                ?
+              </td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card border-warning">
+    <h4 class="card-header border-warning">Drucken</h4>
+    <div class="card-body">
+
+      <p class="card-text">
+        Die Druckvorlage ist auf die Etiketten
+        <a href="{{ amazonLabelLink }}" class="badge badge-warning" target="_blank">L4737REV</a>
+        von Avery Zweckform abgestimmt:
+      </p>
+
+      <p class="text-center">
+        <a target="_blank" href="{{ amazonLabelLink }}"><img border="0" src="{{ amazonLabelImg }}"></a>
+        <img src="{{ amazonLabelPing }}" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+      </p>
+
+      <p class="card-text">
+        Beim Druck der Etiketten ist unbedingt darauf zu beachten, dass die automatische Seitenanpassung
+        <u>nicht</u>
+        aktiviert ist.
+      </p>
+
+    </div>
+  </div>
+
+  <div class="card border-info">
+    <h4 class="card-header border-info">Kleben</h4>
+    <div class="card-body">
+
+      <p class="card-text">
+        Ein Aufkleber kommt von oben auf den
+        <span class="badge badge-success">Deckel</span>
+        und der Andere auf die
+        <span class="badge badge-success">schmale Seite</span>
+        des Spiels:
+      </p>
+
+      <p class="text-center">
+        <img src="img/LabeledBoxBig.png" />
+      </p>
+
+      <p class="card-text">
+        Ist der Karton zu dünn für einen Aufkleber an der Seite, kommt der eine Aufkleber von oben auf den
+        <span class="badge badge-info">Deckel</span>
+        und der andere wird
+        <span class="badge badge-info">in den Karton</span>
+        gelegt.
+      </p>
+
+      <p class="text-center">
+        <img src="img/LabeledBoxSmall.png" />
+      </p>
+
+      <p class="card-text">
+        Deine Spiele sind jetzt bereit für den Flohmarkt. Nun fehlen nur noch die Abgabedokumente.
+      </p>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function showTestInfo() {
+    $('#selectInfo').addClass('d-none');
+
+    $('#testInfo').removeClass('d-none');
+    $('#showTestInfoButton').addClass('btn-success');
+    $('#showTestInfoButton').removeClass('btn-secondary');
+
+    $('#labelInfo').addClass('d-none');
+    $('#showLabelInfoButton').addClass('btn-secondary');
+    $('#showLabelInfoButton').removeClass('btn-success');
+  }
+
+  function showLabelInfo() {
+    $('#selectInfo').addClass('d-none');
+
+    $('#testInfo').addClass('d-none');
+    $('#showTestInfoButton').addClass('btn-secondary');
+    $('#showTestInfoButton').removeClass('btn-success');
+
+    $('#labelInfo').removeClass('d-none');
+    $('#showLabelInfoButton').addClass('btn-success');
+    $('#showLabelInfoButton').removeClass('btn-secondary');
+  }
+
+  var startLabelId = 0;
+  var multiplier = 2;
+
+  function generateLabels() {
+    $('#modal').modal('hide');
+    $.ajax({
+      url: '{{ backend.url.pdf.labels }}',
+      method: 'POST',
+      data: {
+        startPosition: startLabelId,
+        multiplier: multiplier
+      },
+      dataType: 'json'
+    }).done(generateLabelsDone);
+  }
+
+  function generateLabelsDone(data) {
+    if (data.valid) {
+
+      var openedWindow = window.open('{{ baseUrl }}/' + data.path, '_blank');
+      if (openedWindow) {
+        openedWindow.focus();
+      } else {
+        $('#modalContent').load('{{ frontend.modal.blockedPopUp }}', {
+          pdfPath: data.path
+        }, function() {
+          $('#modal').modal('show');
+        });
+      }
+
+    } else {
+
+      if (data.startingPosition === 'invalid') {
+        $('#startingPositionGroup').addClass('has-error');
+        $('#startingPositionGroup').removeClass('has-success');
+        $('#startingPositionText').text('{{ invalid.startingPosition }}');
+      } else {
+        $('#startingPositionGroup').addClass('has-success');
+        $('#startingPositionGroup').removeClass('has-error');
+        $('#startingPositionText').text('');
+      }
+
+      $('#modal').modal('show');
+
+    }
+  }
+
+  function generateTestPdf() {
+    $('#modal').modal('hide');
+    $.ajax({
+      url: '{{ backend.url.pdf.test }}',
+      method: 'POST',
+      dataType: 'json'
+    }).done(generateTestPdfDone);
+  }
+
+  function generateTestPdfDone(data) {
+    var openedWindow = window.open('{{ baseUrl }}/' + data.path, '_blank');
+    if (openedWindow) {
+      openedWindow.focus();
+    } else {
+      $('#modalContent').load('{{ frontend.modal.blockedPopUp }}', {
+        pdfPath: data.path
+      }, function() {
+        $('#modal').modal('show');
+      });
+    }
+  }
+
+  function updatePreview() {
+
+    var labelsAfterStartLabel = 0;
+
+    $('#preview').find('td[data-label-id]').each(function() {
+      $(this).removeClass();
+      var labelId = parseInt($(this).attr('data-label-id'));
+      if (labelId < startLabelId) {
+        $(this).addClass('table-secondary');
+        $(this).text('-');
+      } else {
+        var itemNo = Math.trunc(labelsAfterStartLabel / multiplier) + 1;
+        $(this).addClass('table-info');
+        $(this).text('Spiel ' + itemNo);
+        labelsAfterStartLabel++;
+      }
+    });
+
+  }
+
+  function openModalEditSettings() {
+    loadModal('{{ frontend.modal.printSettings }}');
+  }
+
+  $('#showTestInfoButton').on('click', showTestInfo);
+
+  $('#showLabelInfoButton').on('click', showLabelInfo);
+
+  $('#generateLabelsButton').on('click', generateLabels);
+
+  $('#generateTestPdfButton').on('click', generateTestPdf);
+
+  $('#editSettingsButton').on('click', openModalEditSettings);
+
+  $('#preview').find('td[data-label-id]').on('click', function() {
+    startLabelId = parseInt($(this).attr('data-label-id'));
+    updatePreview();
+  });
+
+  $.ajax({
+    url: '{{ backend.url.itemCount }}',
+    method: 'GET',
+    dataType: 'json'
+  }).done(function(data) {
+    $('#itemCountUnlabeled').text(data['all'] - data['labeled']);
+    $('#itemCount').text(data['all']);
+  });
+
+  updatePreview();
+</script>

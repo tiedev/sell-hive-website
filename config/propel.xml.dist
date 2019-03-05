@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<config>
+    <propel>
+        <database>
+            <connections>
+                <connection id="dev">
+                    <adapter>mysql</adapter>
+                    <classname>Propel\Runtime\Connection\ConnectionWrapper</classname>
+                    <dsn><!-- specify in local config 'propel.xml' --></dsn>
+                    <user><!-- specify in local config 'propel.xml' --></user>
+                    <password><!-- specify in local config 'propel.xml' --></password>
+                </connection>
+                <connection id="prod">
+                    <adapter>mysql</adapter>
+                    <classname>Propel\Runtime\Connection\ConnectionWrapper</classname>
+                    <dsn><!-- specify in local config 'propel.xml' --></dsn>
+                    <user><!-- specify in local config 'propel.xml' --></user>
+                    <password><!-- specify in local config 'propel.xml' --></password>
+                </connection>
+            </connections>
+        </database>
+        <runtime>
+            <defaultConnection>dev</defaultConnection>
+            <connection>dev</connection>
+            <connection>prod</connection>
+        </runtime>
+        <generator>
+            <defaultConnection>dev</defaultConnection>
+            <connection>dev</connection>
+            <connection>prod</connection>
+        </generator>
+    </propel>
+</config>

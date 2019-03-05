@@ -1,0 +1,34 @@
+<!doctype html>
+
+<div class="modal-header">
+  <h4 class="modal-title">Dein PopUp-Blocker ...</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+</div>
+<div class="modal-body">
+  <p>
+    ... ist leider aktiv geworden, die erzeugte PDF-Datei konnte nicht automatisch geöffnet werden. Du kannst entweder
+  </p>
+  <p class="text-center">
+    <a href="{{ baseUrl }}/{{ pdfPath }}" target="_blank" class="btn btn-success">hier klicken, um das PDF zu öffnen</a>
+  </p>
+  <p>
+    oder du schaltest den <a href="#popUpBlockerImages" data-toggle="collapse" class="badge badge-light">PopUp-Blocker</a> für diese Domain aus.
+  </p>
+  <div class="collapse" id="popUpBlockerImages">
+    <p>
+      Im Chrome Browser geht das über folgendes Symbol:
+    </p>
+    <p>
+      <img src="img/PopUpBlockerChrome.png" />
+    </p>
+    <p>
+      Im Firefox über dieses:
+    </p>
+    <p>
+      <img src="img/PopUpBlockerFirefox.png" />
+    </p>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" data-dismiss="modal">schließen</button>
+</div>

@@ -1,0 +1,170 @@
+<!doctype html>
+
+<div class="modal-header">
+  <h4 class="modal-title" id="itemModalTitle">{{ title.new }}</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span></button>
+</div>
+
+<div class="modal-body">
+  <div class="alert alert-danger" id="limitInvalid" role="alert" style="display: none;">
+    {{ limit.invalid }}
+  </div>
+  <div class="form-group">
+    <label class="control-label" for="name">{{ name.label }}</label>
+    <input type="text" class="form-control" id="name" placeholder="{{ name.help }}" maxlength="{{ name.maxLength }}">
+    <div class="invalid-feedback" id="nameInvalid">
+      <!-- set by logic -->
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label" for="publisher">{{ publisher.label }}</label>
+    <input type="text" class="form-control" id="publisher" placeholder="{{ publisher.help }}" maxlength="{{ publisher.maxLength }}">
+    <div class="invalid-feedback" id="publisherInvalid">
+      <!-- set by logic -->
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label" for="price">{{ price.label }}</label>
+    <input type="text" class="form-control" id="price" placeholder="{{ price.help }}" maxlength="{{ price.maxLenght }}">
+    <div class="invalid-feedback" id="priceInvalid">
+      <!-- set by logic -->
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="boxed_as_new">{{ boxed_as_new.label }}</label>
+    <select class="form-control" id="boxed_as_new">
+      <option value="false">{{ boxed_as_new.no }}</option>
+      <option value="true">{{ boxed_as_new.yes }}</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="comment">{{ comment.label }}</label>
+    <textarea class="form-control" id="comment" placeholder="{{ comment.help }}" rows="3"></textarea>
+    <div class="invalid-feedback" id="commentInvalid"></div>
+    <div class="invalid-feedback" id="commentInvalid">
+      <!-- set by logic -->
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="submit" class="btn btn-primary btn-sm" id="saveItemButton">{{ submit.new }}</button>
+  <button type="submit" class="btn btn-default btn-sm" data-dismiss="modal">{{ cancel }}</button>
+</div>
+
+<script>
+  var itemId = '{{itemId}}';
+
+  var price = new AutoNumeric('#price', {
+    minimumValue: 1,
+    maximumValue: 100,
+    digitGroupSeparator: '.',
+    decimalCharacter: ',',
+    wheelStep: 0.5,
+    suffixText: ' €'
+  });
+
+  if (itemId != 'new') {
+    $('#itemModalTitle').text('{{ title.edit }}');
+    $('#saveItemButton').text('{{ submit.edit }}');
+    $.ajax({
+      url: '{{ backend.url.item }}/' + itemId,
+      method: 'GET',
+      dataType: 'json'
+    }).done(function(data) {
+      $('#name').val(data.name);
+      $('#publisher').val(data.publisher);
+      price.set(data.price / 100);
+      $('#boxed_as_new').val(data.boxed_as_new.toString());
+      $('#comment').val(data.comment);
+    });
+  }
+
+  function saveItem() {
+    $('#modal').modal('hide');
+    var url;
+    if (itemId == 'new') {
+      url = '{{ backend.url.item }}';
+    } else {
+      url = '{{ backend.url.item }}/' + itemId;
+    }
+    $.ajax({
+      url: url,
+      method: 'POST',
+      data: {
+        name: $('#name').val(),
+        publisher: $('#publisher').val(),
+        price: price.get() * 100,
+        donate: $("#donate").val(),
+        boxed_as_new: $("#boxed_as_new").val(),
+        comment: $('#comment').val()
+      },
+      dataType: 'json'
+    }).done(saveItemDone);
+  }
+
+  function saveItemDone(data) {
+    if (data.valid) {
+
+      if (itemId == 'new') {
+        addItem(data['item']);
+      } else {
+        fillItemCard(itemId, data['item']);
+      }
+
+    } else {
+
+      if (data.name === 'invalid') {
+        $('#name').addClass('is-invalid');
+        $('#name').removeClass('is-valid');
+        $('#nameInvalid').text('{{ name.invalid }}');
+      } else {
+        $('#name').addClass('is-valid');
+        $('#name').removeClass('is-invalid');
+        $('#nameInvalid').text('');
+      }
+
+      if (data.publisher === 'invalid') {
+        $('#publisher').addClass('is-invalid');
+        $('#publisher').removeClass('is-valid');
+        $('#publisherInvalid').text('{{ publisher.invalid }}');
+      } else {
+        $('#publisher').addClass('is-valid');
+        $('#publisher').removeClass('is-invalid');
+        $('#publisherInvalid').text('');
+      }
+
+      if (data.price === 'invalid') {
+        $('#price').addClass('is-invalid');
+        $('#price').removeClass('is-valid');
+        $('#priceInvalid').text('{{ price.invalid }}');
+      } else {
+        $('#price').addClass('is-valid');
+        $('#price').removeClass('is-invalid');
+        $('#priceInvalid').text('');
+      }
+
+      if (data.comment === 'invalid') {
+        $('#comment').addClass('is-invalid');
+        $('#comment').removeClass('is-valid');
+        $('#commentInvalid').text('{{ comment.invalid }}');
+      } else {
+        $('#comment').addClass('is-valid');
+        $('#comment').removeClass('is-invalid');
+        $('#commentInvalid').text('');
+      }
+
+      if (data.limit === 'invalid') {
+        $('#limitInvalid').show();
+      } else {
+        $('#limitInvalid').hide();
+      }
+
+      $('#modal').modal('show');
+
+    }
+  }
+
+  $('#saveItemButton').on('click', saveItem);
+</script>

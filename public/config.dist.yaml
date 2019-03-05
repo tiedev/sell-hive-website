@@ -1,0 +1,43 @@
+
+monolog:
+    level: INFO
+    format: "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n"
+    datetime: null
+    allowLineBreaks: false
+    ignoreEmptyContextAndExtra: false
+
+twig:
+    cache: true
+    debug: false
+    autoReload: true
+
+phpmailer:
+    debug: false
+    host: smtp.host.de
+    port: 587
+    encryption: tls
+    username: TODO
+    password: TODO
+    from:
+        mail: todo@todo.todo
+        name: TODO
+    subject:
+        new: Sell-Hive Password Mail
+        remind: Sell-Hive Password Reminder
+
+common:
+    baseUrl: TODO
+
+cashpoint:
+    secret: TODO
+
+item:
+    feeInCent: 50
+
+seller:
+    limitRange: 50
+
+admin:
+    active: false
+    password: TODO
+    mail: TODO

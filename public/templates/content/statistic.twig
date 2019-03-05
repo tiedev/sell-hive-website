@@ -1,0 +1,73 @@
+<!doctype html>
+
+<h1>{{ title }}</h1>
+
+<br />
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nachname</th>
+      <th scope="col">Vorname</th>
+      <th scope="col">E-Mail</th>
+      <th scope="col"><img src="img/icons/house.png" data-toggle="tooltip" data-html="true" data-placement="top" title="eingetragen / gelabelt" /></th>
+      <th scope="col"><img src="img/icons/shop.png" data-toggle="tooltip" data-html="true" data-placement="top" title="abgegeben" /></th>
+      <th scope="col"><img src="img/icons/coins.png" data-toggle="tooltip" data-html="true" data-placement="top" title="verkauft" /></th>
+      <th scope="col"><img src="img/icons/sum.png" data-toggle="tooltip" data-html="true" data-placement="top" title="eingetragen / gelabelt / abgegeben / verkauft" /></th>
+      <th scope="col"><img src="img/icons/stop.png" data-toggle="tooltip" data-html="true" data-placement="top" title="limit" /></th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <!-- filled by logic -->
+
+    <tr id="sumRow">
+      <th colspan="4"></th>
+      <td id="sellerStatSumHome">?</td>
+      <td id="sellerStatSumTransfered">?</td>
+      <td id="sellerStatSumSold">?</td>
+      <th id="sellerStatSum" scope="row">?</th>
+      <th id="sellerStatSumLimit" scope="row">?</th>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+  function initSellerStatistic(data) {
+    Object.keys(data.details).forEach(function(key) {
+      addSellerRow(key, data.details[key]);
+    });
+    var sumHome = data.sum_items.created + data.sum_items.labeled;
+    var sum = sumHome + data.sum_items.transfered + data.sum_items.sold;
+    $('#sellerStatSumHome').text(sumHome);
+    $('#sellerStatSumTransfered').text(data.sum_items.transfered);
+    $('#sellerStatSumSold').text(data.sum_items.sold);
+    $('#sellerStatSum').text(sum);
+    $('#sellerStatSumLimit').text(data.sum_limit);
+  }
+
+  function addSellerRow(id, sellerRowData) {
+    var countItemsHome = sellerRowData.count_items.created + sellerRowData.count_items.labeled;
+    var countItems = countItemsHome + sellerRowData.count_items.transfered + sellerRowData.count_items.sold;
+    var row = '';
+    row += '<tr>';
+    row += '  <td>' + id + '</td>';
+    row += '  <td>' + sellerRowData.last_name + '</td>';
+    row += '  <td>' + sellerRowData.first_name + '</td>';
+    row += '  <td>' + sellerRowData.mail + '</td>';
+    row += '  <td>' + countItemsHome + '</td>';
+    row += '  <td>' + sellerRowData.count_items.transfered + '</td>';
+    row += '  <td>' + sellerRowData.count_items.sold + '</td>';
+    row += '  <th scope="row">' + countItems + '</th>';
+    row += '  <th scope="row">' + sellerRowData.limit + '</th>';
+    row += '</tr>';
+    $(row).insertBefore($('#sumRow'));
+  }
+
+  $.ajax({
+    url: '{{ backend.url.sellerStatistic }}',
+    method: 'GET',
+    dataType: 'json'
+  }).done(initSellerStatistic);
+</script>

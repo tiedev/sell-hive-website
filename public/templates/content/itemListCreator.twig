@@ -1,0 +1,77 @@
+<!doctype html>
+
+<h1>{{ title }}</h1>
+
+<br />
+
+<div class="card-deck">
+
+  <div class="card border-danger">
+    <h4 class="card-header border-danger">Erstellen</h4>
+    <div class="card-body">
+
+      <p class="card-text">
+        Du benötigst zur Abgabe eine Übersicht der Spiele:
+      </p>
+
+      <button type="submit" class="btn btn-primary" id="generateItemList">{{ button }}</button>
+
+      <br /><br />
+
+      <p class="card-text">
+        Und das Flomarkt Datenblatt, sowie den Abgabebeleg:
+      </p>
+
+      <a class="btn btn-primary" href="{{ link.url }}" role="button" target="_blank">{{ link.text }}</a>
+
+    </div>
+  </div>
+
+  <div class="card border-dark">
+    <h4 class="card-header border-dark">Abgeben</h4>
+    <div class="card-body">
+
+      <p class="card-text">
+        <b>Abgabe</b> der Spiele samt vorausgefüllter Formulare<br /> am <b>01.03.2019</b> (Freitag)<br /> von <b>17 bis 19 Uhr</b><br /> im Raum <b>R 205</b> (2te Etage).
+      </p>
+
+      <br />
+
+      <img src="img/room.jpg" class="mx-auto d-block" />
+
+      <br />
+
+      <p class="card-text">
+        <b>Weniger als 10 Spiele?</b><br /> Diese können auch während der Veranstaltung direkt bei der Kasse abegeben werden. Allerdings nur, sofern die Spiele online eingetragen wurden und die Kapazität des Flohmarkts dies zu lässt. Außerdem sind
+        längere Wartezeiten, je nach Andrang, leider nicht auszuschließen.
+      </p>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function generateItemList() {
+    $.ajax({
+      url: '{{ backend.url.pdf.itemlist }}',
+      method: 'GET',
+      dataType: 'json'
+    }).done(generateItemListDone);
+  }
+
+  function generateItemListDone(data) {
+    var openedWindow = window.open('{{ baseUrl }}/' + data.path, '_blank');
+    if (openedWindow) {
+      openedWindow.focus();
+    } else {
+      $('#modalContent').load('{{ frontend.modal.blockedPopUp }}', {
+        pdfPath: data.path
+      }, function() {
+        $('#modal').modal('show');
+      });
+    }
+  }
+
+  $('#generateItemList').on('click', generateItemList);
+</script>

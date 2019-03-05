@@ -1,0 +1,17 @@
+.gradle
+.idea
+.vscode
+Corel Auto-Preserve
+/build
+/config/propel.xml
+/public/bootstrap
+/public/composer.lock
+/public/config.yaml
+/public/pdf
+/public/propel/diff
+/public/propel/model/Base
+/public/propel/model/Map
+/public/propel/sql
+/public/propel/config.php
+/public/vendor
+gradle.properties

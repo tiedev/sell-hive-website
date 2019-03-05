@@ -1,0 +1,195 @@
+<!doctype html>
+
+<div class="modal-header">
+  <h4 class="modal-title" id="itemModalTitle">{{ title }}</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span></button>
+</div>
+
+<div class="modal-body">
+  <div class="container">
+
+    <div class="form-group">
+      <label class="control-label" for="pageInitX">{{ pageInit.x.label }}</label>
+      <input type="text" class="form-control" id="pageInitX" placeholder="{{ pageInit.x.help }}">
+      <div class="invalid-feedback" id="pageInitXInvalid">
+        <!-- set by logic -->
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="pageInitY">{{ pageInit.y.label }}</label>
+      <input type="text" class="form-control" id="pageInitY" placeholder="{{ pageInit.y.help }}">
+      <div class="invalid-feedback" id="pageInitYInvalid">
+        <!-- set by logic -->
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="labelSpaceX">{{ labelSpace.x.label }}</label>
+      <input type="text" class="form-control" id="labelSpaceX" placeholder="{{ labelSpace.x.help }}">
+      <div class="invalid-feedback" id="labelSpaceXInvalid">
+        <!-- set by logic -->
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="labelSpaceY">{{ labelSpace.y.label }}</label>
+      <input type="text" class="form-control" id="labelSpaceY" placeholder="{{ labelSpace.y.help }}">
+      <div class="invalid-feedback" id="labelSpaceYInvalid">
+        <!-- set by logic -->
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="labelHeight">{{ label.height.label }}</label>
+      <input type="text" class="form-control" id="labelHeight" readonly="readonly">
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="labelWidth">{{ label.width.label }}</label>
+      <input type="text" class="form-control" id="labelWidth" readonly="readonly">
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-footer">
+  <!-- TODO implement reset button -->
+  <button type="submit" class="btn btn-primary btn-sm" id="saveSettingsButton">{{ submit }}</button>
+  <button type="submit" class="btn btn-default btn-sm" data-dismiss="modal">{{ cancel }}</button>
+</div>
+
+<script>
+  var itemId = '{{itemId}}';
+
+  var pageInitX = new AutoNumeric('#pageInitX', {
+    minimumValue: 1,
+    maximumValue: 25,
+    digitGroupSeparator: '.',
+    decimalCharacter: ',',
+    decimalPlaces: 1,
+    wheelStep: 0.1,
+    suffixText: ' mm'
+  });
+
+  var pageInitY = new AutoNumeric('#pageInitY', {
+    minimumValue: 1,
+    maximumValue: 25,
+    digitGroupSeparator: '.',
+    decimalCharacter: ',',
+    decimalPlaces: 1,
+    wheelStep: 0.1,
+    suffixText: ' mm'
+  });
+
+  var labelSpaceX = new AutoNumeric('#labelSpaceX', {
+    minimumValue: 0,
+    maximumValue: 5,
+    digitGroupSeparator: '.',
+    decimalCharacter: ',',
+    decimalPlaces: 1,
+    wheelStep: 0.1,
+    suffixText: ' mm'
+  });
+
+  var labelSpaceY = new AutoNumeric('#labelSpaceY', {
+    minimumValue: 0,
+    maximumValue: 5,
+    digitGroupSeparator: '.',
+    decimalCharacter: ',',
+    decimalPlaces: 1,
+    wheelStep: 0.1,
+    suffixText: ' mm'
+  });
+
+  var labelHeight = new AutoNumeric('#labelHeight', {
+    digitGroupSeparator: '.',
+    decimalCharacter: ',',
+    decimalPlaces: 1,
+    suffixText: ' mm',
+    readOnly: true
+  });
+
+  var labelWidth = new AutoNumeric('#labelWidth', {
+    digitGroupSeparator: '.',
+    decimalCharacter: ',',
+    decimalPlaces: 1,
+    suffixText: ' mm',
+    readOnly: true
+  });
+
+  $('#pageInitX').popover({html: true, trigger: 'hover', placement: 'bottom', content: '<img src="{{ pageInit.x.img }}" />'});
+  $('#pageInitY').popover({html: true, trigger: 'hover', placement: 'bottom', content: '<img src="{{ pageInit.y.img }}" />'});
+  $('#labelSpaceX').popover({html: true, trigger: 'hover', placement: 'bottom', content: '<img src="{{ labelSpace.x.img }}" />'});
+  $('#labelSpaceY').popover({html: true, trigger: 'hover', placement: 'bottom', content: '<img src="{{ labelSpace.y.img }}" />'});
+
+  function saveSettings() {
+    $('#modal').modal('hide');
+    $.ajax({
+      url: '{{ backend.url.pdf.settings }}',
+      method: 'POST',
+      data: {
+        page_init_x: pageInitX.get(),
+        page_init_y: pageInitY.get(),
+        label_space_x: labelSpaceX.get(),
+        label_space_y: labelSpaceY.get()
+      },
+      dataType: 'json'
+    }).done(saveSettingsDone);
+  }
+
+  function saveSettingsDone(data) {
+    if (!data.valid) {
+
+      if (data.page_init_x === 'invalid') {
+        $('#pageInitX').addClass('is-invalid');
+        $('#pageInitX').removeClass('is-valid');
+        $('#pageInitXInvalid').text('{{ pageInit.x.invalid }}');
+      } else {
+        $('#pageInitX').addClass('is-valid');
+        $('#pageInitX').removeClass('is-invalid');
+        $('#pageInitXInvalid').text('');
+      }
+
+      if (data.page_init_y === 'invalid') {
+        $('#pageInitY').addClass('is-invalid');
+        $('#pageInitY').removeClass('is-valid');
+        $('#publisherInvalid').text('{{ pageInit.y.invalid }}');
+      } else {
+        $('#pageInitY').addClass('is-valid');
+        $('#pageInitY').removeClass('is-invalid');
+        $('#pageInitYInvalid').text('');
+      }
+
+      if (data.label_space_x === 'invalid') {
+        $('#labelSpaceX').addClass('is-invalid');
+        $('#labelSpaceX').removeClass('is-valid');
+        $('#labelSpaceXInvalid').text('{{ labelSpace.x.invalid }}');
+      } else {
+        $('#labelSpaceX').addClass('is-valid');
+        $('#labelSpaceX').removeClass('is-invalid');
+        $('#labelSpaceXInvalid').text('');
+      }
+
+      if (data.label_space_y === 'invalid') {
+        $('#labelSpaceY').addClass('is-invalid');
+        $('#labelSpaceY').removeClass('is-valid');
+        $('#labelSpaceYInvalid').text('{{ labelSpace.y.invalid }}');
+      } else {
+        $('#labelSpaceY').addClass('is-valid');
+        $('#labelSpaceY').removeClass('is-invalid');
+        $('#labelSpaceYInvalid').text('');
+      }
+
+      $('#modal').modal('show');
+
+    }
+  }
+
+  $.ajax({url: '{{ backend.url.pdf.settings }}', method: 'GET', dataType: 'json'}).done(function(data) {
+    pageInitX.set(data.page_init_x);
+    pageInitY.set(data.page_init_y);
+    labelSpaceX.set(data.label_space_x);
+    labelSpaceY.set(data.label_space_y);
+    labelHeight.set(data.label_width);
+    labelWidth.set(data.label_height);
+  });
+
+  $('#saveSettingsButton').on('click', saveSettings);
+</script>

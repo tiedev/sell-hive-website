@@ -1,0 +1,246 @@
+
+plugins { id "com.diffplug.gradle.spotless" version "3.16.0" }
+
+import org.apache.tools.ant.taskdefs.condition.Os
+
+spotless {
+	groovy  {
+		target '**/*.gradle'
+		greclipse()
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+}
+
+ext {
+	targetEnv = 'dev'
+	configDir = "${projectDir}\\config"
+	publicDir = "${projectDir}\\public"
+	propelDir = "${publicDir}\\propel"
+	vendorDir = "${publicDir}\\vendor"
+	vendorBinDir = "${vendorDir}\\bin"
+	testDir = "${projectDir}\\tests"
+}
+
+task define_target_environment {
+	if (project.hasProperty('env')) {
+		targetEnv = project.getProperty('env')
+		println "target environment: '${targetEnv}'\n"
+	} else {
+		println "target environment: '${targetEnv}' (default)\n"
+	}
+
+	def validTargetEnvs = ['dev', 'prod']
+	if (!validTargetEnvs.contains(targetEnv)) {
+		throw new GradleException('target environment is invalid')
+	}
+}
+
+task composer_update(type: Exec) {
+	group 'composer'
+	description 'execute composer update'
+
+	def environmentParam = targetEnv == 'prod' ? ' --no-dev' : ''
+	def composerCommand = "composer update" + environmentParam
+
+	commandLine 'cmd', '/c', composerCommand
+
+	workingDir "${publicDir}"
+
+	doLast { println 'done.' }
+}
+
+task verify_htaccess {
+	group 'security'
+	description 'verifiy that htaccess is configuerd right'
+
+	doFirst {
+		//File htaccess = new File("${publicDir}\\.htaccess");
+		// TODO htaccess.append('\n# restrict folders for public access')
+
+		//File htaccess = new File("${publicDir}\\.htaccess");
+		//new File("${publicDir}").eachDir { dir -> htaccess.append('\nRedirectMatch 403 /' + dir.getName() + '/.*$') }
+		println 'to be implemented!'
+	}
+
+	doLast { println 'done.' }
+}
+
+task copy_bootstrap(type: Copy) {
+	group 'distribution'
+	description 'copies bootstrap from vendor to public directory'
+
+	dependsOn composer_update
+
+	from "${vendorDir}/twitter/bootstrap/dist"
+	into "${publicDir}/bootstrap"
+
+	doLast { println 'done.' }
+}
+
+task propel_config_prepare {
+	group 'propel'
+	description 'set default connection by target environment'
+
+	dependsOn composer_update
+
+	doFirst {
+		File propelXml = new File("${configDir}\\propel.xml");
+		if (propelXml.exists()) {
+
+			Node xmlRoot = new XmlParser().parse(propelXml)
+
+			xmlRoot.propel.runtime.defaultConnection.each { node ->
+				node.setValue(targetEnv)
+			}
+			xmlRoot.propel.generator.defaultConnection.each { node ->
+				node.setValue(targetEnv)
+			}
+
+			def xmlPrinter = new XmlNodePrinter(new PrintWriter(new FileWriter(propelXml)))
+			xmlPrinter.preserveWhitespace = true
+			xmlPrinter.print(xmlRoot)
+
+			println "DefaultConnection in propel.xml set to ${targetEnv}."
+		} else {
+			println 'Require propel.xml for propel diff.'
+			throw new StopExecutionException()
+		}
+	}
+}
+
+task propel_config_build(type: Exec) {
+	group 'propel'
+	description 'generate propel startup configuration'
+
+	dependsOn propel_config_prepare
+
+	doFirst {
+		commandLine 'cmd', '/c', "${vendorBinDir}\\propel config:convert --config-dir=\"${configDir}\" --output-dir=\"${propelDir}\""
+	}
+
+	doLast { println 'done.' }
+}
+
+task propel_sql(type: Exec) {
+	group 'propel'
+	description 'generate propel sql file'
+
+	dependsOn propel_config_build
+
+	commandLine 'cmd', '/c', "${vendorBinDir}\\propel sql:build --config-dir=\"${configDir}\" --schema-dir=\"${configDir}\" --output-dir=\"${propelDir}\\sql\""
+
+	doLast { println 'done.' }
+}
+
+task propel_model_clean(type: Delete) {
+	group 'propel'
+	description 'clean propel model'
+
+	delete "${propelDir}\\model\\Base", "${propelDir}\\www\\propel\\model\\Map"
+
+	doLast { println 'done.' }
+}
+
+task propel_model_build(type: Exec) {
+	group 'propel'
+	description 'generate propel model'
+
+	dependsOn propel_model_clean
+	dependsOn propel_config_build
+
+	commandLine 'cmd', '/c', "${vendorBinDir}\\propel model:build --config-dir=\"${configDir}\" --schema-dir=\"${configDir}\" --output-dir=\"${propelDir}\\model\""
+
+	doLast { println 'done.' }
+}
+
+task propel_diff_clean(type: Delete) {
+	group 'propel'
+	description 'clean propel diff scripts'
+
+	delete "${propelDir}\\diff"
+	doLast { println 'done.' }
+}
+
+task propel_diff_build(type: Exec) {
+	group 'propel'
+	description 'generate propel diff script'
+
+	dependsOn propel_diff_clean
+	dependsOn propel_config_build
+
+	commandLine 'cmd', '/c', "${vendorBinDir}\\propel migration:diff --config-dir=\"${configDir}\" --schema-dir=\"${configDir}\" --output-dir=\"${propelDir}\\diff\""
+
+	doLast { println 'done.' }
+}
+
+task propel_diff {
+	group 'propel'
+	description 'clean and generate propel diff script'
+
+	dependsOn propel_diff_clean
+	dependsOn propel_diff_build
+}
+
+task propel_build {
+	group 'propel'
+	description 'complete propel build'
+
+	dependsOn composer_update
+	dependsOn propel_config_prepare
+	dependsOn propel_config_build
+	dependsOn propel_sql
+	dependsOn propel_model_clean
+	dependsOn propel_model_build
+}
+
+task execute_unit_tests(type: Exec) {
+	group 'test'
+	description 'executes the phpunit tests in tests folder'
+
+	onlyIf { targetEnv == 'dev' }
+
+	commandLine 'cmd', '/c', "${vendorBinDir}\\phpunit --bootstrap ${vendorDir}\\autoload.php ${testDir}"
+
+	doLast { println 'done.' }
+}
+
+assemble {
+	dependsOn composer_update
+	dependsOn propel_build
+	dependsOn copy_bootstrap
+	dependsOn verify_htaccess
+
+	doLast { println 'done.' }
+}
+
+build {
+	dependsOn assemble
+	dependsOn execute_unit_tests
+
+	doLast { println 'done.' }
+}
+
+task link_local_server(type: Exec) {
+	group 'deploy'
+	description 'create symlink from distribution folder to local server'
+
+	onlyIf { targetEnv == 'dev' && Os.isFamily(Os.FAMILY_WINDOWS) }
+
+	doFirst {
+		if (localServerDir == null) {
+			println 'Please create gradle.properties with "localServerDir" which points to local server folder.'
+			throw new StopExecutionException()
+		}
+
+		if (new File("${localServerDir}").exists()) {
+			println "Junction ${localServerDir} <<===>> ${publicDir} already exists."
+			throw new StopExecutionException()
+		}
+
+		commandLine 'cmd', '/c', "mklink /J ${localServerDir} ${publicDir}"
+	}
+
+	doLast { println 'done.' }
+}
