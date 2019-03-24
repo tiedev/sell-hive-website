@@ -82,6 +82,8 @@ class MailService
         $mail->isHTML(true);
         $mail->Subject = $this->config->get('phpmailer.subject.new');
 
+        // TODO switch to twig
+
         $body = $this->loadTemplate();
         $body = str_replace('%name%', $this->seller->getName(), $body);
         $body = str_replace('%id%', $this->seller->getId(), $body);

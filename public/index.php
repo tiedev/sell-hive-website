@@ -11,8 +11,6 @@ $app = new SellHiveApp();
 // === Pages ===
 $app->get('/', ['IndexController', 'show']);
 
-$app->get('/limit/{sellerId}/{secret}', ['LimitRequestController', 'show']);
-
 
 // === Content ===
 $app->get('/content/public', ['PublicController', 'show']);
@@ -54,13 +52,19 @@ $app->post('/backend/auth/remind', ['AuthController', 'remind']);
 
 /** SellerController **/
 // get seller statstic (admin only)
-$app->get('/backend/seller/statistic', ['SellerController', 'statistic']);
+$app->get('/backend/sellers', ['SellerController', 'list']);
 
 // get seller info for active user
 $app->get('/backend/seller', ['SellerController', 'get']);
 
 // create new seller
 $app->post('/backend/seller', ['SellerController', 'create']);
+
+// open limit request
+$app->post('/backend/limit/open', ['SellerController', 'openLimitRequest']);
+
+// close limit request (admin only)
+$app->post('/backend/limit/close', ['SellerController', 'closeLimitRequest']);
 
 
 /** ItemController **/

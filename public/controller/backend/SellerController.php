@@ -70,12 +70,11 @@ class SellerController
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }
 
-    public function get(Request $request, Response $response, Logger $logger)
+    public function get(Request $request, Response $response, Logger $logger, AuthService $auth)
     {
         $logger->debug('=== SellerController:get(...) ===');
 
-        if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
+        if ($auth->isNoUser()) {
             return $response->withStatus(403);
         }
 
@@ -89,26 +88,23 @@ class SellerController
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }
 
-    public function statistic(Request $request, Response $response, Logger $logger)
+    public function list(Request $request, Response $response, Logger $logger, AuthService $auth)
     {
-        $logger->debug('=== SellerController:statistic(...) ===');
+        $logger->debug('=== SellerController:list(...) ===');
 
-        if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
-            return $response->withStatus(403);
-        } elseif ($_SESSION['user'] != -1) {
-            $logger->debug('no admin session');
+        if ($auth->isNoAdmin()) {
             return $response->withStatus(403);
         }
 
         $out = array();
 
         $out['details'] = array();
-        $out['sum_limit'] = 0;
-        $out['sum_items']['created'] = 0;
-        $out['sum_items']['labeled'] = 0;
-        $out['sum_items']['transfered'] = 0;
-        $out['sum_items']['sold'] = 0;
+        $out['sum']['limits']['actual'] = 0;
+        $out['sum']['limits']['requested'] = 0;
+        $out['sum']['items']['created'] = 0;
+        $out['sum']['items']['labeled'] = 0;
+        $out['sum']['items']['transfered'] = 0;
+        $out['sum']['items']['sold'] = 0;
 
         $sellers = SellerQuery::create()->orderById(c::DESC)->find();
         foreach ($sellers as $seller) {
@@ -117,6 +113,7 @@ class SellerController
             $box['first_name'] = $seller->getFirstName();
             $box['mail'] = $seller->getMail();
             $box['limit'] = $seller->getLimit();
+            $box['limit_request'] = $seller->getLimitRequest();
             $box['created_at'] = $seller->getCreatedAt();
 
             $countBox = array();
@@ -126,11 +123,12 @@ class SellerController
             $countBox['sold'] = ItemQuery::create()->filterBySeller($seller)->filterBySold(null, c::ISNOTNULL)->count();
             $box['count_items'] = $countBox;
 
-            $out['sum_limit'] += $box['limit'];
-            $out['sum_items']['created'] += $countBox['created'];
-            $out['sum_items']['labeled'] += $countBox['labeled'];
-            $out['sum_items']['transfered'] += $countBox['transfered'];
-            $out['sum_items']['sold'] += $countBox['sold'];
+            $out['sum']['limits']['actual'] += $box['limit'];
+            $out['sum']['limits']['requested'] += $box['limit'];
+            $out['sum']['items']['created'] += $countBox['created'];
+            $out['sum']['items']['labeled'] += $countBox['labeled'];
+            $out['sum']['items']['transfered'] += $countBox['transfered'];
+            $out['sum']['items']['sold'] += $countBox['sold'];
 
             $out['details'][$seller->getId()] = $box;
         }
@@ -140,12 +138,11 @@ class SellerController
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }
 
-    public function openLimitRequest(Request $request, Response $response, Logger $logger, MailService $mailService, Config $config)
+    public function openLimitRequest(Request $request, Response $response, Logger $logger, AuthService $auth, MailService $mailService, Config $config)
     {
         $logger->debug('=== SellerController:openLimitRequest(...) ===');
 
-        if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
+        if ($auth->isNoUser()) {
             return $response->withStatus(403);
         }
 
@@ -186,21 +183,31 @@ class SellerController
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }
 
-    public function getLimitRequestInfo(Request $request, Response $response, Logger $logger)
-    {
-        $logger->debug('=== SellerController:getLimitRequestInfo(...) ===');
-
-        // TODO implement
-
-        return $response->withStatus(404);
-    }
-
-    public function closeLimitRequest(Request $request, Response $response, Logger $logger)
+    public function closeLimitRequest(Request $request, Response $response, Logger $logger, AuthService $auth, InputValidationService $v)
     {
         $logger->debug('=== SellerController:closeLimitRequest(...) ===');
 
-        // TODO implement
+        if ($auth->isNoAdmin()) {
+            return $response->withStatus(403);
+        }
 
-        return $response->withStatus(404);
+        $in = $request->getParsedBody();
+        if ($v->invalidSellerLimitCloseRequest($in)) {
+            return $response->withStatus(400);
+        }
+
+        $seller = SellerQuery::create()->findOneById($in['id']);
+        if ($seller == null) {
+            $logger->error('seller (id:' . $in['id'] . ') does not exist');
+            return $response->withStatus(404);
+        }
+
+        if ($in['approved']) {
+            // TODO implement
+        } else {
+            // TODO implement
+        }
+
+        return $response->withStatus(200);
     }
 }

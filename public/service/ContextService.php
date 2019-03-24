@@ -23,7 +23,7 @@ class ContextService
         $context['backend']['url']['item'] = $baseUrl . '/backend/item';
         $context['backend']['url']['itemCount'] = $baseUrl . '/backend/item/count';
         $context['backend']['url']['seller'] = $baseUrl . '/backend/seller';
-        $context['backend']['url']['sellerStatistic'] = $baseUrl . '/backend/seller/statistic';
+        $context['backend']['url']['sellerStatistic'] = $baseUrl . '/backend/sellers';
         $context['backend']['url']['pdf']['labels'] = $baseUrl . '/backend/pdf/label/item';
         $context['backend']['url']['pdf']['test'] = $baseUrl . '/backend/pdf/label/test';
         $context['backend']['url']['pdf']['settings'] = $baseUrl . '/backend/pdf/label/settings';
