@@ -226,6 +226,7 @@ task link_local_server(type: Exec) {
 	group 'deploy'
 	description 'create symlink from distribution folder to local server'
 
+	dependsOn define_target_environment
 	onlyIf { targetEnv == 'dev' && Os.isFamily(Os.FAMILY_WINDOWS) }
 
 	doFirst {

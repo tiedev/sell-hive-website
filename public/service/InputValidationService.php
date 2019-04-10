@@ -16,14 +16,14 @@ class InputValidationService
         $this->config = $config;
     }
 
-    public function invalidSellerLimitCloseRequest($inputArray)
+    public function invalidEditSellerLimit($inputArray)
     {
         $logger->trace('seller limit close request input array', $inputArray);
 
         $idValidator = v::key('id', v::intVal()->positive());
-        $approvedValidator = v::key('approved', v::boolVal());
+        $newLimitValidator = v::key('new_limit', v::intVal()->positive());
 
-        $validator = v::allOf($idValidator, $approvedValidator);
+        $validator = v::allOf($idValidator, $newLimitValidator);
 
         try {
             $validator->assert($inputArray);

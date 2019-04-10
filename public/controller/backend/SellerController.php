@@ -11,7 +11,7 @@ class SellerController
 {
     private $additionalChars = 'ÄÖÜäöüß-';
 
-    public function create(Request $request, Response $response, Logger $logger, MailService $mailService)
+    public function create(Request $request, Response $response, Logger $logger, MailService $mail)
     {
         $logger->debug('=== SellerController:create(...) ===');
 
@@ -59,8 +59,7 @@ class SellerController
             $out['saved'] = true;
             $logger->debug('seller saved');
 
-            $mailService->mailNewSeller($seller);
-            $out['mailed'] = $mailService->getMailedSuccessfully();
+            $out['mailed'] = $mail->sendWelcomeToSeller($seller);
         } else {
             $logger->debug('data invalid');
         }
@@ -136,78 +135,5 @@ class SellerController
         $logger->debug('output', $out);
 
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
-    }
-
-    public function openLimitRequest(Request $request, Response $response, Logger $logger, AuthService $auth, MailService $mailService, Config $config)
-    {
-        $logger->debug('=== SellerController:openLimitRequest(...) ===');
-
-        if ($auth->isNoUser()) {
-            return $response->withStatus(403);
-        }
-
-        $in = $request->getParsedBody();
-
-        $logger->debug('input', $in);
-
-        $out = array();
-        $out['valid'] = true;
-        $out['saved'] = false;
-        $out['mailed'] = false;
-
-        $limitRange = $config->get('seller.limitRange');
-        $seller = SellerQuery::create()->requireOneById($_SESSION['user']);
-        $itemCount = $seller->countItems();
-
-        if (!v::intVal()->positive()->between($itemCount, $itemCount + $limitRange)->validate($in['limit'])) {
-            $out['valid'] = false;
-        }
-
-        if ($out['valid']) {
-            $logger->debug('open limit request');
-
-            $seller->setLimitRequest($in['limit']);
-            $seller->save();
-
-            $out['saved'] = true;
-            $logger->debug('seller saved');
-
-            $mailService->mailLimitRequestOpened($seller);
-            $out['mailed'] = $mailService->getMailedSuccessfully();
-        } else {
-            $logger->debug('data invalid');
-        }
-
-        $logger->debug('output', $out);
-
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
-    }
-
-    public function closeLimitRequest(Request $request, Response $response, Logger $logger, AuthService $auth, InputValidationService $v)
-    {
-        $logger->debug('=== SellerController:closeLimitRequest(...) ===');
-
-        if ($auth->isNoAdmin()) {
-            return $response->withStatus(403);
-        }
-
-        $in = $request->getParsedBody();
-        if ($v->invalidSellerLimitCloseRequest($in)) {
-            return $response->withStatus(400);
-        }
-
-        $seller = SellerQuery::create()->findOneById($in['id']);
-        if ($seller == null) {
-            $logger->error('seller (id:' . $in['id'] . ') does not exist');
-            return $response->withStatus(404);
-        }
-
-        if ($in['approved']) {
-            // TODO implement
-        } else {
-            // TODO implement
-        }
-
-        return $response->withStatus(200);
     }
 }

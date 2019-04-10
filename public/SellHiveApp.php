@@ -53,7 +53,7 @@ class SellHiveApp extends \DI\Bridge\Slim\App
                 return $twig;
             },
 
-            'errorHandler' => function (ContainerInterface $c) {
+            'phpErrorHandler' => function (ContainerInterface $c) {
                 return function ($request, $response, $exception) use ($c) {
                     $logger = $c->get(LoggerInterface::class);
                     $logger->critical('service failed', ['exception message' => $exception->getMessage(), 'stack trace' => $exception->getTraceAsString()]);

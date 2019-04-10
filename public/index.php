@@ -60,11 +60,16 @@ $app->get('/backend/seller', ['SellerController', 'get']);
 // create new seller
 $app->post('/backend/seller', ['SellerController', 'create']);
 
-// open limit request
-$app->post('/backend/limit/open', ['SellerController', 'openLimitRequest']);
 
-// close limit request (admin only)
-$app->post('/backend/limit/close', ['SellerController', 'closeLimitRequest']);
+/** SellerLimitController **/
+// get item limit for active user
+$app->get('/backend/seller_limit', ['SellerLimitController', 'getLimit']);
+
+// open limit request
+$app->post('/backend/seller_limit/open', ['SellerLimitController', 'openRequest']);
+
+// set seller limit (admin only)
+$app->post('/backend/seller_limit', ['SellerLimitController', 'editLimit']);
 
 
 /** ItemController **/

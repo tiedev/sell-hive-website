@@ -15,6 +15,7 @@ phpmailer:
     debug: false
     host: smtp.host.de
     port: 587
+    auth: true
     encryption: tls
     username: TODO
     password: TODO
@@ -24,6 +25,7 @@ phpmailer:
     subject:
         new: Sell-Hive Password Mail
         remind: Sell-Hive Password Reminder
+        limitRequest: Sell-Hive Limit Request
 
 common:
     baseUrl: TODO

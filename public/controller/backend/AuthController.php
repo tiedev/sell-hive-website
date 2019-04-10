@@ -95,7 +95,7 @@ class AuthController
         }
     }
 
-    public function remind(Request $request, Response $response, Logger $logger, Config $config, MailService $mailService)
+    public function remind(Request $request, Response $response, Logger $logger, Config $config, MailService $mail)
     {
         $logger->debug('=== AuthController:remind(...) ===');
 
@@ -125,8 +125,7 @@ class AuthController
                 $seller->genPassword();
                 $seller->save();
 
-                $mailService->mailNewSeller($seller);
-                $out['mailed'] = $mailService->getMailedSuccessfully();
+                $out['mailed'] = $mail->sendPasswordReminderToSeller($seller);
             }
         }
 

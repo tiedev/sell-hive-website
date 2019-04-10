@@ -1,4 +1,4 @@
-Hallo %name%,
+Hallo {{ seller.name }},
 vielen Dank für Deine Anmeldung.
 
 Mit dieser Registrierung bekommst Du Deinen persönlichen Login zu unserem online Anmeldesystem für Verkäufer auf dem Flohmarkt der Bremer Spiele-Tage.
@@ -12,11 +12,11 @@ Wenn du bis zu 10 Spiele abgeben möchtest, kannst Du das auch am Samstag oder S
 
 Viel Spaß beim Eingeben der Spiele!
 
-Verkäufer-Nummer: %id%
+Verkäufer-Nummer: {{ seller.id }}
 
 **********************
-Login Name: %mail%
-Passwort: %password%
+Login Name: {{ seller.mail }}
+Passwort: {{ seller.password }}
 **********************
 
 Solltest du Fragen haben, kannst Du uns direkt unter 0421-361 3636 erreichen oder per E-Mail an spiele@vhs-bremen.de.

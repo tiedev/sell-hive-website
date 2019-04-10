@@ -9,7 +9,7 @@
 		<column name="password" type="varchar" size="64" required="true"/>
 		<column name="path_secret" type="varchar" size="64" required="true"/>
 		<column name="limit" type="smallint" required="true" defaultValue="0"/>
-		<column name="limit_till" type="timestamp" defaultValue="0"/>
+		<column name="limit_till" type="timestamp"/>
 		<column name="limit_request" type="smallint"/>
 		<behavior name="timestampable"/>
 	</table>
