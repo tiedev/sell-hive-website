@@ -19,11 +19,11 @@ class AuthService
         $isUserInSession = isset($_SESSION['user']);
 
         if ($isUserInSession) {
-            $logger->trace('user session (ID:' . $_SESSION['user'] . ')');
-            return true;
-        } else {
-            $logger->debug('no user session');
+            $this->logger->debug('user session (ID:' . $_SESSION['user'] . ')');
             return false;
+        } else {
+            $this->logger->info('no user session');
+            return true;
         }
     }
 
@@ -34,10 +34,10 @@ class AuthService
         }
 
         if ($_SESSION['user'] == -1) {
-            $logger->trace('is admin session');
+            $this->logger->debug('is admin session');
             return false;
         } else {
-            $logger->debug('no admin session');
+            $this->logger->info('no admin session');
             return true;
         }
     }
