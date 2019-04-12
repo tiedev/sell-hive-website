@@ -5,7 +5,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface as Logger;
 use Slim\Views\Twig as Twig;
 
-class StatisticController
+class SellerManagerController
 {
     public function show(Request $request, Response $response, Logger $logger, Twig $twig, ContextService $contextService)
     {
@@ -13,8 +13,8 @@ class StatisticController
 
         $context = $contextService->getGlobal();
 
-        $context['title'] = 'Statistik';
+        $context['title'] = 'Verkäufer verwalten';
 
-        return $twig->render($response, 'content/statistic.twig', $context);
+        return $twig->render($response, 'content/SellerManager.twig', $context);
     }
 }

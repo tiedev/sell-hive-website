@@ -1,0 +1,90 @@
+<!doctype html>
+
+<h1>{{ title }}</h1>
+
+<br/>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Nachname</th>
+      <th>Vorname</th>
+      <th>E-Mail</th>
+      <th class="text-center"><img src="img/icons/house.png" data-toggle="tooltip" data-html="true" data-placement="top" title="eingetragen / gelabelt"/></th>
+      <th class="text-center"><img src="img/icons/shop.png" data-toggle="tooltip" data-html="true" data-placement="top" title="abgegeben"/></th>
+      <th class="text-center"><img src="img/icons/coins.png" data-toggle="tooltip" data-html="true" data-placement="top" title="verkauft"/></th>
+      <th class="text-center"><img src="img/icons/sum.png" data-toggle="tooltip" data-html="true" data-placement="top" title="eingetragen / gelabelt / abgegeben / verkauft"/></th>
+      <th class="text-center"><img src="img/icons/stop.png" data-toggle="tooltip" data-html="true" data-placement="top" title="limit"/></th>
+      <th class="text-center"><img src="img/icons/road_sign.png" data-toggle="tooltip" data-html="true" data-placement="top" title="limitwunsch"/></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <!-- filled by logic -->
+
+    <tr id="sumRow">
+      <th colspan="4"></th>
+      <td id="sellerStatSumHome" class="text-center">?</td>
+      <td id="sellerStatSumTransfered" class="text-center">?</td>
+      <td id="sellerStatSumSold" class="text-center">?</td>
+      <td class="text-center">
+        <b id="sellerStatSum">?</b>
+      </td>
+      <td id="sellerStatSumLimitActual" class="text-center">?</td>
+      <td id="sellerStatSumLimitRequested" class="text-center">?</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+  function initSellerStatistic(data) {
+    Object.keys(data.details).forEach(function(key) {
+      addSellerRow(key, data.details[key]);
+    });
+    var sumHome = data.sum.items.created + data.sum.items.labeled;
+    var sum = sumHome + data.sum.items.transfered + data.sum.items.sold;
+    $('#sellerStatSumHome').text(sumHome);
+    $('#sellerStatSumTransfered').text(data.sum.items.transfered);
+    $('#sellerStatSumSold').text(data.sum.items.sold);
+    $('#sellerStatSum').text(sum);
+    $('#sellerStatSumLimitActual').text(data.sum.limits.actual);
+    $('#sellerStatSumLimitRequested').text(data.sum.limits.requested);
+  }
+
+  function addSellerRow(id, sellerRowData) {
+    var countItemsHome = sellerRowData.count_items.created + sellerRowData.count_items.labeled;
+    var countItems = countItemsHome + sellerRowData.count_items.transfered + sellerRowData.count_items.sold;
+    var row = '';
+    row += '<tr>';
+    row += '  <td>' + id + '</td>';
+    row += '  <td>' + sellerRowData.last_name + '</td>';
+    row += '  <td>' + sellerRowData.first_name + '</td>';
+    row += '  <td>' + sellerRowData.mail + '</td>';
+    row += '  <td class="text-center">' + countItemsHome + '</td>';
+    row += '  <td class="text-center">' + sellerRowData.count_items.transfered + '</td>';
+    row += '  <td class="text-center">' + sellerRowData.count_items.sold + '</td>';
+    row += '  <td class="text-center"><b>' + countItems + '</b></td>';
+    row += '  <td class="text-center">' + sellerRowData.limit + '</td>';
+    row += '  <td class="text-center">' + sellerRowData.limit_request + '</td>';
+    row += '  <td class="text-center"><img id="editSeller' + id + '" src="img/icons/pencil.png" style="cursor:pointer" data-toggle="tooltip" data-html="true" data-placement="top" title="Verkäufer ' + id + ' bearbeiten"/></td>';
+    row += '</tr>';
+    $(row).insertBefore($('#sumRow'));
+
+    $('#editSeller' + id).on('click', {
+      id: id
+    }, openModalEditSeller);
+
+    $('[data-toggle="tooltip"]').tooltip();
+  }
+
+  function openModalEditSeller(event) {
+    loadModal('{{ frontend.modal.sellerEditor }}/' + event.data.id); // TODO : continue
+  }
+
+  $.ajax({url: '{{ backend.url.sellers }}', method: 'GET', dataType: 'json'}).done(initSellerStatistic);
+
+  $('[data-toggle="tooltip"]').tooltip();
+</script>

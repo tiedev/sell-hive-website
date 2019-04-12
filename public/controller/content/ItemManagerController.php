@@ -47,13 +47,12 @@ class ItemManagerController
         $context['button']['add']['tooltip']['open'] = 'Eingabe bis {0} möglich.';
         $context['button']['add']['tooltip']['closed'] = 'Eingabe ist nicht mehr möglich.';
 
+        $context['button']['limitRequest'] = 'mehr Spiele?';
         $context['button']['edit'] = 'bearbeiten';
         $context['button']['unlabel'] = 'Etikett nochmal?';
         $context['button']['unlabelAll'] = 'alle Etiketten nochmal?';
         $context['button']['delete'] = 'löschen';
         $context['button']['deleteAll'] = 'alle Spiele löschen';
-        $context['button']['openLabelModal'] = 'Etiketten erzeugen (PDF)';
-        $context['button']['openItemListModal'] = 'Abgabeliste erzeugen (PDF)';
 
         return $twig->render($response, 'content/itemManager.twig', $context);
     }

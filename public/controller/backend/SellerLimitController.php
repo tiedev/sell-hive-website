@@ -9,9 +9,9 @@ use Noodlehaus\Config;
 
 class SellerLimitController
 {
-    public function getLimit(Request $request, Response $response, Logger $logger, AuthService $auth, Config $config)
+    public function get(Request $request, Response $response, Logger $logger, AuthService $auth, Config $config)
     {
-        $logger->debug('=== SellerLimitController:openRequest(...) ===');
+        $logger->debug('=== SellerLimitController:get(...) ===');
 
         if ($auth->isNoUser()) {
             return $response->withStatus(403);
@@ -20,8 +20,8 @@ class SellerLimitController
         $out = array();
 
         $seller = SellerQuery::create()->requireOneById($_SESSION['user']);
-        $out['current'] = $seller->getLimt();
-        $out['requested'] = $seller->getLimtReqest();
+        $out['current'] = $seller->getLimit();
+        $out['requested'] = $seller->getLimitRequest();
 
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }
@@ -70,9 +70,9 @@ class SellerLimitController
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }
 
-    public function editLimit(Request $request, Response $response, Logger $logger, AuthService $auth, MailService $mail, InputValidationService $v)
+    public function edit(Request $request, Response $response, Logger $logger, AuthService $auth, MailService $mail, InputValidationService $v)
     {
-        $logger->debug('=== SellerLimitController:editLimit(...) ===');
+        $logger->debug('=== SellerLimitController:edit(...) ===');
 
         if ($auth->isNoAdmin()) {
             return $response->withStatus(403);

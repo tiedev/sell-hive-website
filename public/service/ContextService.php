@@ -23,7 +23,9 @@ class ContextService
         $context['backend']['url']['item'] = $baseUrl . '/backend/item';
         $context['backend']['url']['itemCount'] = $baseUrl . '/backend/item/count';
         $context['backend']['url']['seller'] = $baseUrl . '/backend/seller';
-        $context['backend']['url']['sellerStatistic'] = $baseUrl . '/backend/sellers';
+        $context['backend']['url']['sellerLimitOpen'] = $baseUrl . '/backend/seller/limit/request';
+        $context['backend']['url']['sellerLimit'] = $baseUrl . '/backend/seller/limit';
+        $context['backend']['url']['sellers'] = $baseUrl . '/backend/sellers';
         $context['backend']['url']['pdf']['labels'] = $baseUrl . '/backend/pdf/label/item';
         $context['backend']['url']['pdf']['test'] = $baseUrl . '/backend/pdf/label/test';
         $context['backend']['url']['pdf']['settings'] = $baseUrl . '/backend/pdf/label/settings';
@@ -34,13 +36,15 @@ class ContextService
         $context['frontend']['content']['itemManager'] = $baseUrl . '/content/itemManager';
         $context['frontend']['content']['labelCreator'] = $baseUrl . '/content/labelCreator';
         $context['frontend']['content']['itemListCreator'] = $baseUrl . '/content/itemListCreator';
-        $context['frontend']['content']['statistic'] = $baseUrl . '/content/statistic';
+        $context['frontend']['content']['sellerManager'] = $baseUrl . '/content/sellerManager';
 
         $context['frontend']['modal']['blockedPopUp'] = $baseUrl . '/modal/blockedPopUpModal';
         $context['frontend']['modal']['info'] = $baseUrl . '/modal/infoModal';
-        $context['frontend']['modal']['itemEditor'] = $baseUrl . '/modal/itemEditorModal';
+        $context['frontend']['modal']['itemEditor'] = $baseUrl . '/modal/itemEditor';
         $context['frontend']['modal']['sure'] = $baseUrl . '/modal/sureModal';
         $context['frontend']['modal']['printSettings'] = $baseUrl . '/modal/printSettings';
+        $context['frontend']['modal']['openLimitRequest'] = $baseUrl . '/modal/openLimitRequest';
+        $context['frontend']['modal']['sellerEditor'] = $baseUrl . '/modal/sellerEditor';
 
         return $context;
     }

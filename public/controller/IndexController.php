@@ -20,7 +20,7 @@ class IndexController
         $context['nav']['labelCreator'] = 'Etiketten';
         $context['nav']['itemListCreator'] = 'Abgabe';
 
-        $context['nav']['statistic'] = 'Statistik';
+        $context['nav']['sellerManager'] = 'Verkäufer';
 
         $context['nav']['logout'] = 'logout';
 

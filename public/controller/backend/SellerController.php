@@ -73,14 +73,26 @@ class SellerController
     {
         $logger->debug('=== SellerController:get(...) ===');
 
-        if ($auth->isNoUser()) {
+        if ($auth->isNoAdmin()) {
             return $response->withStatus(403);
+        }
+
+        $sellerId = $request->getAttribute('route')->getArgument('id');
+        if (!v::intVal()->positive()->validate($sellerId)) {
+            $logger->debug('id ' . $sellerId . ' is not valid');
+            return $response->withStatus(400);
         }
 
         $out = array();
 
-        $seller = SellerQuery::create()->requireOneById($_SESSION['user']);
+        $seller = SellerQuery::create()->requireOneById($sellerId);
+        $out['id'] = $seller->getId();
+        $out['last_name'] = $seller->getLastName();
+        $out['first_name'] = $seller->getFirstName();
+        $out['mail'] = $seller->getMail();
         $out['limit'] = $seller->getLimit();
+        $out['limit_till'] = $seller->getLimitTill();
+        $out['limit_request'] = $seller->getLimitRequest() ?: 0;
 
         $logger->debug('output', $out);
 
@@ -112,8 +124,8 @@ class SellerController
             $box['first_name'] = $seller->getFirstName();
             $box['mail'] = $seller->getMail();
             $box['limit'] = $seller->getLimit();
-            $box['limit_request'] = $seller->getLimitRequest();
-            $box['created_at'] = $seller->getCreatedAt();
+            $box['limit_till'] = $seller->getLimitTill();
+            $box['limit_request'] = $seller->getLimitRequest() ?: 0;
 
             $countBox = array();
             $countBox['created'] = ItemQuery::create()->filterBySeller($seller)->filterByLabeled(null, c::ISNULL)->count();
@@ -123,7 +135,7 @@ class SellerController
             $box['count_items'] = $countBox;
 
             $out['sum']['limits']['actual'] += $box['limit'];
-            $out['sum']['limits']['requested'] += $box['limit'];
+            $out['sum']['limits']['requested'] += $box['limit_request'];
             $out['sum']['items']['created'] += $countBox['created'];
             $out['sum']['items']['labeled'] += $countBox['labeled'];
             $out['sum']['items']['transfered'] += $countBox['transfered'];
