@@ -5,7 +5,7 @@
             <connections>
                 <connection id="dev">
                     <adapter>mysql</adapter>
-                    <classname>Propel\Runtime\Connection\ConnectionWrapper</classname>
+                    <classname>Propel\Runtime\Connection\DebugPDO</classname>
                     <dsn><!-- specify in local config 'propel.xml' --></dsn>
                     <user><!-- specify in local config 'propel.xml' --></user>
                     <password><!-- specify in local config 'propel.xml' --></password>

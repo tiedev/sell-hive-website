@@ -8,6 +8,7 @@ use Noodlehaus\Config;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
+use Propel\Runtime\Propel;
 
 class SellHiveApp extends \DI\Bridge\Slim\App
 {
@@ -32,6 +33,9 @@ class SellHiveApp extends \DI\Bridge\Slim\App
                 $stream->setFormatter($formatter);
                 $logger = new Logger('sell-hive');
                 $logger->pushHandler($stream);
+
+                // TODO: this is not the best place but it works for now
+                Propel::getServiceContainer()->setLogger('defaultLogger', $logger);
 
                 return $logger;
             },

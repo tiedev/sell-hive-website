@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="dev" defaultIdMethod="native" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://xsd.propelorm.org/1.6/database.xsd">
 
-	<table name="seller">
+	<table name="seller" identifierQuoting="true">
 		<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
 		<column name="last_name" type="varchar" size="64" required="true"/>
 		<column name="first_name" type="varchar" size="64" required="true"/>
