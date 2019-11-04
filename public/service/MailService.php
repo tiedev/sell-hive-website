@@ -24,7 +24,7 @@ class MailService
 
         $mail->addAddress($seller->getMail(), $seller->getName());
         $mail->Subject = $this->config->get('phpmailer.subject.new');
-        $mail->Body = $this->twig->getEnvironment()->render('mail/SellerWelcome.txt', $this->toContext($seller));
+        $mail->Body = nl2br($this->twig->getEnvironment()->render('mail/SellerWelcome.txt', $this->toContext($seller)));
 
         return $this->send($mail);
     }
@@ -35,7 +35,7 @@ class MailService
 
         $mail->addAddress($seller->getMail(), $seller->getName());
         $mail->Subject = $this->config->get('phpmailer.subject.remind');
-        $mail->Body = $this->twig->getEnvironment()->render('mail/SellerRemindPassword.txt', $this->toContext($seller));
+        $mail->Body = nl2br($this->twig->getEnvironment()->render('mail/SellerRemindPassword.txt', $this->toContext($seller)));
 
         return $this->send($mail);
     }
@@ -46,7 +46,7 @@ class MailService
 
         $mail->addAddress($this->config->get('admin.mail'), 'Admin');
         $mail->Subject = $this->config->get('phpmailer.subject.limitRequest');
-        $mail->Body = $this->twig->getEnvironment()->render('mail/LimitRequestOpened.txt', $this->toContext($seller));
+        $mail->Body = nl2br($this->twig->getEnvironment()->render('mail/LimitRequestOpened.txt', $this->toContext($seller)));
 
         return $this->send($mail);
     }
@@ -57,7 +57,7 @@ class MailService
 
         $mail->addAddress($seller->getMail(), $seller->getName());
         $mail->Subject = $this->config->get('phpmailer.subject.limitRequest');
-        $mail->Body = $this->twig->getEnvironment()->render('mail/LimitRequestClosed.txt', $this->toContext($seller));
+        $mail->Body = nl2br($this->twig->getEnvironment()->render('mail/LimitRequestClosed.txt', $this->toContext($seller)));
 
         return $this->send($mail);
     }
