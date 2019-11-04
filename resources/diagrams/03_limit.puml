@@ -1,0 +1,63 @@
+@startuml
+
+|Frontend|
+start
+
+:"mehr Spiele?" gewählt;
+
+:Kontingent angepasst;
+
+:"Anfrage senden" geklickt;
+
+|Backend|
+:Limit (neu) ist Zahl und >1;
+if () then (nein)
+  |Frontend|
+  :Meldung ausgeben;
+  stop
+else (ja)
+endif
+
+|Backend|
+:Limit (neu) < Anzahl eingetragener Spiele?;
+if () then (ja)
+  |Frontend|
+  :Meldung ausgeben;
+  stop
+else (nein)
+endif
+
+|Backend|
+:Limit (neu) minus Limit (aktuell) ist > LimitMaxStep?;
+note right
+  LimitMaxStep = 50
+endnote
+if () then (ja)
+  |Frontend|
+  :Meldung ausgeben;
+  stop
+else (nein)
+endif
+
+|Backend|
+:Daten übernehmen;
+
+:Limitmail versenden
+@Administrator;
+note right
+  Der Verkäufer <b>{{ seller.name }} ({{ seller.id }})</b> möchte sein Spielelimit von
+
+  <b>{{ seller.limit.current }}</b>
+
+  auf
+
+  <b>{{ seller.limit.requested }}</b>
+
+  ändern, was im <a href="{{ config.baseUrl }}">Administrationsbereich</a> zu bestätigen ist.
+endnote
+
+|Frontend|
+:Dialog schließen;
+stop
+
+@enduml

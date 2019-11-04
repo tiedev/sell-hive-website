@@ -1,0 +1,23 @@
+@startuml
+
+start
+
+repeat
+
+  :Daten eingeben;
+  note right
+    E-Mail
+    Passwort
+  end note
+
+  :Daten übermitteln;
+
+repeat while (Eingaben in Ordnung?) is (nein) not (ja)
+
+:Usersession anlegen;
+
+:Spielemanager anzeigen;
+
+stop
+
+@enduml

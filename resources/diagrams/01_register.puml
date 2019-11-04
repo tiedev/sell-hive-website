@@ -1,0 +1,82 @@
+@startuml
+
+start
+
+repeat
+
+  :Daten eingeben;
+  note right
+    E-Mail
+    Vorname
+    Nachname
+    Wunschkontingent (Wert zwischen 1 und 50)
+    Vertrag per Checkbox akzeptiert
+  end note
+
+  :Daten übermitteln;
+
+repeat while (Eingaben in Ordnung?) is (nein) not (ja)
+
+:Passwort generieren;
+
+:Nutzer anlegen;
+
+if (Standardkontingent >= Wunschkontingent) then (ja)
+
+else (nein)
+
+  :Limitmail versenden
+  @Administrator;
+  note right
+    Der Verkäufer <b>{{ seller.name }} ({{ seller.id }})</b> möchte sein Spielelimit von
+
+    <b>{{ seller.limit.current }}</b>
+
+    auf
+
+    <b>{{ seller.limit.requested }}</b>
+
+    ändern, was im <a href="{{ config.baseUrl }}">Administrationsbereich</a> zu bestätigen ist.
+  endnote
+
+endif
+note left
+  Standardkontingent = 10
+  (bis zum Standardkontingent wird automatisch nach Anmeldung freigegeben)
+endnote
+
+:Bestätigungsmail versenden
+@Verkäufer;
+note right
+  Hallo {{ seller.name }},
+  vielen Dank für Dein Interesse am Flohmarkt.
+
+  Deine Verkäufer-Nummer lautet: {{ seller.id }}
+
+  Mit den folgenden Zugangsdaten kannst Du Dich nun im System einloggen:
+
+  **********************
+  E-Mail: {{ seller.mail }}
+  Passwort: {{ seller.password }}
+  **********************
+
+  {% if seller.limit > 0 and seller.limit > seller.limit_request %}
+  Du kannst bereits {{ seller.limit }} Spiele bis zum {{ seller.limit_till }} erfassen, danach verfällt das Kontingent und muss erneut beantragt werden.
+  Über die Freigabe des von Dir gewünschten Kontingents von {{ seller.limit_request }} Spielen wirst Du in einer separaten E-Mail informiert.
+  {% elseif seller.limit > 0 %}
+  Du kannst {{ seller.limit }} Spiele bis zum {{ seller.limit_till }} erfassen, danach verfällt das Kontingent und muss erneut beantragt werden.
+  {% else %}
+  Leider musst Du mit dem Erfassen noch warten, bis Dein gewünschtes Kontingent von {{ seller.limit_request }} Spielen freigegeben wurde.
+  Du wirst darüber in einer separaten E-Mail informiert.
+  {% endif %}
+
+  Bei Fragen und Problemen kannst Du einfach auf diese E-Mail antworten.
+
+
+  Viele Grüße
+  Dein Bremer Spiele-Tage Flohmarkt Team
+end note
+
+stop
+
+@enduml

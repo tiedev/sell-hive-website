@@ -16,3 +16,4 @@ Corel Auto-Preserve
 /public/vendor
 gradle.properties
 /public/twigcache
+/resources/diagrams/*.png

@@ -1,0 +1,47 @@
+@startuml
+
+start
+
+:Login als Administrator;
+
+:Verkäuferverwaltung öffnen;
+note right
+  Auf dieser Seite gibt es eine Übersicht über alle Limits, Wunschlimits und eingetragene Spiele.
+endnote
+
+:Verkäufer bearbeiten;
+
+if (Kontingent verändert?) then (nein)
+
+else (ja)
+
+  :Limitmail versenden;
+  note right
+    Hallo {{ seller.name }},
+    es gibt Neuigkeiten zu Deiner Kontingent-Anfrage:
+
+    Dein neues Kontingent beträgt <b>{{ seller.limit.current }} Spiele</b>.
+
+    {% if seller.limit.till %}
+    Es ist jedoch nur bis zum {{ seller.limit.till }} gültig, danach wird das Limit auf die Zahl der aktuell eingetragenen Spiele reduziert.
+    {% endif %}
+
+    {% if seller.limit.requested > seller.limit.current  %}
+    Dein Wunschkontingent von {{ seller.limit.requested }} Spielen bleibt vorgemerkt und wird gegebenenfalls später freigeschaltet.
+    {% else %}
+    Eine neue Kontingent-Anfrage ist jederzeit möglich.
+    {% endif %}
+
+    Solltest du Fragen haben, kannst Du uns direkt unter 0421-361 3636 erreichen oder per E-Mail an spiele@vhs-bremen.de.
+
+    Viele Grüße,
+    Dein Bremer Spiele-Tage Team
+  endnote
+
+endif
+
+:Dialog schließen;
+
+stop
+
+@enduml
