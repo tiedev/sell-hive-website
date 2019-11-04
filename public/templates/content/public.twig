@@ -19,8 +19,7 @@
       </p>
 
       <p>
-        Die richtig gekennzeichneten Spiele und weiteren Unterlagen sind am 01.03.19 (Fr.) zwischen 17 und 19 Uhr in der Bremer VHS (Raum 205) abzugeben. Am Samstag oder Sonntag können wir nur dann noch Spiele annehmen (max. 10), wenn (wieder)
-        genügend Platz
+        Die richtig gekennzeichneten Spiele und weiteren Unterlagen sind am 01.03.19 (Fr.) zwischen 17 und 19 Uhr in der Bremer VHS (Raum 205) abzugeben. Am Samstag oder Sonntag können wir nur dann noch Spiele annehmen (max. 10), wenn (wieder) genügend Platz
         auf dem Flohmarkt ist. Auch diese Spiele müssen aber rechtzeitig (s.u.) in der Datenbank eingegeben sein.
       </p>
 
@@ -30,8 +29,7 @@
       </p>
 
       <p>
-        Nach dem Einloggen kannst du deine Spiele in die Datenbank eingeben und später Druckdateien für die Etiketten und Spiele-Listen erzeugen. Die Eingabe der Daten ist nur bis zum 01.03.19/ 6:00 Uhr möglich. Danach sind keine Änderungen und
-        Ausdrucke
+        Nach dem Einloggen kannst du deine Spiele in die Datenbank eingeben und später Druckdateien für die Etiketten und Spiele-Listen erzeugen. Die Eingabe der Daten ist nur bis zum 01.03.19/ 6:00 Uhr möglich. Danach sind keine Änderungen und Ausdrucke
         mehr möglich.
       </p>
 
@@ -77,6 +75,14 @@
           <div class="form-group">
             <input type="text" class="form-control" id="registerLastName" placeholder="{{ register.name.last }}" data-toggle="tooltip" data-placement="left" title="{{ register.name.last }}:">
             <span class="invalid-feedback" id="registerLastNameText"></span>
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" id="registerLimit" placeholder="{{ register.limit }}" data-toggle="tooltip" data-placement="left" title="{{ register.limit }}:">
+            <span class="invalid-feedback" id="registerLimitText"></span>
+          </div>
+          <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="registerContract">
+            <label class="form-check-label" id="registerContractText" for="registerContract">{{ register.contract }}</label>
           </div>
           <button type="submit" class="btn btn-success btn-sm" id="registerButton">{{ register.submit }}</button>
           <button type="submit" class="btn btn-default btn-sm" id="registerRemindButton" style="display:none">{{ login.remind }}</button>
@@ -147,7 +153,9 @@
     $.post('{{ backend.url.seller }}', {
       mail: $('#registerMail').val(),
       firstName: $('#registerFirstName').val(),
-      lastName: $('#registerLastName').val()
+      lastName: $('#registerLastName').val(),
+      limit: $('#registerLimit').val(),
+      contract: $('#registerContract').prop('checked')
     }, function(data) {
 
       if (data.valid) {
@@ -155,6 +163,8 @@
         $('#registerMail').val('');
         $('#registerFirstName').val('');
         $('#registerLastName').val('');
+        $('#registerLimit').val('');
+        $('#registerContract').prop('checked', false);
 
         if (data.mailed) {
           $('#modalContent').load('{{ frontend.modal.info }}/register/success');
@@ -201,6 +211,24 @@
           $('#registerLastNameText').text('');
         }
 
+        if (data.limit === 'invalid') {
+          $('#registerLimit').addClass('is-invalid');
+          $('#registerLimit').removeClass('is-valid');
+          $('#registerLimitText').text('{{ register.invalid.limit }}');
+        } else {
+          $('#registerLimit').addClass('is-valid');
+          $('#registerLimit').removeClass('is-invalid');
+          $('#registerLimitText').text('');
+        }
+
+        if (data.contract === 'invalid') {
+          $('#registerContract').addClass('is-invalid');
+          $('#registerContract').removeClass('is-valid');
+        } else {
+          $('#registerContract').addClass('is-valid');
+          $('#registerContract').removeClass('is-invalid');
+        }
+
       }
     }, 'json');
   }
@@ -232,6 +260,8 @@
   $('#registerMail').keypress(doRegisterByEnter);
   $('#registerFirstName').keypress(doRegisterByEnter);
   $('#registerLastName').keypress(doRegisterByEnter);
+  $('#registerLimit').keypress(doRegisterByEnter);
+  $('#registerContract').keypress(doRegisterByEnter);
 
   $('[data-toggle="tooltip"]').tooltip();
 </script>

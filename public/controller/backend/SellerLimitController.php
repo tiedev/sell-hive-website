@@ -43,11 +43,11 @@ class SellerLimitController
         $out['saved'] = false;
         $out['mailed'] = false;
 
-        $limitRange = $config->get('seller.limitRange');
+        $maxStep = $config->get('seller.limit.maxStep');
         $seller = SellerQuery::create()->requireOneById($_SESSION['user']);
         $itemCount = $seller->countItems();
 
-        if (!v::intVal()->positive()->between($itemCount, $itemCount + $limitRange)->validate($in['limit'])) {
+        if (!v::intVal()->positive()->between($itemCount, $itemCount + $maxStep)->validate($in['limit'])) {
             $out['valid'] = false;
         }
 
@@ -97,7 +97,7 @@ class SellerLimitController
         $seller->setLimitRequest(null);
         $seller->save();
 
-        if (out['request_opened']) {
+        if ($out['request_opened']) {
             $out['mailed'] = $mail->sendLimitInfoToSeller($seller);
         }
 

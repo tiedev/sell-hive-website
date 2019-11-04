@@ -37,7 +37,9 @@ item:
     feeInCent: 50
 
 seller:
-    limitRange: 50
+    limit:
+        maxStep: 50
+        autoAccept: 10
 
 admin:
     active: false

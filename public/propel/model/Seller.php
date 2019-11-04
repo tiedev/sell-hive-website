@@ -25,6 +25,17 @@ class Seller extends BaseSeller
         return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
+    public function initLimit($limit, $autoAccept)
+    {
+        if ($limit > $autoAccept) {
+            $this->setLimit($autoAccept);
+            $this->setLimitRequest($limit);
+        } else {
+            $this->setLimit($limit);
+            $this->setLimitRequest(null);
+        }
+    }
+
     public function genPassword()
     {
         $this->setPassword(Seller::genSecret(8));

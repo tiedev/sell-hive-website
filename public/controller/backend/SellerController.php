@@ -11,7 +11,7 @@ class SellerController
 {
     private $additionalChars = 'ÄÖÜäöüß-';
 
-    public function create(Request $request, Response $response, Logger $logger, MailService $mail)
+    public function create(Request $request, Response $response, Logger $logger, MailService $mail, Config $config)
     {
         $logger->debug('=== SellerController:create(...) ===');
 
@@ -45,6 +45,17 @@ class SellerController
             $out['valid'] = false;
         }
 
+        $maxStep = $config->get('seller.limit.maxStep');
+        if (!v::intVal()->positive()->between(1, $maxStep)->validate($in['limit'])) {
+            $out['limit'] = 'invalid';
+            $out['valid'] = false;
+        }
+
+        if (!v::boolVal()->trueVal()->validate($in['contract'])) {
+            $out['contract'] = 'invalid';
+            $out['valid'] = false;
+        }
+
         if ($out['valid']) {
             $logger->debug('save seller');
 
@@ -52,6 +63,7 @@ class SellerController
             $seller->setLastName($in['lastName']);
             $seller->setFirstName($in['firstName']);
             $seller->setMail($in['mail']);
+            $seller->initLimit($in['limit'], $config->get('seller.limit.autoAccept'));
             $seller->genPassword();
             $seller->genPathSecret();
             $seller->save();
@@ -60,6 +72,11 @@ class SellerController
             $logger->debug('seller saved');
 
             $out['mailed'] = $mail->sendWelcomeToSeller($seller);
+
+            if ($seller->getLimitRequest() > 0) {
+                $logger->info('send limit request');
+                $mail->sendLimitRequestToAdmin($seller);
+            }
         } else {
             $logger->debug('data invalid');
         }
