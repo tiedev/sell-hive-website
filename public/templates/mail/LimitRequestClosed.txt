@@ -1,11 +1,11 @@
 Hallo {{ seller.name }},
 es gibt Neuigkeiten zu Deiner Limit-Anfrage:
 
-Dein Limit beträgt nun <b>{{ seller.limit.current }}</b>.
+Dein neues Limit beträgt nun <b>{{ seller.limit.current }}</b>.
 
 {% if seller.limit.till %}
-Es ist jedoch nur bis zum {{ seller.limit.till }} gültig, danach wird das Limit auf die Zahl der aktuell eingetragenen Spiele reduziert.
-{% endif %}.
+Es ist jedoch nur bis zum {{ seller.limit.till|date('d.m.Y') }} gültig, danach wird das Limit auf die Zahl der aktuell eingetragenen Spiele reduziert.
+{% endif %}
 
 Solltest du Fragen haben, kannst Du uns direkt unter 0421-361 3636 erreichen oder per E-Mail an spiele@vhs-bremen.de.
 

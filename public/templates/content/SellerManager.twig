@@ -67,8 +67,8 @@
     row += '  <td class="text-center">' + sellerRowData.count_items.transfered + '</td>';
     row += '  <td class="text-center">' + sellerRowData.count_items.sold + '</td>';
     row += '  <td class="text-center"><b>' + countItems + '</b></td>';
-    row += '  <td class="text-center">' + sellerRowData.limit + '</td>';
-    row += '  <td class="text-center">' + sellerRowData.limit_request + '</td>';
+    row += '  <td class="text-center" id="sellerLimit' + id + '">' + sellerRowData.limit + '</td>';
+    row += '  <td class="text-center" id="sellerLimitRequest' + id + '">' + sellerRowData.limit_request + '</td>';
     row += '  <td class="text-center"><img id="editSeller' + id + '" src="img/icons/pencil.png" style="cursor:pointer" data-toggle="tooltip" data-html="true" data-placement="top" title="Verkäufer ' + id + ' bearbeiten"/></td>';
     row += '</tr>';
     $(row).insertBefore($('#sumRow'));
@@ -80,8 +80,13 @@
     $('[data-toggle="tooltip"]').tooltip();
   }
 
+  function updateSeller(id, limit, limitRequest) {
+    $('#sellerLimit' + id).text(limit);
+    $('#sellerLimitRequest' + id).text(limitRequest);
+  }
+
   function openModalEditSeller(event) {
-    loadModal('{{ frontend.modal.sellerEditor }}/' + event.data.id); // TODO : continue
+    loadModal('{{ frontend.modal.sellerEditor }}/' + event.data.id);
   }
 
   $.ajax({url: '{{ backend.url.sellers }}', method: 'GET', dataType: 'json'}).done(initSellerStatistic);

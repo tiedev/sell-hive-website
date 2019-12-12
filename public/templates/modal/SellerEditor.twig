@@ -8,11 +8,19 @@
 
 <div class="modal-body">
   <div class="form-group">
+    <label class="control-label" for="limitRequest">{{ limitRequest.label }}</label>
+    <input type="text" class="form-control" id="limitRequest">
+    <div class="invalid-feedback" id="limitRequestInvalid"></div>
+  </div>
+  <div class="form-group">
     <label class="control-label" for="limit">{{ limit.label }}</label>
-    <input type="text" class="form-control" id="limit" placeholder="{{ limit.help }}" maxlength="{{ limit.maxLength }}">
-    <div class="invalid-feedback" id="limitInvalid">
-      <!-- set by logic -->
-    </div>
+    <input type="text" class="form-control" id="limit">
+    <div class="invalid-feedback" id="limitInvalid"></div>
+  </div>
+  <div class="form-group">
+    <label class="control-label" for="limitTill">{{ limitTill.label }}</label>
+    <input type="text" class="form-control" id="limitTill" data-toggle="datepicker">
+    <div class="invalid-feedback" id="limitTillInvalid"></div>
   </div>
 </div>
 
@@ -24,18 +32,35 @@
 <script>
   function saveSeller() {
     $('#modal').modal('hide');
+
     $.ajax({
-      url: '{{ backend.url.sellerLimitOpen }}',
+      url: '{{ backend.url.seller }}/{{ sellerId }}',
       method: 'POST',
       data: {
-        limit: $('#limit').val()
+        limitRequest: $('#limitRequest').val(),
+        limit: $('#limit').val(),
+        limitTill: $.format.date($('#limitTill').datepicker('getDate'), 'yyyy-MM-dd')
       },
       dataType: 'json'
     }).done(saveSellerDone);
   }
 
   function saveSellerDone(data) {
-    if (!data.valid) {
+    if (data.valid) {
+
+      updateSeller({{ sellerId }}, data.seller.limit, data.seller.limitRequest);
+
+    } else {
+
+      if (data.limitRequest === 'invalid') {
+        $('#limitRequest').addClass('is-invalid');
+        $('#limitRequest').removeClass('is-valid');
+        $('#limitRequestInvalid').text('{{ limitRequest.invalid }}');
+      } else {
+        $('#limit').addClass('is-valid');
+        $('#limit').removeClass('is-invalid');
+        $('#limitInvalid').text('');
+      }
 
       if (data.limit === 'invalid') {
         $('#limit').addClass('is-invalid');
@@ -47,15 +72,40 @@
         $('#limitInvalid').text('');
       }
 
+      if (data.limitTill === 'invalid') {
+        $('#limitTill').addClass('is-invalid');
+        $('#limitTill').removeClass('is-valid');
+        $('#limitTillInvalid').text('{{ limitTill.invalid }}');
+      } else {
+        $('#limitTill').addClass('is-valid');
+        $('#limitTill').removeClass('is-invalid');
+        $('#limitTillInvalid').text('');
+      }
+
       $('#modal').modal('show');
 
     }
   }
 
   $.ajax({url: '{{ backend.url.seller }}/{{ sellerId }}', method: 'GET', dataType: 'json'}).done(function(data) {
+    $('#limitRequest').val(data.limit_request);
     $('#limit').val(data.limit);
-    // TODO : continue
+    if (data.limit_till != null) {
+      $('#limitTill').datepicker('setDate', new Date(data.limit_till.date));
+    }
   });
 
   $('#saveSellerButton').on('click', saveSeller);
+
+  $('#limitTill').datepicker({
+    autoclose: true,
+    calendarWeeks: true,
+    clearBtn: true,
+    forceParse: true,
+    format: 'dd.mm.yyyy',
+    language: 'de-DE',
+    startDate: '+1d',
+    todayHighlight: true,
+    weekStart: 1
+  });
 </script>

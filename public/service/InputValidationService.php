@@ -16,14 +16,19 @@ class InputValidationService
         $this->config = $config;
     }
 
-    public function invalidEditSellerLimit($inputArray)
+    public function invalidEditSeller($inputArray)
     {
-        $logger->trace('seller limit close request input array', $inputArray);
+        $this->logger->debug('seller edit request input array', $inputArray);
 
-        $idValidator = v::key('id', v::intVal()->positive());
-        $newLimitValidator = v::key('new_limit', v::intVal()->positive());
+        $tomorrow = new DateTime('tomorrow');
 
-        $validator = v::allOf($idValidator, $newLimitValidator);
+        $limitRequestValidator = v::key('limitRequest', v::intVal()->min(0));
+        $limitValidator = v::key('limit', v::intVal()->min(0));
+        $limitTillValidator = v::key('limitTill', v::optional(v::date()->min($tomorrow)));
+
+        // TODO : require validation that limit is not lower than item count
+
+        $validator = v::allOf($limitRequestValidator, $limitValidator, $limitTillValidator);
 
         try {
             $validator->assert($inputArray);
@@ -31,7 +36,7 @@ class InputValidationService
             return false;
         } catch (NestedValidationException $exception) {
             $this->logger->debug('invalid seller limit close request', $exception->getMessages());
-            return true;
+            return $exception->getMessages();
         }
     }
 }

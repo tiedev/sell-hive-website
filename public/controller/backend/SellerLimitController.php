@@ -69,38 +69,4 @@ class SellerLimitController
 
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }
-
-    public function edit(Request $request, Response $response, Logger $logger, AuthService $auth, MailService $mail, InputValidationService $v)
-    {
-        $logger->debug('=== SellerLimitController:edit(...) ===');
-
-        if ($auth->isNoAdmin()) {
-            return $response->withStatus(403);
-        }
-
-        $in = $request->getParsedBody();
-        if ($v->invalidEditSellerLimit($in)) {
-            return $response->withStatus(400);
-        }
-
-        $seller = SellerQuery::create()->findOneById($in['id']);
-        if ($seller == null) {
-            $logger->error('seller (id:' . $in['id'] . ') does not exist');
-            return $response->withStatus(404);
-        }
-
-        $out = array();
-        $out['request_opened'] = $seller->getLimitRequest() > 0;
-        $out['mailed'] = false;
-
-        $seller->setLimit($in['new_limit']);
-        $seller->setLimitRequest(null);
-        $seller->save();
-
-        if ($out['request_opened']) {
-            $out['mailed'] = $mail->sendLimitInfoToSeller($seller);
-        }
-
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
-    }
 }

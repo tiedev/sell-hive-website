@@ -17,10 +17,14 @@ class SellerEditorModalController
 
         $context['title'] = 'Verkäufer bearbeiten';
 
-        $context['limit']['label'] = 'Spielename';
-        $context['limit']['help'] = 'gültige Zeichen (A-Za-z0-9 /_+&.-), max. 30 Zeichen';
-        $context['limit']['maxLength'] = '4';
+        $context['limitRequest']['label'] = 'Limitwunsch';
+        $context['limitRequest']['invalid'] = 'Es sind ausschließlich kleine und große Buchstaben, Zahlen, einige Sonderzeichen und Leerzeichen zulässig.';
+
+        $context['limit']['label'] = 'Limit';
         $context['limit']['invalid'] = 'Es sind ausschließlich kleine und große Buchstaben, Zahlen, einige Sonderzeichen und Leerzeichen zulässig.';
+
+        $context['limitTill']['label'] = 'gültig bis';
+        $context['limitTill']['invalid'] = 'Es sind ausschließlich kleine und große Buchstaben, Zahlen, einige Sonderzeichen und Leerzeichen zulässig.';
 
         $context['submit'] = 'abschicken';
         $context['cancel'] = 'abbrechen';

@@ -61,6 +61,9 @@ $app->get('/backend/sellers', ['SellerController', 'list']);
 // get seller info for specific user (admin only)
 $app->get('/backend/seller/{id:[0-9]+}', ['SellerController', 'get']);
 
+// set seller limit (admin only)
+$app->post('/backend/seller/{id:[0-9]+}', ['SellerController', 'edit']);
+
 // create new seller
 $app->post('/backend/seller', ['SellerController', 'create']);
 
@@ -69,11 +72,8 @@ $app->post('/backend/seller', ['SellerController', 'create']);
 // get item limit for active user
 $app->get('/backend/seller/limit', ['SellerLimitController', 'get']);
 
-// set seller limit (admin only)
-$app->post('/backend/seller/limit', ['SellerLimitController', 'edit']);
-
 // open limit request
-$app->post('/backend/seller/limit/request', ['SellerLimitController', 'openRequest']);
+$app->post('/backend/seller/limitRequest', ['SellerLimitController', 'openRequest']);
 
 
 /** ItemController **/

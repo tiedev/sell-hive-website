@@ -116,6 +116,53 @@ class SellerController
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }
 
+    public function edit(Request $request, Response $response, Logger $logger, AuthService $auth, MailService $mail, InputValidationService $v)
+    {
+        $logger->debug('=== SellerController:edit(...) ===');
+
+        if ($auth->isNoAdmin()) {
+            return $response->withStatus(403);
+        }
+
+        $in = $request->getParsedBody();
+        $messages = $v->invalidEditSeller($in);
+        if ($messages) {
+            // TODO : give messages to client
+            return $response->withStatus(400);
+        }
+
+        $sellerId = $request->getAttribute('route')->getArgument('id');
+        if (!v::intVal()->positive()->validate($sellerId)) {
+            $logger->debug('id ' . $sellerId . ' is not valid');
+            return $response->withStatus(400);
+        }
+
+        $seller = SellerQuery::create()->findOneById($sellerId);
+        if ($seller == null) {
+            $logger->error('seller (id:' . $sellerId . ') does not exist');
+            return $response->withStatus(404);
+        }
+
+        $out = array();
+        $out['limit_changed'] = $seller->getLimit() != $in['limit'];
+        $out['mailed'] = false;
+
+        $seller->setLimitRequest($in['limitRequest']);
+        $seller->setLimit($in['limit']);
+        $seller->setLimitTill($in['limitTill']);
+        $seller->save();
+
+        if ($out['limit_changed']) {
+            $out['mailed'] = $mail->sendLimitInfoToSeller($seller);
+        }
+
+        $out['valid'] = true;
+        $out['seller']['limitRequest'] = $seller->getLimitRequest();
+        $out['seller']['limit'] = $seller->getLimit();
+
+        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+    }
+
     public function list(Request $request, Response $response, Logger $logger, AuthService $auth)
     {
         $logger->debug('=== SellerController:list(...) ===');
