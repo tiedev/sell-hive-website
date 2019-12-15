@@ -39,6 +39,8 @@
   </tbody>
 </table>
 
+<!-- TODO : submit with enter -->
+
 <script>
   function initSellerStatistic(data) {
     Object.keys(data.details).forEach(function(key) {
@@ -67,8 +69,17 @@
     row += '  <td class="text-center">' + sellerRowData.count_items.transfered + '</td>';
     row += '  <td class="text-center">' + sellerRowData.count_items.sold + '</td>';
     row += '  <td class="text-center"><b>' + countItems + '</b></td>';
-    row += '  <td class="text-center" id="sellerLimit' + id + '">' + sellerRowData.limit + '</td>';
-    row += '  <td class="text-center" id="sellerLimitRequest' + id + '">' + sellerRowData.limit_request + '</td>';
+    if (sellerRowData.limit_till) {
+      var limitTill = $.format.date(sellerRowData.limit_till.date, 'dd.MM.yyyy');
+      row += '  <td class="text-center"><span id="sellerLimit' + id + '" class="badge badge-pill badge-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="bis ' + limitTill + '">' + sellerRowData.limit + '</span></td>';
+    } else {
+      row += '  <td class="text-center"><span id="sellerLimit' + id + '">' + sellerRowData.limit + '</span></td>';
+    }
+    if (sellerRowData.limit_request > 0) {
+      row += '  <td class="text-center"><span id="sellerLimitRequest' + id + '" class="badge badge-pill badge-warning">' + sellerRowData.limit_request + '</span></td>';
+    } else {
+      row += '  <td class="text-center"><span id="sellerLimitRequest' + id + '">' + sellerRowData.limit_request + '</span></td>';
+    }
     row += '  <td class="text-center"><img id="editSeller' + id + '" src="img/icons/pencil.png" style="cursor:pointer" data-toggle="tooltip" data-html="true" data-placement="top" title="Verkäufer ' + id + ' bearbeiten"/></td>';
     row += '</tr>';
     $(row).insertBefore($('#sumRow'));
@@ -80,9 +91,24 @@
     $('[data-toggle="tooltip"]').tooltip();
   }
 
-  function updateSeller(id, limit, limitRequest) {
+  function updateSeller(id, limitRequest, limit, limitTill) {
     $('#sellerLimit' + id).text(limit);
+    if (limitTill) {
+      $('#sellerLimit' + id).attr('class', 'badge badge-pill badge-secondary');
+      $('#sellerLimit' + id).attr('title', 'bis ' + $.format.date(limitTill.date, 'dd.MM.yyyy'));
+      $('#sellerLimit' + id).tooltip('dispose');
+      $('#sellerLimit' + id).tooltip();
+    } else {
+      $('#sellerLimit' + id).attr('class', '');
+      $('#sellerLimit' + id).attr('title', '');
+      $('#sellerLimit' + id).tooltip('dispose');
+    }
     $('#sellerLimitRequest' + id).text(limitRequest);
+    if (limitRequest > 0) {
+      $('#sellerLimitRequest' + id).attr('class', 'badge badge-pill badge-warning');
+    } else {
+      $('#sellerLimitRequest' + id).attr('class', '');
+    }
   }
 
   function openModalEditSeller(event) {

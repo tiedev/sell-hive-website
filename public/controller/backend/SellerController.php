@@ -157,8 +157,9 @@ class SellerController
         }
 
         $out['valid'] = true;
-        $out['seller']['limitRequest'] = $seller->getLimitRequest();
+        $out['seller']['limit_request'] = $seller->getLimitRequest();
         $out['seller']['limit'] = $seller->getLimit();
+        $out['seller']['limit_till'] = $seller->getLimitTill();
 
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }

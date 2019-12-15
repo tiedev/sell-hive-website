@@ -48,7 +48,7 @@
   function saveSellerDone(data) {
     if (data.valid) {
 
-      updateSeller({{ sellerId }}, data.seller.limit, data.seller.limitRequest);
+      updateSeller({{ sellerId }}, data.seller.limit_request, data.seller.limit, data.seller.limit_till);
 
     } else {
 
