@@ -35,8 +35,9 @@ class Item extends BaseItem
 
     public function getBarcodeId()
     {
-        // TODO get prefix by logic
-        return 'B' . $this->getId();
+        $year = date("Y");
+        $prefixOfTheYear = chr($year - 1953);
+        return $prefixOfTheYear . $this->getId();
     }
 
     public function getNameForPdf()
