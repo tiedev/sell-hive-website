@@ -40,6 +40,7 @@ seller:
     limit:
         maxStep: 50
         autoAccept: 10
+        initTill: 2020-02-16
 
 admin:
     active: false

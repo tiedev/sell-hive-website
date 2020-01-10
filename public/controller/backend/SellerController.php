@@ -63,7 +63,7 @@ class SellerController
             $seller->setLastName($in['lastName']);
             $seller->setFirstName($in['firstName']);
             $seller->setMail($in['mail']);
-            $seller->initLimit($in['limit'], $config->get('seller.limit.autoAccept'));
+            $seller->initLimit($in['limit'], $config->get('seller.limit.autoAccept'), $config->get('seller.limit.initTill'));
             $seller->genPassword();
             $seller->genPathSecret();
             $seller->save();

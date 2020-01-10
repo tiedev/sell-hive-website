@@ -26,7 +26,7 @@ class Seller extends BaseSeller
         return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
-    public function initLimit($limit, $autoAccept)
+    public function initLimit($limit, $autoAccept, $limitTill)
     {
         if ($limit > $autoAccept) {
             $this->setLimit($autoAccept);
@@ -34,6 +34,9 @@ class Seller extends BaseSeller
         } else {
             $this->setLimit($limit);
             $this->setLimitRequest(null);
+        }
+        if (!empty($limitTill)) {
+            $this->setLimitTill($limitTill);
         }
     }
 
