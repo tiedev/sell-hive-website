@@ -24,9 +24,17 @@ class ItemListPdf extends UserPdf
 
         $this->addHeader($pdf);
 
+        $fee = 0;
+
         foreach ($this->items as $item) {
             if ($i%2) {
                 $pdf->Rect(0, 21+$i*6.5, 300, 6.5, 'F');
+            }
+
+            if($x > 30) {
+              $fee += 0.80;
+            } else {
+              $fee += 0.5;
             }
 
             $pdf->SetXY(12, 20+$i*6.5);
@@ -52,7 +60,7 @@ class ItemListPdf extends UserPdf
         }
 
         $pdf->SetXY(20, 280);
-        $pdf->Cell(40, 10, utf8_decode('Einstellgebühr alle Spiele: ' . sprintf("%01.2f", (($x-1)*0.5))) . ' ' . chr(128));
+        $pdf->Cell(40, 10, utf8_decode('Einstellgebühr alle Spiele: ' . sprintf("%01.2f", $fee) . ' ' . chr(128));
 
         return $this->closePdf($pdf);
     }
