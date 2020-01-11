@@ -13,10 +13,6 @@ class PublicController
 
         $context = $contextService->getGlobal();
 
-        $context['text']['event']['number'] = '12';
-        $context['text']['event']['year'] = '2019';
-        $context['text']['event']['friday'] = '1.3.16 (Fr.)';
-
         $context['register']['title'] = 'Registrieren';
         $context['register']['mail'] = 'E-Mail';
         $context['register']['name']['first'] = 'Vorname';

@@ -1,13 +1,15 @@
 Hallo {{ seller.name }},
-es gibt Neuigkeiten zu Deiner Limit-Anfrage:
+es gibt Neuigkeiten zu Deinem Kontingent:
 
-Dein neues Limit beträgt nun <b>{{ seller.limit.current }}</b>.
+Dein neues Kontingent beträgt nun <b>{{ seller.limit.current }}</b> Spiele.
 
 {% if seller.limit.till %}
-Es ist jedoch nur bis zum {{ seller.limit.till|date('d.m.Y') }} gültig, danach wird das Limit auf die Zahl der aktuell eingetragenen Spiele reduziert.
+Es ist jedoch nur bis zum {{ seller.limit.till|date('d.m.Y') }} gültig, danach wird das Kontingent auf die Zahl der aktuell eingetragenen Spiele reduziert.
 {% endif %}
 
-Solltest du Fragen haben, kannst Du uns direkt unter 0421-361 3636 erreichen oder per E-Mail an spiele@vhs-bremen.de.
+Bei Fragen kannst Du auf diese E-Mail antworten oder an spiele@vhs-bremen.de schreiben.
+Wir bitten um Verständnis, dass das Postfach nur einmal am Tag bearbeitet wird.
+
 
 Viele Grüße,
 Dein Bremer Spiele-Tage Team
