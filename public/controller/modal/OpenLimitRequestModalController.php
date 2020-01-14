@@ -15,10 +15,10 @@ class OpenLimitRequestModalController
 
         $context['title'] = 'Mehr Spiele?';
 
-        $context['limit']['label'] = 'Spielename';
-        $context['limit']['help'] = 'gültige Zeichen (A-Za-z0-9 /_+&.-), max. 30 Zeichen';
+        $context['limit']['label'] = 'Neues Wunschkontingent';
+        $context['limit']['help'] = 'min. Anzahl eingetragene Spiele';
         $context['limit']['maxLength'] = '4';
-        $context['limit']['invalid'] = 'Es sind ausschließlich kleine und große Buchstaben, Zahlen, einige Sonderzeichen und Leerzeichen zulässig.';
+        $context['limit']['invalid'] = 'Der Wert muss mindestens der Anzahl der eingetragenen Spiele entsprechen.';
 
         $context['submit'] = 'abschicken';
         $context['cancel'] = 'abbrechen';

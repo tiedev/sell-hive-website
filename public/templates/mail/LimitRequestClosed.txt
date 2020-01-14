@@ -1,4 +1,4 @@
-Hallo {{ seller.name }},
+{% autoescape %}Hallo {{ seller.name }},
 es gibt Neuigkeiten zu Deinem Kontingent:
 
 Dein neues Kontingent beträgt nun <b>{{ seller.limit.current }}</b> Spiele.
@@ -13,3 +13,4 @@ Wir bitten um Verständnis, dass das Postfach nur einmal am Tag bearbeitet wird.
 
 Viele Grüße,
 Dein Bremer Spiele-Tage Team
+{% endautoescape %}

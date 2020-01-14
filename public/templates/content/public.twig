@@ -6,15 +6,8 @@
 
       <h2>13. Bremer Spiele-Tage – Flohmarkt</h2>
 
-      <div class="alert alert-warning" role="alert">
-        <h4 class="alert-heading">Testbetrieb<img src="img/icons/error.png" class="float-right"/></h4>
-        <p>
-          Wir befinden uns aktuell im Testbetrieb.<br/>Nach Beendigung des Testbetriebs werden
-          <strong>alle</strong>
-          eingetragenen
-          <strong>Daten und Accounts gelöscht</strong>!
-        </p>
-      </div>
+      <!-- <div class="alert alert-warning" role="alert"> <h4 class="alert-heading">Testbetrieb<img src="img/icons/error.png" class="float-right"/></h4> <p> Wir befinden uns aktuell im Testbetrieb.<br/>Nach Beendigung des Testbetriebs werden
+      <strong>alle</strong> eingetragenen <strong>Daten und Accounts gelöscht</strong>! </p> </div> -->
 
       <p>
         Wenn du auf dem Spiele-Flohmarkt der 13. Bremer Spiele-Tage am 07. und 08. März 2020 deine Spiele zum Verkauf abgeben möchtest, musst du vorher alle Spiele in dieser Datenbank eingeben. Die Anzahl der abzugebenden Spiele ist begrenzt (siehe unten).
@@ -32,11 +25,6 @@
         Nach der ersten Anmeldung wird für Dich sofort ein Kontingent von 10 Spielen freigegeben. Möchtest Du mehr Spiele abgeben, kannst Du nach der Anmeldung ein Wunschkontingent angeben. Je nach Verfügbarkeit erhältst Du - spätestens am Folgetag - eine
         Freigabe für weitere Spiele (Maximum zunächst 100 Spiele, kann später ggf. angepasst werden). Für alle Freigaben gilt: Die Eingabe muss bis zum mitgeteilten Zeitpunkt erfolgen, anschließend sinkt die Freigabe auf die bis zu dem vorgegebenen Zeitpunkt
         eingegebene Anzahl an Spielen.
-      </p>
-
-      <p>
-        Dieses Verfahren ist verbindlich für alle Verkäufer*innen. Die richtig gekennzeichneten Spiele und weiteren Unterlagen sind am 6.3.20 (Fr.), zwischen 17 und 19 Uhr in der Bremer VHS (Raum 405) abzugeben. Am Samstag oder Sonntag nehmen wir nur noch
-        bis zu 10 Spiele pro Person an - sofern genügend Platz auf dem Flohmarkt ist.
       </p>
 
       <p>
@@ -93,7 +81,7 @@
           </div>
           <div class="form-group form-check">
             <input type="checkbox" class="form-check-input" id="registerContract">
-            <label class="form-check-label" id="registerContractText" for="registerContract">{{ register.contract }}</label>
+            <label class="form-check-label" id="registerContractText" for="registerContract">{{ register.contract|raw }}</label>
           </div>
           <button type="submit" class="btn btn-success btn-sm" id="registerButton">{{ register.submit }}</button>
           <button type="submit" class="btn btn-default btn-sm" id="registerRemindButton" style="display:none">{{ login.remind }}</button>

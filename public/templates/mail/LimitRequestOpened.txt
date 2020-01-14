@@ -1,4 +1,4 @@
-Der Verkäufer <b>{{ seller.name }} ({{ seller.id }})</b> möchte sein Spielelimit von
+{% autoescape %}Der Verkäufer <b>{{ seller.name }} ({{ seller.id }})</b> möchte sein Spielelimit von
 
 <b>{{ seller.limit.current }}</b>
 
@@ -7,3 +7,4 @@ auf
 <b>{{ seller.limit.requested }}</b>
 
 ändern, was im <a href="{{ config.baseUrl }}">Administrationsbereich</a> zu bestätigen ist.
+{% endautoescape %}

@@ -16,7 +16,7 @@ class ItemListCreatorController
         $context['button'] = 'Spieleliste erzeugen (PDF)';
 
         $context['link']['text'] = 'Vorlagen herunterladen (PDF)';
-        $context['link']['url'] = 'https://bremerspieletage.de/wp-content/uploads/2019/02/Flohmarkt19_Datenblatt_und_Beleg.pdf';
+        $context['link']['url'] = 'data/Flohmarkt20-Datenblatt.und.Beleg.pdf';
 
         return $twig->render($response, 'content/itemListCreator.twig', $context);
     }

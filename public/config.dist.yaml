@@ -38,7 +38,7 @@ item:
 
 seller:
     limit:
-        maxStep: 50
+        maxStep: 300
         autoAccept: 10
         initTill: 2020-02-16
 

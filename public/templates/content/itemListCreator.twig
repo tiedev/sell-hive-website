@@ -2,7 +2,7 @@
 
 <h1>{{ title }}</h1>
 
-<br />
+<br/>
 
 <div class="card-deck">
 
@@ -16,7 +16,7 @@
 
       <button type="submit" class="btn btn-primary" id="generateItemList">{{ button }}</button>
 
-      <br /><br />
+      <br/><br/>
 
       <p class="card-text">
         Und das Flomarkt Datenblatt, sowie den Abgabebeleg:
@@ -32,18 +32,28 @@
     <div class="card-body">
 
       <p class="card-text">
-        <b>Abgabe</b> der Spiele samt vorausgefüllter Formulare<br /> am <b>01.03.2019</b> (Freitag)<br /> von <b>17 bis 19 Uhr</b><br /> im Raum <b>R 205</b> (2te Etage).
+        <b>Abgabe</b>
+        der Spiele samt vorausgefüllter Formulare<br/>
+        am
+        <b>06.03.2019</b>
+        (Freitag)<br/>
+        von
+        <b>17 bis 19 Uhr</b><br/>
+        im Raum
+        <b>R 407</b>
+        (4te Etage).
       </p>
 
-      <br />
+      <br/>
 
-      <img src="img/room.jpg" class="mx-auto d-block" />
+      <img src="img/room_blurred.png" class="mx-auto d-block"/>
 
-      <br />
+      <br/>
 
       <p class="card-text">
-        <b>Weniger als 10 Spiele?</b><br /> Diese können auch während der Veranstaltung direkt bei der Kasse abegeben werden. Allerdings nur, sofern die Spiele online eingetragen wurden und die Kapazität des Flohmarkts dies zu lässt. Außerdem sind
-        längere Wartezeiten, je nach Andrang, leider nicht auszuschließen.
+        <b>Weniger als 10 Spiele?</b><br/>
+        Diese können auch während der Veranstaltung direkt bei der Kasse abegeben werden. Allerdings nur, sofern die Spiele online eingetragen wurden und die Kapazität des Flohmarkts dies zu lässt. Außerdem sind längere Wartezeiten, je nach Andrang, leider
+        nicht auszuschließen.
       </p>
 
     </div>
@@ -53,11 +63,7 @@
 
 <script>
   function generateItemList() {
-    $.ajax({
-      url: '{{ backend.url.pdf.itemlist }}',
-      method: 'GET',
-      dataType: 'json'
-    }).done(generateItemListDone);
+    $.ajax({url: '{{ backend.url.pdf.itemlist }}', method: 'GET', dataType: 'json'}).done(generateItemListDone);
   }
 
   function generateItemListDone(data) {

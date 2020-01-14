@@ -1,4 +1,4 @@
-Hallo {{ seller.name }},
+{% autoescape %}Hallo {{ seller.name }},
 vielen Dank für Deine Anmeldung.
 
 Mit dieser Registrierung bekommst Du Deinen persönlichen Login zu unserem online Anmeldesystem für Verkäufer auf dem Flohmarkt der Bremer Spiele-Tage.
@@ -10,7 +10,7 @@ Dein aktuelles Kontingent beträgt {{ seller.limit.current }} Spiele.
 Es ist bis zum {{ seller.limit.till|date('d.m.Y') }} gültig, danach wird das Limit auf die Zahl der aktuell eingetragenen Spiele reduziert.
 {% endif %}
 {% if seller.limit.requested > seller.limit.current %}
-Sobald Dein Kontingentwunsch bearbeitet wurde, wirst du benachrichtigt.
+Sobald Dein Kontingentwunsch ({{ seller.limit.requested }}) bearbeitet wurde, wirst du benachrichtigt.
 {% endif %}
 
 Viel Spaß beim Eingeben der Spiele!
@@ -28,3 +28,4 @@ Wir bitten um Verständnis, dass das Postfach nur einmal am Tag bearbeitet wird.
 
 Viele Grüße,
 Dein Bremer Spiele-Tage Team
+{% endautoescape %}
