@@ -75,6 +75,9 @@ $app->get('/backend/seller/limit', ['SellerLimitController', 'get']);
 // open limit request
 $app->post('/backend/seller/limitRequest', ['SellerLimitController', 'openRequest']);
 
+// reset limits if limit till is reached
+$app->delete('/backend/seller/limit/{secret}', ['SellerLimitController', 'resetLimits']);
+
 
 /** ItemController **/
 // count items for active user
