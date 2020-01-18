@@ -21,6 +21,7 @@ class ContextService
         $context['backend']['url']['auth'] = $baseUrl . '/backend/auth';
         $context['backend']['url']['remind'] = $baseUrl . '/backend/auth/remind';
         $context['backend']['url']['item'] = $baseUrl . '/backend/item';
+        $context['backend']['url']['items'] = $baseUrl . '/backend/items';
         $context['backend']['url']['itemCount'] = $baseUrl . '/backend/item/count';
         $context['backend']['url']['seller'] = $baseUrl . '/backend/seller';
         $context['backend']['url']['sellerLimitOpen'] = $baseUrl . '/backend/seller/limitRequest';
@@ -37,6 +38,7 @@ class ContextService
         $context['frontend']['content']['labelCreator'] = $baseUrl . '/content/labelCreator';
         $context['frontend']['content']['itemListCreator'] = $baseUrl . '/content/itemListCreator';
         $context['frontend']['content']['sellerManager'] = $baseUrl . '/content/sellerManager';
+        $context['frontend']['content']['itemTable'] = $baseUrl . '/content/itemTable';
 
         $context['frontend']['modal']['blockedPopUp'] = $baseUrl . '/modal/blockedPopUpModal';
         $context['frontend']['modal']['info'] = $baseUrl . '/modal/infoModal';

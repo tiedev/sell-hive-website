@@ -1,0 +1,56 @@
+<!doctype html>
+
+<h1>{{ title }}</h1>
+
+<br/>
+
+<table id="itemTable"></table>
+
+<script>
+  $.ajax({url: '{{ backend.url.sellers }}', method: 'GET', dataType: 'json'}).done(initSellerStatistic);
+
+  function priceFormatter(value) {
+    return value + ' €';
+  }
+
+  function newFormatter(value) {
+    return value
+      ? 'ja'
+      : 'nein';
+  }
+
+  $('#itemTable').bootstrapTable({
+    url: '{{ backend.url.items }}',
+    pagination: false,
+    search: true,
+    columns: [
+      {
+        field: 'id',
+        title: '#',
+        sortable: true,
+        halign: 'center',
+        align: 'center'
+      }, {
+        field: 'name',
+        title: 'Titel',
+        sortable: true
+      }, {
+        field: 'publisher',
+        title: 'Verlag',
+        sortable: true
+      }, {
+        field: 'price',
+        title: 'Preis',
+        sortable: true,
+        formatter: 'priceFormatter',
+        align: 'right'
+      }, {
+        field: 'boxed_as_new',
+        title: 'Neu',
+        formatter: 'newFormatter',
+        halign: 'center',
+        align: 'center'
+      }
+    ]
+  })
+</script>

@@ -23,6 +23,8 @@ $app->get('/content/itemListCreator', ['ItemListCreatorController', 'show']);
 
 $app->get('/content/sellerManager', ['SellerManagerController', 'show']);
 
+$app->get('/content/itemTable', ['ItemTableController', 'show']);
+
 
 // === Modals ===
 $app->post('/modal/blockedPopUpModal', ['BlockedPopUpModalController', 'show']);
@@ -84,7 +86,10 @@ $app->delete('/backend/seller/limit/{secret}', ['SellerLimitController', 'resetL
 $app->get('/backend/item/count', ['ItemController', 'getCount']);
 
 // list items for active user
-$app->get('/backend/item', ['ItemController', 'listItems']);
+$app->get('/backend/item', ['ItemController', 'listUserItems']);
+
+// list all items
+$app->get('/backend/items', ['ItemController', 'listAllItems']);
 
 // create new item for active user
 $app->post('/backend/item', ['ItemController', 'createItem']);

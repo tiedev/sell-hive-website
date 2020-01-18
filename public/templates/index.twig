@@ -21,6 +21,9 @@
 
     <!-- datepicker style -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha384-5IbgsdqrjF6rAX1mxBZkKRyUOgEr0/xCGkteJIaRKpvW0Ag0tf6lru4oL2ZhcMvo" crossorigin="anonymous">
+
+    <!-- table style -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.15.5/bootstrap-table.min.css" integrity="sha256-ok93TPAnFIabkUGZJ1a3U+xTyGK1IIP1/FpauAIKEo4=" crossorigin="anonymous"/>
   </head>
 
   <body>
@@ -50,6 +53,9 @@
           </li>
           <li class="nav-item" id="navSellerManager" style="display: none;">
             <a class="nav-link" style="cursor: pointer;">{{ nav.sellerManager }}</a>
+          </li>
+          <li class="nav-item" id="navItemTable" style="display: none;">
+            <a class="nav-link" style="cursor: pointer;">{{ nav.itemTable }}</a>
           </li>
         </ul>
         <ul class="navbar-nav justify-content-end">
@@ -113,6 +119,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha384-duAtk5RV7s42V6Zuw+tRBFcqD8RjRKw6RFnxmxIj1lUGAQJyum/vtcUQX8lqKQjp" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.de.min.js" integrity="sha384-aVi8nZhw9DTQvR3jjVodS0dWP9s8PSi9QojbAzeoYqnJshk9jYhGuK+NM7ahlbSh" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-dateFormat/1.0/jquery.dateFormat.min.js" integrity="sha256-YVu3IT7nGTfxru7MQiv/TgOnffsbPuvXHRXuw1KzxWc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.15.5/bootstrap-table.min.js" integrity="sha256-i6G9CgAfmcq/7vYTD52U9501fb2XJiFGPMRGKn0QV7E=" crossorigin="anonymous"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="js/itemState.js"></script>
     <script>
@@ -126,6 +133,7 @@
 
       function adminIsLoggendIn() {
         $('#navSellerManager').show();
+        $('#navItemTable').show();
         $('#navLogout').show();
       }
 
@@ -141,6 +149,7 @@
         $('#navLabelCreator').hide();
         $('#navItemListCreator').hide();
         $('#navSellerManager').hide();
+        $('#navItemTable').hide();
         $('#navLogout').hide();
       }
 
@@ -177,6 +186,13 @@
         } else {
           $('#navSellerManager').removeClass('active');
         }
+
+        if (identifier === 'itemTable') {
+          $('#indexContent').load('{{ frontend.content.itemTable }}');
+          $('#navItemTable').addClass('active');
+        } else {
+          $('#navItemTable').removeClass('active');
+        }
       }
 
       function loadSureModal(type, handleYesClick, handleNoClick) {
@@ -211,6 +227,10 @@
 
       $('#navSellerManager').on('click', function() {
         loadContent('sellerManager');
+      });
+
+      $('#navItemTable').on('click', function() {
+        loadContent('itemTable');
       });
 
       $('#navLogout').on('click', function() {

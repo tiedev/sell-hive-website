@@ -21,6 +21,7 @@ class IndexController
         $context['nav']['itemListCreator'] = 'Abgabe';
 
         $context['nav']['sellerManager'] = 'Verkäufer';
+        $context['nav']['itemTable'] = 'Suche';
 
         $context['nav']['logout'] = 'logout';
 

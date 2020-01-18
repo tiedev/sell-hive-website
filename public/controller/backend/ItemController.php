@@ -33,9 +33,9 @@ class ItemController
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }
 
-    public function listItems(Request $request, Response $response, Logger $logger)
+    public function listUserItems(Request $request, Response $response, Logger $logger)
     {
-        $logger->debug('=== ItemController:listItems(...) ===');
+        $logger->debug('=== ItemController:listUserItems(...) ===');
 
         if (!isset($_SESSION['user'])) {
             $logger->debug('no user session');
@@ -47,6 +47,27 @@ class ItemController
         $out = array();
 
         $items = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->find();
+
+        foreach ($items as $item) {
+            $out[] = $item->toFlatArray();
+        }
+
+        $logger->debug('output', $out);
+
+        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+    }
+
+    public function listAllItems(Request $request, Response $response, Logger $logger, AuthService $auth)
+    {
+        $logger->debug('=== ItemController:listAllItems(...) ===');
+
+        if ($auth->isNoAdmin()) {
+            return $response->withStatus(403);
+        }
+
+        $out = array();
+
+        $items = ItemQuery::create()->find();
 
         foreach ($items as $item) {
             $out[] = $item->toFlatArray();
