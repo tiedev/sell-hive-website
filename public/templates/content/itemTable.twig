@@ -9,8 +9,12 @@
 <script>
   $.ajax({url: '{{ backend.url.sellers }}', method: 'GET', dataType: 'json'}).done(initSellerStatistic);
 
-  function priceFormatter(value) {
-    return value + ' €';
+  function priceFormatter(cents) {
+    var euros = cents / 100;
+    return euros.toLocaleString("de-DE", {
+      style: "currency",
+      currency: "EUR"
+    });
   }
 
   function newFormatter(value) {
