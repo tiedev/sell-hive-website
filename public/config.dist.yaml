@@ -17,21 +17,21 @@ phpmailer:
     port: 587
     auth: true
     encryption: tls
-    username: TODO
-    password: TODO
+    username: need2configure
+    password: need2configure
     from:
-        mail: todo@todo.todo
-        name: TODO
+        mail: need2configure
+        name: need2configure
     subject:
         new: Sell-Hive Password Mail
         remind: Sell-Hive Password Reminder
         limitRequest: Sell-Hive Limit Request
 
 common:
-    baseUrl: TODO
+    baseUrl: need2configure
 
 cashpoint:
-    secret: TODO
+    secret: need2configure
 
 item:
     feeInCent: 50
@@ -41,9 +41,9 @@ seller:
         maxStep: 300
         autoAccept: 10
         initTill: 2020-02-16
-        secret: TODO
+        secret: need2configure
 
 admin:
     active: false
-    password: TODO
-    mail: TODO
+    password: need2configure
+    mail: need2configure

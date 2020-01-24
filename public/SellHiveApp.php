@@ -17,7 +17,12 @@ class SellHiveApp extends \DI\Bridge\Slim\App
         $definitions = [
 
             Config::class => function (ContainerInterface $c) {
-                return Config::load(['config.dist.yaml', '?config.yaml']);
+                $config = Config::load(['config.dist.yaml', '?config.yaml']);
+
+                $data = $config->all();
+                array_walk_recursive($data, array($this, 'need2configure'));
+
+                return $config;
             },
 
             LoggerInterface::class => function (ContainerInterface $c) {
@@ -70,5 +75,13 @@ class SellHiveApp extends \DI\Bridge\Slim\App
         ];
 
         $builder->addDefinitions($definitions);
+    }
+
+    private function need2configure($item, $key)
+    {
+        if (is_string($item) && $item == 'need2configure') {
+            echo "Please check configuration. (need2configure : $key)";
+            die();
+        }
     }
 }
