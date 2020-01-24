@@ -90,7 +90,6 @@ class SellerLimitController
                 $itemCount = ItemQuery::create()->filterBySeller($seller)->count();
                 $seller->setLimit($itemCount);
                 $seller->setLimitTill(null);
-                $seller->setLimitRequest(0);
                 $seller->save();
 
                 $logger->info("Limit für $sellerName ($sellerId) von $limit auf $itemCount zurückgesetzt.");
