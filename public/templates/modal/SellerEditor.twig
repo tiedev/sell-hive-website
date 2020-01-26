@@ -95,6 +95,16 @@
     }
   });
 
+  function saveSellerByEnter(e) {
+    if (e.which == 13) {
+      saveSeller();
+    }
+  }
+
+  $('#limitRequest').keypress(saveSellerByEnter);
+  $('#limit').keypress(saveSellerByEnter);
+  $('#limitTill').keypress(saveSellerByEnter);
+
   $('#saveSellerButton').on('click', saveSeller);
 
   $('#limitTill').datepicker({
