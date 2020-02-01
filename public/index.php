@@ -5,6 +5,14 @@ session_start();
 require_once 'vendor/autoload.php';
 require_once 'propel/config.php';
 
+use OpenApi\Annotations as OA;
+
+/**
+ * Swagger PHP: https://github.com/zircote/swagger-php
+ * OpenAPI Specification: https://swagger.io/specification/
+ *
+ * @OA\Info(title="Sell-Hive API", version="1.0.0")
+ */
 $app = new SellHiveApp();
 
 
@@ -42,17 +50,80 @@ $app->get('/modal/openLimitRequest', ['OpenLimitRequestModalController', 'show']
 $app->get('/modal/sellerEditor/{sellerId}', ['SellerEditorModalController', 'show']);
 
 
-/** AuthController **/
-// session for user exists?
+// === Swagger ===
+$app->get('/api', ['SwaggerController', 'show']);
+
+$app->get('/swagger.json', ['SwaggerController', 'config']);
+
+
+// === AuthController ===
+
+/**
+ * @OA\Get(
+ *     path="/backend/auth",
+ *     summary="session for user exists?",
+ *     @OA\Response(
+ *         response="200",
+ *         description="answer",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="authenticated", type="boolean"),
+ *             @OA\Property(property="admin", type="boolean")
+ *        )
+ *     )
+ * )
+ */
 $app->get('/backend/auth', ['AuthController', 'isAuthenticated']);
 
-// create session when mail address and password are correct
+/**
+ * @OA\Post(
+ *     path="/backend/auth",
+ *     summary="create session when mail address and password are correct",
+ *     @OA\Parameter(name="data",in="query",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="mail", type="string"),
+ *             @OA\Property(property="password", type="string")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response="200",
+ *         description="login succesfully",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="login", type="boolean"),
+ *             @OA\Property(property="admin", type="boolean")
+ *         )
+ *     ),
+ *     @OA\Response(response="400", description="login failed")
+ * )
+ */
 $app->post('/backend/auth', ['AuthController', 'login']);
 
-// destroy session from active user
+/**
+ * @OA\Delete(
+ *     path="/backend/auth",
+ *     summary="destroy session from active user",
+ *     @OA\Response(response="200", description="logged out successfully or logout not required")
+ * )
+ */
 $app->delete('/backend/auth', ['AuthController', 'logout']);
 
-// generate new password for given mail address (and correct captcha)
+/**
+ * @OA\Post(
+ *     path="/backend/auth/remind",
+ *     summary="generate new password for given mail address (and correct captcha)",
+ *     @OA\Parameter(name="data",in="query",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="mail", type="string")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response="200",
+ *         description="login succesfully",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="mailed", type="boolean")
+ *         )
+ *     )
+ * )
+ */
 $app->post('/backend/auth/remind', ['AuthController', 'remind']);
 
 
