@@ -39,7 +39,6 @@ class SellHiveApp extends \DI\Bridge\Slim\App
                 $logger = new Logger('sell-hive');
                 $logger->pushHandler($stream);
 
-                // TODO: this is not the best place but it works for now
                 Propel::getServiceContainer()->setLogger('defaultLogger', $logger);
 
                 return $logger;
