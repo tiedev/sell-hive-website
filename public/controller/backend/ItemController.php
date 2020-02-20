@@ -9,9 +9,24 @@ class ItemController
 {
     private $additionalChars = 'ÄÖÜäöüß/_+&.-';
 
+    /**
+     * @OA\Get(
+     *     path="/backend/item/count",
+     *     summary="count items for active user",
+     *     @OA\Response(
+     *         response="200",
+     *         description="successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/SellerItemStatistic")
+     *     ),
+     *     @OA\Response(
+     *         response="403",
+     *         description="no user session"
+     *     )
+     * )
+     */
     public function getCount(Request $request, Response $response, Logger $logger)
     {
-        $logger->debug('=== ItemController:listItems(...) ===');
+        $logger->debug('=== ItemController:getCount(...) ===');
 
         if (!isset($_SESSION['user'])) {
             $logger->debug('no user session');
@@ -20,19 +35,33 @@ class ItemController
 
         $logger->debug('count items (user id : ' . $_SESSION['user'] . ')');
 
-        $out = array();
+        $statistic = new Entity\SellerItemStatistic();
 
-        $out['all'] = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->count();
-        $out['boxed_as_new'] = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->filterByBoxedAsNew(true)->count();
-        $out['labeled'] = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->filterByLabeled()->count();
-        $out['transfered'] = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->filterByTransfered()->count();
-        $out['sold'] = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->filterBySold()->count();
+        $statistic->all = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->count();
+        $statistic->boxed_as_new = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->filterByBoxedAsNew(true)->count();
+        $statistic->labeled = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->filterByLabeled()->count();
+        $statistic->transfered = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->filterByTransfered()->count();
+        $statistic->sold = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->filterBySold()->count();
 
-        $logger->debug('output', $out);
+        $logger->debug('SellerItemStatistic', $statistic);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        return $response->withJson($statistic, 200, JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/backend/item",
+     *     summary="list items for active user",
+     *     @OA\Response(
+     *         response="200",
+     *         description="successful operation",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Item")
+     *         )
+     *     )
+     * )
+     */
     public function listUserItems(Request $request, Response $response, Logger $logger)
     {
         $logger->debug('=== ItemController:listUserItems(...) ===');
@@ -49,7 +78,7 @@ class ItemController
         $items = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->find();
 
         foreach ($items as $item) {
-            $out[] = $item->toFlatArray();
+            $out[] = new Entity\Item($item);
         }
 
         $logger->debug('output', $out);
@@ -57,6 +86,24 @@ class ItemController
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/backend/items",
+     *     summary="list all items",
+     *     @OA\Response(
+     *         response="200",
+     *         description="successful operation",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Item")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="403",
+     *         description="no admin session"
+     *     )
+     * )
+     */
     public function listAllItems(Request $request, Response $response, Logger $logger, AuthService $auth)
     {
         $logger->debug('=== ItemController:listAllItems(...) ===');
@@ -70,7 +117,7 @@ class ItemController
         $items = ItemQuery::create()->find();
 
         foreach ($items as $item) {
-            $out[] = $item->toFlatArray();
+            $out[] = new Entity\Item($item);
         }
 
         $logger->debug('output', $out);
@@ -286,6 +333,29 @@ class ItemController
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/backend/item/{id}",
+     *     summary="delete item for active user",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="item id",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *   ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response="403",
+     *         description="no user session"
+     *     )
+     * )
+     */
     public function deleteItem(Request $request, Response $response, Logger $logger)
     {
         $logger->debug('=== ItemController:deleteItem(...) ===');

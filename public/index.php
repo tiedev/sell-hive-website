@@ -57,73 +57,12 @@ $app->get('/swagger.json', ['SwaggerController', 'config']);
 
 
 // === AuthController ===
-
-/**
- * @OA\Get(
- *     path="/backend/auth",
- *     summary="session for user exists?",
- *     @OA\Response(
- *         response="200",
- *         description="answer",
- *         @OA\JsonContent(
- *             @OA\Property(property="authenticated", type="boolean"),
- *             @OA\Property(property="admin", type="boolean")
- *        )
- *     )
- * )
- */
 $app->get('/backend/auth', ['AuthController', 'isAuthenticated']);
 
-/**
- * @OA\Post(
- *     path="/backend/auth",
- *     summary="create session when mail address and password are correct",
- *     @OA\Parameter(name="data",in="query",
- *         @OA\JsonContent(
- *             @OA\Property(property="mail", type="string"),
- *             @OA\Property(property="password", type="string")
- *         )
- *     ),
- *     @OA\Response(
- *         response="200",
- *         description="login succesfully",
- *         @OA\JsonContent(
- *             @OA\Property(property="login", type="boolean"),
- *             @OA\Property(property="admin", type="boolean")
- *         )
- *     ),
- *     @OA\Response(response="400", description="login failed")
- * )
- */
 $app->post('/backend/auth', ['AuthController', 'login']);
 
-/**
- * @OA\Delete(
- *     path="/backend/auth",
- *     summary="destroy session from active user",
- *     @OA\Response(response="200", description="logged out successfully or logout not required")
- * )
- */
 $app->delete('/backend/auth', ['AuthController', 'logout']);
 
-/**
- * @OA\Post(
- *     path="/backend/auth/remind",
- *     summary="generate new password for given mail address (and correct captcha)",
- *     @OA\Parameter(name="data",in="query",
- *         @OA\JsonContent(
- *             @OA\Property(property="mail", type="string")
- *         )
- *     ),
- *     @OA\Response(
- *         response="200",
- *         description="login succesfully",
- *         @OA\JsonContent(
- *             @OA\Property(property="mailed", type="boolean")
- *         )
- *     )
- * )
- */
 $app->post('/backend/auth/remind', ['AuthController', 'remind']);
 
 
@@ -153,13 +92,10 @@ $app->delete('/backend/seller/limit/{secret}', ['SellerLimitController', 'resetL
 
 
 /** ItemController **/
-// count items for active user
 $app->get('/backend/item/count', ['ItemController', 'getCount']);
 
-// list items for active user
 $app->get('/backend/item', ['ItemController', 'listUserItems']);
 
-// list all items
 $app->get('/backend/items', ['ItemController', 'listAllItems']);
 
 // create new item for active user
@@ -171,7 +107,6 @@ $app->get('/backend/item/{id}', ['ItemController', 'getItem']);
 // edit item for active user
 $app->post('/backend/item/{id}', ['ItemController', 'editItem']);
 
-// deletes item for active user
 $app->delete('/backend/item/{id}', ['ItemController', 'deleteItem']);
 
 
@@ -193,7 +128,6 @@ $app->get('/backend/pdf/list/item', ['PdfController', 'genItemList']);
 
 
 /** ConfigController **/
-// list sellers
 $app->get('/backend/configuration/writeProtectionTime', ['ConfigController', 'getWriteProtectionTime']);
 
 

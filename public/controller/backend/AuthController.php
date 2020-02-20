@@ -8,6 +8,20 @@ use Noodlehaus\Config;
 
 class AuthController
 {
+    /**
+     * @OA\Get(
+     *     path="/backend/auth",
+     *     summary="session for user exists?",
+     *     @OA\Response(
+     *         response="200",
+     *         description="answer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="authenticated", type="boolean"),
+     *             @OA\Property(property="admin", type="boolean")
+     *        )
+     *     )
+     * )
+     */
     public function isAuthenticated(Request $request, Response $response, Logger $logger)
     {
         $logger->debug('=== AuthController:isAuthenticated(...) ===');
@@ -22,6 +36,27 @@ class AuthController
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/backend/auth",
+     *     summary="create session when mail address and password are correct",
+     *     @OA\Parameter(name="data",in="query",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="mail", type="string"),
+     *             @OA\Property(property="password", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="login succesfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="login", type="boolean"),
+     *             @OA\Property(property="admin", type="boolean")
+     *         )
+     *     ),
+     *     @OA\Response(response="400", description="login failed")
+     * )
+     */
     public function login(Request $request, Response $response, Logger $logger, Config $config)
     {
         $logger->debug('=== AuthController:login(...) ===');
@@ -81,6 +116,13 @@ class AuthController
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/backend/auth",
+     *     summary="destroy session from active user",
+     *     @OA\Response(response="200", description="logged out successfully or logout not required")
+     * )
+     */
     public function logout(Request $request, Response $response, Logger $logger)
     {
         $logger->debug('=== AuthController:logout(...) ===');
@@ -95,6 +137,24 @@ class AuthController
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/backend/auth/remind",
+     *     summary="generate new password for given mail address (and correct captcha)",
+     *     @OA\Parameter(name="data",in="query",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="mail", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="login succesfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="mailed", type="boolean")
+     *         )
+     *     )
+     * )
+     */
     public function remind(Request $request, Response $response, Logger $logger, Config $config, MailService $mail)
     {
         $logger->debug('=== AuthController:remind(...) ===');

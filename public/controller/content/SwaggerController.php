@@ -22,7 +22,7 @@ class SwaggerController
     {
         $logger->debug('=== SwaggerController:config(...) ===');
 
-        $openapi = \OpenApi\scan('index.php');
+        $openapi = \OpenApi\scan(['index.php', 'controller/backend', 'entity']);
         $response->getBody()->write($openapi->toYaml());
 
         return $response;
