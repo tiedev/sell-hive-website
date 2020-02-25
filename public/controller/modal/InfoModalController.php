@@ -37,7 +37,7 @@ class InfoModalController
 
           case 'remind.error':
             $context['title'] = 'Passwort-Erinnerung';
-            $context['content'] = 'Leider gab es ein Problem beim Versand der neuen Zugangsdaten. Wende dich bitte an die folgende E-Mail-Adresse: sellhive@tealtoken.de';
+            $context['content'] = 'Leider gab es ein Problem beim Versand der neuen Zugangsdaten. Die Benutzerkonten aus dem letzten Jahr wurden gelöscht. Du musst Dich also neu registrieren, falls Du dies noch nicht wieder gemacht hast. Ansonsten wende Dich bitte an folgende E-Mail-Adresse: sellhive@tealtoken.de';
             break;
 
           default:
