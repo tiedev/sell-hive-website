@@ -47,16 +47,17 @@ abstract class UserPdf
 
     private function getPath()
     {
-        $path = 'pdf/' . $this->seller->getPathSecret();
+        $path = 'pdf' . '/' . $this->seller->getPathSecret();
 
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
         }
 
         $file = date("Y-m-d_H\hi\ms\s") . '_' . $this->type . '.pdf';
+        $url = $path . '/' . $file;
 
-        $this->logger->debug('determine path: ' . $path . '/' . $file);
+        $this->logger->debug('determine path: ' . $url);
 
-        return $path . '/' . $file;
+        return $url;
     }
 }

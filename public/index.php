@@ -126,6 +126,8 @@ $app->post('/backend/pdf/label/settings', ['PdfController', 'setLabelSettings'])
 // create item list pdf for active user
 $app->get('/backend/pdf/list/item', ['PdfController', 'genItemList']);
 
+$app->get('/backend/pdf', ['PdfController', 'list']);
+
 
 /** ConfigController **/
 $app->get('/backend/configuration/writeProtectionTime', ['ConfigController', 'getWriteProtectionTime']);

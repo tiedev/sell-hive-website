@@ -162,6 +162,32 @@ class PdfController
         $itemListPdf->initItems();
         $out['path'] = $itemListPdf->generate();
 
+        return $response->withJson($out, 200, JSON_PRETTY_PRINT1);
+    }
+
+    public function list(Request $request, Response $response, Logger $logger)
+    {
+        $logger->debug('=== PdfController:list(...) ===');
+
+        if (!isset($_SESSION['user'])) {
+            $logger->debug('no user session');
+            return $response->withStatus(403);
+        }
+
+        $seller = SellerQuery::create()->findOneById($_SESSION['user']);
+        $path = 'pdf/' . $seller->getPathSecret();
+        $files = array_diff(scandir($path), array('.', '..'));
+
+        $out = array();
+
+        foreach ($files as $file) {
+            $pdfFile = new Entity\PdfFile();
+            $pdfFile->type = 'labels';
+            $pdfFile->name = basename($file, '.pdf');
+            $pdfFile->url = $path . '/' . $file;
+            $out[] = $pdfFile;
+        }
+
         return $response->withJson($out, 200, JSON_PRETTY_PRINT);
     }
 }
