@@ -39,7 +39,9 @@ $logger->debug('config', [
     'logErrorDetails' => $logErrorDetails
 ]);
 
-$app->setBasePath($basePath);
+if (!empty($basePath)) {
+    $app->setBasePath($basePath);
+}
 
 $app->addRoutingMiddleware();
 
