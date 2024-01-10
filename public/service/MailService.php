@@ -7,9 +7,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 class MailService
 {
-    private $logger;
-    private $config;
-    private $twig;
+    private Logger $logger;
+    private Config $config;
+    private Twig $twig;
 
     public function __construct(Logger $logger, Config $config, Twig $twig)
     {
@@ -62,7 +62,7 @@ class MailService
         return $this->send($mail);
     }
 
-    private function init()
+    private function init(): PHPMailer
     {
         $this->logger->debug('mail config', $this->config->get('phpmailer'));
 
@@ -88,7 +88,7 @@ class MailService
         return $mail;
     }
 
-    private function toContext(Seller $seller)
+    private function toContext(Seller $seller): array
     {
         $context = array();
 

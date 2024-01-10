@@ -1,20 +1,17 @@
 <?php
 
 use Psr\Log\LoggerInterface as Logger;
-use Noodlehaus\Config;
 
 class AuthService
 {
-    private $logger;
-    private $config;
+    private Logger $logger;
 
-    public function __construct(Logger $logger, Config $config)
+    public function __construct(Logger $logger)
     {
         $this->logger = $logger;
-        $this->config = $config;
     }
 
-    public function isNoUser()
+    public function isNoUser(): bool
     {
         $isUserInSession = isset($_SESSION['user']);
 
@@ -27,7 +24,7 @@ class AuthService
         }
     }
 
-    public function isNoAdmin()
+    public function isNoAdmin(): bool
     {
         if ($this->isNoUser()) {
             return true;

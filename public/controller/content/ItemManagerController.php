@@ -7,11 +7,22 @@ use Slim\Views\Twig as Twig;
 
 class ItemManagerController
 {
-    public function show(Request $request, Response $response, Logger $logger, Twig $twig, ContextService $contextService)
-    {
-        $logger->debug('=== ItemManagerController:show(...) ===');
+    private ContextService $contextService;
+    private Logger $logger;
+    private Twig $twig;
 
-        $context = $contextService->getGlobal();
+    public function __construct(ContextService $contextService, Logger $logger, Twig $twig)
+    {
+        $this->contextService = $contextService;
+        $this->logger = $logger;
+        $this->twig = $twig;
+    }
+
+    public function show(Request $request, Response $response): Response
+    {
+        $this->logger->debug('=== ItemManagerController:show(...) ===');
+
+        $context = $this->contextService->getGlobal();
 
         $context['title'] = 'Spiele eingeben und verwalten';
 
@@ -54,6 +65,6 @@ class ItemManagerController
         $context['button']['delete'] = 'löschen';
         $context['button']['deleteAll'] = 'alle Spiele löschen';
 
-        return $twig->render($response, 'content/itemManager.twig', $context);
+        return $this->twig->render($response, 'content/itemManager.twig', $context);
     }
 }

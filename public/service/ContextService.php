@@ -4,14 +4,14 @@ use Noodlehaus\Config;
 
 class ContextService
 {
-    private $config;
+    private Config $config;
 
     public function __construct(Config $config)
     {
         $this->config = $config;
     }
 
-    public function getGlobal()
+    public function getGlobal(): array
     {
         $protocol = isset($_SERVER['HTTPS']) ? 'https' : 'http';
         $baseUrl = $protocol .'://' . $this->config->get('common.baseUrl');

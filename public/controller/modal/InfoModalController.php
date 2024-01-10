@@ -3,20 +3,32 @@
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface as Logger;
+use Slim\Routing\RouteContext;
 use Slim\Views\Twig as Twig;
 
 class InfoModalController
 {
-    public function show(Request $request, Response $response, Logger $logger, Twig $twig, ContextService $contextService)
+    private ContextService $contextService;
+    private Logger $logger;
+    private Twig $twig;
+
+    public function __construct(ContextService $contextService, Logger $logger, Twig $twig)
     {
-        $logger->debug('=== InfoModalController:show(...) ===');
+        $this->contextService = $contextService;
+        $this->logger = $logger;
+        $this->twig = $twig;
+    }
+
+    public function show(Request $request, Response $response): Response
+    {
+        $this->logger->debug('=== InfoModalController:show(...) ===');
 
         // TODO validate args
 
-        $context = $contextService->getGlobal();
+        $context = $this->contextService->getGlobal();
 
-        $event = $request->getAttribute('route')->getArgument('event');
-        $result = $request->getAttribute('route')->getArgument('result');
+        $event = RouteContext::fromRequest($request)->getRoute()->getArgument('event');
+        $result = RouteContext::fromRequest($request)->getRoute()->getArgument('result');
 
         switch ($event . '.' . $result) {
 
@@ -48,6 +60,6 @@ class InfoModalController
 
         $context['button']['close'] = 'schließen';
 
-        return $twig->render($response, 'modal/info.twig', $context);
+        return $this->twig->render($response, 'modal/info.twig', $context);
     }
 }

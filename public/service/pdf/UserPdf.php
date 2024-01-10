@@ -4,8 +4,8 @@ use Monolog\Logger;
 
 abstract class UserPdf
 {
-    protected $logger;
-    protected $seller;
+    protected Logger $logger;
+    protected Seller $seller;
     protected $type;
 
     public function __construct($logger, $type)
@@ -14,7 +14,7 @@ abstract class UserPdf
         $this->type = $type;
     }
 
-    public function setSeller($id)
+    public function setSeller($id): void
     {
         $this->logger->debug('load seller (user id : ' . $id . ')');
         $this->seller = SellerQuery::create()->findOneById($id);
@@ -22,7 +22,7 @@ abstract class UserPdf
 
     abstract public function generate();
 
-    protected function initPdf()
+    protected function initPdf(): PdfCode39
     {
         $pdf = new PdfCode39('P', 'mm', 'A4');
 
@@ -37,7 +37,7 @@ abstract class UserPdf
         return $pdf;
     }
 
-    protected function closePdf($pdf)
+    protected function closePdf($pdf): string
     {
         $filepath = $this->getPath();
         $this->logger->debug('generate pdf');
@@ -45,7 +45,7 @@ abstract class UserPdf
         return $filepath;
     }
 
-    private function getPath()
+    private function getPath(): string
     {
         $path = 'pdf' . '/' . $this->seller->getPathSecret();
 

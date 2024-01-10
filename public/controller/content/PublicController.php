@@ -7,11 +7,22 @@ use Slim\Views\Twig as Twig;
 
 class PublicController
 {
-    public function show(Request $request, Response $response, Logger $logger, Twig $twig, ContextService $contextService)
-    {
-        $logger->debug('=== PublicController:show(...) ===');
+    private ContextService $contextService;
+    private Logger $logger;
+    private Twig $twig;
 
-        $context = $contextService->getGlobal();
+    public function __construct(ContextService $contextService, Logger $logger, Twig $twig)
+    {
+        $this->contextService = $contextService;
+        $this->logger = $logger;
+        $this->twig = $twig;
+    }
+
+    public function show(Request $request, Response $response): Response
+    {
+        $this->logger->debug('=== PublicController:show(...) ===');
+
+        $context = $this->contextService->getGlobal();
 
         $context['register']['title'] = 'Registrieren';
         $context['register']['mail'] = 'E-Mail';
@@ -34,6 +45,6 @@ class PublicController
         $context['login']['submit'] = 'einloggen';
         $context['login']['remind'] = 'Passwort zusenden?';
 
-        return $twig->render($response, 'content/public.twig', $context);
+        return $this->twig->render($response, 'content/public.twig', $context);
     }
 }

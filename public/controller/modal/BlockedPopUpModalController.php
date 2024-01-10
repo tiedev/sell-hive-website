@@ -7,11 +7,22 @@ use Slim\Views\Twig as Twig;
 
 class BlockedPopUpModalController
 {
-    public function show(Request $request, Response $response, Logger $logger, Twig $twig, ContextService $contextService)
-    {
-        $logger->debug('=== BlockedPopUpModalController:show(...) ===');
+    private ContextService $contextService;
+    private Logger $logger;
+    private Twig $twig;
 
-        $context = $contextService->getGlobal();
+    public function __construct(ContextService $contextService, Logger $logger, Twig $twig)
+    {
+        $this->contextService = $contextService;
+        $this->logger = $logger;
+        $this->twig = $twig;
+    }
+
+    public function show(Request $request, Response $response): Response
+    {
+        $this->logger->debug('=== BlockedPopUpModalController:show(...) ===');
+
+        $context = $this->contextService->getGlobal();
 
         $in = $request->getParsedBody();
 
@@ -19,6 +30,6 @@ class BlockedPopUpModalController
 
         $context['pdfPath'] = $in['pdfPath'];
 
-        return $twig->render($response, 'modal/blockedPopUp.twig', $context);
+        return $this->twig->render($response, 'modal/blockedPopUp.twig', $context);
     }
 }

@@ -14,16 +14,16 @@ use Base\SellerPrintSettings as BaseSellerPrintSettings;
  */
 class SellerPrintSettings extends BaseSellerPrintSettings
 {
-    const DEFAULT_PAGE_INIT_X = 8;
-    const DEFAULT_PAGE_INIT_Y = 14.5;
+    const int DEFAULT_PAGE_INIT_X = 8;
+    const float DEFAULT_PAGE_INIT_Y = 14.5;
 
-    const DEFAULT_LABEL_SPACE_X = 2.5;
-    const DEFAULT_LABEL_SPACE_Y = 0.3;
+    const float DEFAULT_LABEL_SPACE_X = 2.5;
+    const float DEFAULT_LABEL_SPACE_Y = 0.3;
 
-    const DEFAULT_LABEL_HEIGHT = 29;
-    const DEFAULT_LABEL_WIDTH = 63.5;
+    const int DEFAULT_LABEL_HEIGHT = 29;
+    const float DEFAULT_LABEL_WIDTH = 63.5;
 
-    public static function initWithDefaults(int $fk_seller_id)
+    public static function initWithDefaults(int $fk_seller_id): SellerPrintSettings
     {
         $settings = new self();
         $settings->setFkSellerId($fk_seller_id);
@@ -36,7 +36,7 @@ class SellerPrintSettings extends BaseSellerPrintSettings
         return $settings;
     }
 
-    public function toFlatArray()
+    public function toFlatArray(): array
     {
         $array = array();
         $array['page_init_x'] = $this->getPageInitX();

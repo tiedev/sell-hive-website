@@ -7,15 +7,27 @@ use Noodlehaus\Config;
 
 class ConfigController
 {
-    public function getWriteProtectionTime(Request $request, Response $response, Logger $logger, Config $config)
+    private Logger $logger;
+
+    public function __construct(Logger $logger)
     {
-        $logger->debug('=== ConfigController:getTimes(...) ===');
+        $this->logger = $logger;
+    }
+
+    public function getWriteProtectionTime(Request $request, Response $response): Response
+    {
+        $this->logger->debug('=== ConfigController:getTimes(...) ===');
 
         // TODO : get from config file
         //$out = ConfigQuery::getTimestamp('WRITE_PROTECTION_TIME');
+        $out = 'not implemented';
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 }

@@ -7,7 +7,7 @@ class UserLabelTestPdf extends UserLabelPdf
         parent::__construct($logger, 'testrahmen');
     }
 
-    public function generate()
+    public function generate(): string
     {
         $pdf = $this->initPdf();
 

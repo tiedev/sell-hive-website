@@ -7,12 +7,19 @@ use Respect\Validation\Validator as v;
 
 class PdfController
 {
-    public function genLabelItemPdf(Request $request, Response $response, Logger $logger)
+    private Logger $logger;
+
+    public function __construct(Logger $logger)
     {
-        $logger->debug('=== PdfController:genLabelItemPdf(...) ===');
+        $this->logger = $logger;
+    }
+
+    public function genLabelItemPdf(Request $request, Response $response)
+    {
+        $this->logger->debug('=== PdfController:genLabelItemPdf(...) ===');
 
         if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
+            $this->logger->debug('no user session');
             return $response->withStatus(403);
         }
 
@@ -22,9 +29,9 @@ class PdfController
         $in = $request->getParsedBody();
 
         if (is_array($in)) {
-            $logger->debug('input', $in);
+            $this->logger->debug('input', $in);
         } else {
-            $logger->debug('parsed body is no array');
+            $this->logger->debug('parsed body is no array');
             return $response->withStatus(500);
         }
 
@@ -39,46 +46,54 @@ class PdfController
         }
 
         if ($out['valid']) {
-            $itemPdf = new UserLabelItemPdf($logger);
+            $itemPdf = new UserLabelItemPdf($this->logger);
             $itemPdf->setSeller($_SESSION['user']);
             $itemPdf->setStartIndex($in['startPosition']);
             $itemPdf->setMultiplier($in['multiplier']);
             $out['path'] = $itemPdf->generate();
         } else {
-            $logger->debug('data invalid');
+            $this->logger->debug('data invalid');
         }
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
-    public function genLabelTestPdf(Request $request, Response $response, Logger $logger)
+    public function genLabelTestPdf(Request $request, Response $response)
     {
-        $logger->debug('=== PdfController:genLabelTestPdf(...) ===');
+        $this->logger->debug('=== PdfController:genLabelTestPdf(...) ===');
 
         if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
+            $this->logger->debug('no user session');
             return $response->withStatus(403);
         }
 
         $out = array();
 
-        $testPdf = new UserLabelTestPdf($logger);
+        $testPdf = new UserLabelTestPdf($this->logger);
         $testPdf->setSeller($_SESSION['user']);
         $out['path'] = $testPdf->generate();
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
-    public function getLabelSettings(Request $request, Response $response, Logger $logger)
+    public function getLabelSettings(Request $request, Response $response)
     {
-        $logger->debug('=== PdfController:getLabelSettings(...) ===');
+        $this->logger->debug('=== PdfController:getLabelSettings(...) ===');
 
         if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
+            $this->logger->debug('no user session');
             return $response->withStatus(403);
         }
 
@@ -86,17 +101,21 @@ class PdfController
 
         $out = $settings->toFlatArray();
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
-    public function setLabelSettings(Request $request, Response $response, Logger $logger)
+    public function setLabelSettings(Request $request, Response $response)
     {
-        $logger->debug('=== PdfController:setLabelSettings(...) ===');
+        $this->logger->debug('=== PdfController:setLabelSettings(...) ===');
 
         if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
+            $this->logger->debug('no user session');
             return $response->withStatus(403);
         }
 
@@ -105,9 +124,9 @@ class PdfController
 
         $in = $request->getParsedBody();
         if (is_array($in)) {
-            $logger->debug('input', $in);
+            $this->logger->debug('input', $in);
         } else {
-            $logger->debug('parsed body is no array');
+            $this->logger->debug('parsed body is no array');
             return $response->withStatus(500);
         }
 
@@ -133,7 +152,7 @@ class PdfController
 
         if ($out['valid']) {
             $settings = SellerPrintSettingsQuery::create()->getOneOrDefaultByFkSellerId($_SESSION['user']);
-            $logger->debug('settings default', $settings->toFlatArray());
+            $this->logger->debug('settings default', $settings->toFlatArray());
             $settings->setPageInitX($in['page_init_x']);
             $settings->setPageInitY($in['page_init_y']);
             $settings->setLabelSpaceX($in['label_space_x']);
@@ -141,36 +160,44 @@ class PdfController
             $settings->save();
         }
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
-    public function genItemList(Request $request, Response $response, Logger $logger)
+    public function genItemList(Request $request, Response $response)
     {
-        $logger->debug('=== PdfController:genItemList(...) ===');
+        $this->logger->debug('=== PdfController:genItemList(...) ===');
 
         if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
+            $this->logger->debug('no user session');
             return $response->withStatus(403);
         }
 
         $out = array();
 
-        $itemListPdf = new ItemListPdf($logger);
+        $itemListPdf = new ItemListPdf($this->logger);
         $itemListPdf->setSeller($_SESSION['user']);
         $itemListPdf->initItems();
         $out['path'] = $itemListPdf->generate();
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT1);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
-    public function list(Request $request, Response $response, Logger $logger)
+    public function list(Request $request, Response $response)
     {
-        $logger->debug('=== PdfController:list(...) ===');
+        $this->logger->debug('=== PdfController:list(...) ===');
 
         if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
+            $this->logger->debug('no user session');
             return $response->withStatus(403);
         }
 
@@ -188,6 +215,10 @@ class PdfController
             $out[] = $pdfFile;
         }
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 }

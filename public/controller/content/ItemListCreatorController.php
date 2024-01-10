@@ -7,17 +7,28 @@ use Slim\Views\Twig as Twig;
 
 class ItemListCreatorController
 {
-    public function show(Request $request, Response $response, Logger $logger, Twig $twig, ContextService $contextService)
-    {
-        $logger->debug('=== ItemListCreatorController:show(...) ===');
+    private ContextService $contextService;
+    private Logger $logger;
+    private Twig $twig;
 
-        $context = $contextService->getGlobal();
+    public function __construct(ContextService $contextService, Logger $logger, Twig $twig)
+    {
+        $this->contextService = $contextService;
+        $this->logger = $logger;
+        $this->twig = $twig;
+    }
+
+    public function show(Request $request, Response $response): Response
+    {
+        $this->logger->debug('=== ItemListCreatorController:show(...) ===');
+
+        $context = $this->contextService->getGlobal();
 
         $context['button'] = 'Spieleliste erzeugen (PDF)';
 
         $context['link']['text'] = 'Vorlagen herunterladen (PDF)';
         $context['link']['url'] = 'data/Flohmarkt20-Datenblatt.und.Beleg.pdf';
 
-        return $twig->render($response, 'content/itemListCreator.twig', $context);
+        return $this->twig->render($response, 'content/itemListCreator.twig', $context);
     }
 }

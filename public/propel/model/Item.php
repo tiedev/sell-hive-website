@@ -15,7 +15,7 @@ use Map\ItemTableMap;
  */
 class Item extends BaseItem
 {
-    public function toFlatArray()
+    public function toFlatArray(): array
     {
         $array = array();
         $array['id'] = $this->getId();
@@ -33,45 +33,45 @@ class Item extends BaseItem
         return $array;
     }
 
-    public function getBarcodeId()
+    public function getBarcodeId(): string
     {
         $year = date("Y");
         $prefixOfTheYear = chr($year - 1953);
         return $prefixOfTheYear . $this->getId();
     }
 
-    public function getNameForPdf()
+    public function getNameForPdf(): string
     {
-        return substr(utf8_decode($this->getName() . ' (' . $this->getPublisher() . ')'), 0, 60);
+        return substr(mb_convert_encoding($this->getName() . ' (' . $this->getPublisher() . ')', 'ISO-8859-1', 'UTF-8'), 0, 60);
     }
 
-    public function getPriceForPdf()
+    public function getPriceForPdf(): string
     {
         return sprintf('%01.2f', $this->getPrice() / 100) . ' ' . chr(128);
     }
 
-    public function isLabeled()
+    public function isLabeled(): bool
     {
         return isset($this->labeled);
     }
 
-    public function isTransfered()
+    public function isTransfered(): bool
     {
         return isset($this->transfered);
     }
 
-    public function isSold()
+    public function isSold(): bool
     {
         return isset($this->sold);
     }
 
-    public function setLabeledToNull()
+    public function setLabeledToNull(): void
     {
         $this->labeled = null;
         $this->modifiedColumns[ItemTableMap::COL_LABELED] = true;
     }
 
-    public function getState()
+    public function getState(): string
     {
         if ($this->isSold()) {
             return 'sold';

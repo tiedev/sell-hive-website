@@ -2,9 +2,9 @@
 
 abstract class UserLabelPdf extends UserPdf
 {
-    const ITEMS_PER_COLUMN = 9;
-    const ITEMS_PER_ROW = 3;
-    const ITEMS_PER_PAGE = self::ITEMS_PER_COLUMN * self::ITEMS_PER_ROW;
+    const int ITEMS_PER_COLUMN = 9;
+    const int ITEMS_PER_ROW = 3;
+    const int ITEMS_PER_PAGE = self::ITEMS_PER_COLUMN * self::ITEMS_PER_ROW;
 
     protected $currentIndex;
 
@@ -15,7 +15,7 @@ abstract class UserLabelPdf extends UserPdf
         parent::__construct($logger, $type);
     }
 
-    public function setSeller($id)
+    public function setSeller($id): void
     {
         parent::setSeller($id);
 

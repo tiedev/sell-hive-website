@@ -4,7 +4,7 @@
 
 class PdfCode39 extends FPDF
 {
-    public function Code39($xpos, $ypos, $code, $baseline=0.5, $height=5)
+    public function Code39($xpos, $ypos, $code, $baseline=0.5, $height=5): void
     {
         $wide = $baseline;
         $narrow = $baseline / 3 ;

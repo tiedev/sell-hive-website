@@ -1,13 +1,24 @@
-<?php
+<?php /** @noinspection PhpUnused */
 
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Noodlehaus\Config;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface as Logger;
 use Respect\Validation\Validator as v;
+use Slim\Routing\RouteContext;
 
 class ItemController
 {
-    private $additionalChars = 'ÄÖÜäöüß/_+&.-';
+    private Logger $logger;
+    private Config $config;
+    private AuthService $auth;
+
+    public function __construct(Logger $logger, Config $config, AuthService $auth)
+    {
+        $this->logger = $logger;
+        $this->config = $config;
+        $this->auth = $auth;
+    }
 
     /**
      * @OA\Get(
@@ -24,16 +35,16 @@ class ItemController
      *     )
      * )
      */
-    public function getCount(Request $request, Response $response, Logger $logger)
+    public function getCount(Request $request, Response $response)
     {
-        $logger->debug('=== ItemController:getCount(...) ===');
+        $this->logger->debug('=== ItemController:getCount(...) ===');
 
         if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
+            $this->logger->debug('no user session');
             return $response->withStatus(403);
         }
 
-        $logger->debug('count items (user id : ' . $_SESSION['user'] . ')');
+        $this->logger->debug('count items (user id : ' . $_SESSION['user'] . ')');
 
         $statistic = new Entity\SellerItemStatistic();
 
@@ -43,9 +54,13 @@ class ItemController
         $statistic->transfered = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->filterByTransfered()->count();
         $statistic->sold = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->filterBySold()->count();
 
-        $logger->debug('SellerItemStatistic', $statistic);
+        $this->logger->debug('SellerItemStatistic', (array)$statistic);
 
-        return $response->withJson($statistic, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($statistic, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
     /**
@@ -62,28 +77,38 @@ class ItemController
      *     )
      * )
      */
-    public function listUserItems(Request $request, Response $response, Logger $logger)
+    public function listUserItems(Request $request, Response $response)
     {
-        $logger->debug('=== ItemController:listUserItems(...) ===');
+        $this->logger->debug('=== ItemController:listUserItems(...) ===');
 
         if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
+            $this->logger->debug('no user session');
             return $response->withStatus(403);
         }
 
-        $logger->debug('load items (user id : ' . $_SESSION['user'] . ')');
+        $this->logger->debug('load items (user id : ' . $_SESSION['user'] . ')');
 
         $out = array();
 
         $items = ItemQuery::create()->filterByFkSellerId($_SESSION['user'])->find();
 
+        $this->logger->debug('found ' . count($items) . ' items');
+
         foreach ($items as $item) {
             $out[] = new Entity\Item($item);
         }
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $out_json = json_encode($out, JSON_PRETTY_PRINT);
+
+        $this->logger->debug('output (json)', array($out_json));
+
+        $response->getBody()->write($out_json);
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
     /**
@@ -104,11 +129,11 @@ class ItemController
      *     )
      * )
      */
-    public function listAllItems(Request $request, Response $response, Logger $logger, AuthService $auth)
+    public function listAllItems(Request $request, Response $response)
     {
-        $logger->debug('=== ItemController:listAllItems(...) ===');
+        $this->logger->debug('=== ItemController:listAllItems(...) ===');
 
-        if ($auth->isNoAdmin()) {
+        if ($this->auth->isNoAdmin()) {
             return $response->withStatus(403);
         }
 
@@ -120,27 +145,31 @@ class ItemController
             $out[] = new Entity\Item($item);
         }
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
-    public function getItem(Request $request, Response $response, Logger $logger)
+    public function getItem(Request $request, Response $response)
     {
-        $logger->debug('=== ItemController:getItem(...) ===');
+        $this->logger->debug('=== ItemController:getItem(...) ===');
 
         if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
+            $this->logger->debug('no user session');
             return $response->withStatus(403);
         }
 
-        $itemId = $request->getAttribute('route')->getArgument('id');
+        $itemId = RouteContext::fromRequest($request)->getRoute()->getArgument('id');
         if (!v::intVal()->positive()->validate($itemId)) {
-            $logger->debug('id ' . $itemId . ' is not valid');
+            $this->logger->debug('id ' . $itemId . ' is not valid');
             return $response->withStatus(400);
         }
 
-        $logger->debug('load item (user id : ' . $_SESSION['user'] . ', item id : ' . $itemId . ')');
+        $this->logger->debug('load item (user id : ' . $_SESSION['user'] . ', item id : ' . $itemId . ')');
 
         $out = array();
 
@@ -151,17 +180,21 @@ class ItemController
             return $response->withStatus(403);
         }
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
-    public function createItem(Request $request, Response $response, Logger $logger)
+    public function createItem(Request $request, Response $response)
     {
-        $logger->debug('=== ItemController:createItem(...) ===');
+        $this->logger->debug('=== ItemController:createItem(...) ===');
 
         if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
+            $this->logger->debug('no user session');
             return $response->withStatus(403);
         }
 
@@ -170,14 +203,14 @@ class ItemController
 
         $in = $request->getParsedBody();
 
-        $logger->debug('input', $in);
+        $this->logger->debug('input', $in);
 
-        if (!v::alnum($this->additionalChars)->length(1, 30)->validate($in['name'])) {
+        if (!v::alnum($this->config->get('validation.additionalAllowedChars'))->length(1, 30)->validate($in['name'])) {
             $out['name'] = 'invalid';
             $out['valid'] = false;
         }
 
-        if (!v::optional(v::alnum($this->additionalChars)->length(1, 20))->validate($in['publisher'])) {
+        if (!v::optional(v::alnum($this->config->get('validation.additionalAllowedChars'))->length(1, 20))->validate($in['publisher'])) {
             $out['publisher'] = 'invalid';
             $out['valid'] = false;
         }
@@ -192,7 +225,7 @@ class ItemController
             $out['valid'] = false;
         }
 
-        if (!v::optional(v::alnum($this->additionalChars)->length(0, 512))->validate($in['comment'])) {
+        if (!v::optional(v::alnum($this->config->get('validation.additionalAllowedChars'))->length(0, 512))->validate($in['comment'])) {
             $out['comment'] = 'invalid';
             $out['valid'] = false;
         }
@@ -206,7 +239,7 @@ class ItemController
         // TODO check if adding is closed
 
         if ($out['valid']) {
-            $logger->debug('save item');
+            $this->logger->debug('save item');
 
             $item = new Item();
             $item->setFkSellerId($_SESSION['user']);
@@ -219,20 +252,24 @@ class ItemController
 
             $out['item'] = $item->toFlatArray();
         } else {
-            $logger->debug('data invalid');
+            $this->logger->debug('data invalid');
         }
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
-    public function editItem(Request $request, Response $response, Logger $logger)
+    public function editItem(Request $request, Response $response)
     {
-        $logger->debug('=== ItemController:editItem(...) ===');
+        $this->logger->debug('=== ItemController:editItem(...) ===');
 
         if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
+            $this->logger->debug('no user session');
             return $response->withStatus(403);
         }
 
@@ -244,28 +281,28 @@ class ItemController
         $in = $request->getParsedBody();
 
         if (is_array($in)) {
-            $logger->debug('input', $in);
+            $this->logger->debug('input', $in);
         } else {
-            $logger->debug('parsed body is no array');
+            $this->logger->debug('parsed body is no array');
             return $response->withStatus(400);
         }
 
-        $itemId = $request->getAttribute('route')->getArgument('id');
+        $itemId = RouteContext::fromRequest($request)->getRoute()->getArgument('id');
         if (!v::intVal()->positive()->validate($itemId)) {
-            $logger->debug('id ' . $itemId . ' is not valid');
+            $this->logger->debug('id ' . $itemId . ' is not valid');
             return $response->withStatus(400);
         }
 
         $item = ItemQuery::create()->filterByFkSellerId($userId)->findPK($itemId);
         if (!isset($item)) {
-            $logger->debug('found no item with id ' . $itemId . ' for user ' . $userId);
+            $this->logger->debug('found no item with id ' . $itemId . ' for user ' . $userId);
             return $response->withStatus(403);
         } else {
-            $logger->debug('loaded item with id ' . $itemId);
+            $this->logger->debug('loaded item with id ' . $itemId);
         }
 
         if (array_key_exists('name', $in)) {
-            if (v::alnum($this->additionalChars)->length(1, 128)->validate($in['name'])) {
+            if (v::alnum($this->config->get('validation.additionalAllowedChars'))->length(1, 128)->validate($in['name'])) {
                 $item->setName($in['name']);
             } else {
                 $out['name'] = 'invalid';
@@ -274,7 +311,7 @@ class ItemController
         }
 
         if (array_key_exists('publisher', $in)) {
-            if (v::optional(v::alnum($this->additionalChars)->length(1, 128))->validate($in['publisher'])) {
+            if (v::optional(v::alnum($this->config->get('validation.additionalAllowedChars'))->length(1, 128))->validate($in['publisher'])) {
                 $item->setPublisher($in['publisher']);
             } else {
                 $out['publisher'] = 'invalid';
@@ -312,7 +349,7 @@ class ItemController
         }
 
         if (array_key_exists('comment', $in)) {
-            if (v::optional(v::alnum($this->additionalChars)->length(0, 512))->validate($in['comment'])) {
+            if (v::optional(v::alnum($this->config->get('validation.additionalAllowedChars'))->length(0, 512))->validate($in['comment'])) {
                 $item->setComment($in['comment']);
             } else {
                 $out['comment'] = 'invalid';
@@ -321,16 +358,20 @@ class ItemController
         }
 
         if ($out['valid']) {
-            $logger->debug('save item');
+            $this->logger->debug('save item');
             $item->save();
             $out['item'] = $item->toFlatArray();
         } else {
-            $logger->debug('data invalid');
+            $this->logger->debug('data invalid');
         }
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
     /**
@@ -356,23 +397,23 @@ class ItemController
      *     )
      * )
      */
-    public function deleteItem(Request $request, Response $response, Logger $logger)
+    public function deleteItem(Request $request, Response $response): Response
     {
-        $logger->debug('=== ItemController:deleteItem(...) ===');
+        $this->logger->debug('=== ItemController:deleteItem(...) ===');
 
         if (!isset($_SESSION['user'])) {
-            $logger->debug('no user session');
+            $this->logger->debug('no user session');
             return $response->withStatus(403);
         }
 
-        $itemId = $request->getAttribute('route')->getArgument('id');
+        $itemId = RouteContext::fromRequest($request)->getRoute()->getArgument('id');
 
-        $logger->debug('delete item (item id : ' . $itemId . ')');
+        $this->logger->debug('delete item (item id : ' . $itemId . ')');
 
         $item = ItemQuery::create()->findPK($itemId);
         $item->delete();
 
-        $logger->debug('item deleted');
+        $this->logger->debug('item deleted');
 
         return $response->withStatus(200);
     }

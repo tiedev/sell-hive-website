@@ -7,11 +7,22 @@ use Slim\Views\Twig as Twig;
 
 class LabelCreatorController
 {
-    public function show(Request $request, Response $response, Logger $logger, Twig $twig, ContextService $contextService)
-    {
-        $logger->debug('=== LabelCreatorController:show(...) ===');
+    private ContextService $contextService;
+    private Logger $logger;
+    private Twig $twig;
 
-        $context = $contextService->getGlobal();
+    public function __construct(ContextService $contextService, Logger $logger, Twig $twig)
+    {
+        $this->contextService = $contextService;
+        $this->logger = $logger;
+        $this->twig = $twig;
+    }
+
+    public function show(Request $request, Response $response)
+    {
+        $this->logger->debug('=== LabelCreatorController:show(...) ===');
+
+        $context = $this->contextService->getGlobal();
 
         $context['title'] = 'Etiketten für den Druck erzeugen';
 
@@ -28,6 +39,6 @@ class LabelCreatorController
         $context['amazonLabelImg'] = '//ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=DE&ASIN=B0002S48UI&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_SL250_&tag=erxzdgwf-21';
         $context['amazonLabelPing'] = '//ir-de.amazon-adsystem.com/e/ir?t=erxzdgwf-21&l=am2&o=3&a=B0002S48UI';
 
-        return $twig->render($response, 'content/labelCreator.twig', $context);
+        return $this->twig->render($response, 'content/labelCreator.twig', $context);
     }
 }

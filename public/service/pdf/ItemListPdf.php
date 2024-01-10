@@ -9,13 +9,13 @@ class ItemListPdf extends UserPdf
         parent::__construct($logger, 'liste');
     }
 
-    public function initItems()
+    public function initItems(): void
     {
         $this->logger->debug('load all items for seller');
         $this->items = $this->seller->getItems();
     }
 
-    public function generate()
+    public function generate(): string
     {
         $pdf = $this->initPdf();
 
@@ -60,17 +60,17 @@ class ItemListPdf extends UserPdf
         }
 
         $pdf->SetXY(20, 280);
-        $pdf->Cell(40, 10, utf8_decode('Einstellgebühr alle Spiele: ' . number_format($fee, 2, ',', '.')) . ' ' . chr(128) . ' (' . min($x-1, 30) .'x0,50 ' . chr(128) . ' / ' . max($x-31, 0) .'x0,80 ' . chr(128) . ')');
+        $pdf->Cell(40, 10, mb_convert_encoding('Einstellgebühr alle Spiele: ' . number_format($fee, 2, ',', '.'), 'ISO-8859-1', 'UTF-8') . ' ' . chr(128) . ' (' . min($x-1, 30) .'x0,50 ' . chr(128) . ' / ' . max($x-31, 0) .'x0,80 ' . chr(128) . ')');
 
         return $this->closePdf($pdf);
     }
 
-    private function addHeader($pdf)
+    private function addHeader($pdf): void
     {
         $pdf->SetXY(12, 10);
         $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(40, 10, 'Spiele-Liste / Flohmarkt Bremer Spiele-Tage vom ' . date('d.m.Y'));
         $pdf->SetXY(12, 15);
-        $pdf->Cell(40, 10, utf8_decode('Verkäufer: ' . $this->seller->getId() . ' - ' . $this->seller->getName()));
+        $pdf->Cell(40, 10, mb_convert_encoding('Verkäufer: ' . $this->seller->getId() . ' - ' . $this->seller->getName(), 'ISO-8859-1', 'UTF-8'));
     }
 }

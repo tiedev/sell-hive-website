@@ -14,7 +14,7 @@ use Base\ConfigQuery as BaseConfigQuery;
  */
 class ConfigQuery extends BaseConfigQuery
 {
-    public static function getTimestamp($key)
+    public static function getTimestamp($key): array
     {
         $out = array();
         $out['timestamp'] = 0;

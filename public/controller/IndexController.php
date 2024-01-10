@@ -1,17 +1,28 @@
 <?php
 
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface as Logger;
 use Slim\Views\Twig as Twig;
 
 class IndexController
 {
-    public function show(Request $request, Response $response, Logger $logger, Twig $twig, ContextService $contextService)
-    {
-        $logger->debug('=== IndexController:show(...) ===');
+    private ContextService $contextService;
+    private Logger $logger;
+    private Twig $twig;
 
-        $context = $contextService->getGlobal();
+    public function __construct(ContextService $contextService, Logger $logger, Twig $twig)
+    {
+        $this->contextService = $contextService;
+        $this->logger = $logger;
+        $this->twig = $twig;
+    }
+
+    public function show(Request $request, Response $response): Response
+    {
+        $this->logger->debug('=== IndexController:show(...) ===');
+
+        $context = $this->contextService->getGlobal();
 
         $context['site']['title'] = 'Bremer Spiele-Tage - Flohmarkt';
         $context['site']['name'] = 'sellhive.tealtoken.de';
@@ -25,6 +36,6 @@ class IndexController
 
         $context['nav']['logout'] = 'logout';
 
-        return $twig->render($response, 'index.twig', $context);
+        return $this->twig->render($response, 'index.twig', $context);
     }
 }

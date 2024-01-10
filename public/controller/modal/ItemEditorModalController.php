@@ -3,17 +3,30 @@
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface as Logger;
+use Slim\Routing\RouteContext;
 use Slim\Views\Twig as Twig;
 
 class ItemEditorModalController
 {
-    public function show(Request $request, Response $response, Logger $logger, Twig $twig, ContextService $contextService)
+    private ContextService $contextService;
+    private Logger $logger;
+    private Twig $twig;
+
+    public function __construct(ContextService $contextService, Logger $logger, Twig $twig)
     {
-        $logger->debug('=== ItemEditorModalController:show(...) ===');
+        $this->contextService = $contextService;
+        $this->logger = $logger;
+        $this->twig = $twig;
+    }
+
+    public function show(Request $request, Response $response): Response
+    {
+        $this->logger->debug('=== ItemEditorModalController:show(...) ===');
+        $this->logger->debug('', array('attributes' => $request->getAttributes()));
 
         // TODO validate args
 
-        $context = $contextService->getGlobal();
+        $context = $this->contextService->getGlobal();
 
         $context['title']['new'] = 'Spiel hinzufügen';
         $context['title']['edit'] = 'Spiel bearbeiten';
@@ -51,13 +64,13 @@ class ItemEditorModalController
         $context['submit']['edit'] = 'übernehmen';
         $context['cancel'] = 'abbrechen';
 
-        $itemId = $request->getAttribute('route')->getArgument('itemId');
+        $itemId = RouteContext::fromRequest($request)->getRoute()->getArgument('itemId');
         if (is_numeric($itemId)) {
             $context['itemId'] = $itemId;
         } else {
             $context['itemId'] = 'new';
         }
 
-        return $twig->render($response, 'modal/itemEditor.twig', $context);
+        return $this->twig->render($response, 'modal/itemEditor.twig', $context);
     }
 }

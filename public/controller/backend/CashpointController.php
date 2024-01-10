@@ -1,21 +1,29 @@
 <?php
 
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Log\LoggerInterface as Logger;
-use Respect\Validation\Validator as v;
-use Respect\Validation\Exceptions\NestedValidationException;
 use Noodlehaus\Config;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Log\LoggerInterface as Logger;
+use Respect\Validation\Exceptions\NestedValidationException;
+use Respect\Validation\Validator as v;
+use Slim\Routing\RouteContext;
 
 class CashpointController
 {
-    private $additionalChars = 'ÄÖÜäöüß/_+&.-';
+    private Logger $logger;
+    private Config $config;
 
-    public function exportSellers(Request $request, Response $response, Logger $logger, Config $config)
+    public function __construct(Logger $logger, Config $config)
     {
-        $logger->debug('=== CashpointController:exportSellers(...) ===');
+        $this->logger = $logger;
+        $this->config = $config;
+    }
 
-        if ($this->secretIsInvalid($request, $config)) {
+    public function exportSellers(Request $request, Response $response)
+    {
+        $this->logger->debug('=== CashpointController:exportSellers(...) ===');
+
+        if ($this->secretIsInvalid($request)) {
             return $response->withStatus(403);
         }
 
@@ -26,14 +34,18 @@ class CashpointController
             $out[] = $seller->toFlatArray();
         }
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
-    public function exportItems(Request $request, Response $response, Logger $logger, Config $config)
+    public function exportItems(Request $request, Response $response)
     {
-        $logger->debug('=== CashpointController:exportItems(...) ===');
+        $this->logger->debug('=== CashpointController:exportItems(...) ===');
 
-        if ($this->secretIsInvalid($request, $config)) {
+        if ($this->secretIsInvalid($request)) {
             return $response->withStatus(403);
         }
 
@@ -45,24 +57,33 @@ class CashpointController
             $out[] = $item->toFlatArray();
         }
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
-    public function confirmTransfer(Request $request, Response $response, Logger $logger, Config $config)
+    public function confirmTransfer(Request $request, Response $response)
     {
-        $logger->debug('=== CashpointController:confirmTransfer(...) ===');
+        $this->logger->debug('=== CashpointController:confirmTransfer(...) ===');
 
-        if ($this->secretIsInvalid($request, $config)) {
+        if ($this->secretIsInvalid($request)) {
             return $response->withStatus(403);
         }
 
         $in = $request->getParsedBody();
 
-        $logger->debug('input', isset($in) ? $in : array());
+        $this->logger->debug('input', isset($in) ? $in : array());
 
         if ($this->itemIdsNotAvailable($in)) {
-            $logger->error('item_ids invalid');
-            return $response->withJson([ 'item_ids' => 'invalid'], 400, JSON_PRETTY_PRINT);
+            $this->logger->error('item_ids invalid');
+
+            $response->getBody()->write(json_encode(['item_ids' => 'invalid'], JSON_PRETTY_PRINT));
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
         }
 
         $transferTime = time();
@@ -73,45 +94,59 @@ class CashpointController
             if (v::intVal()->positive()->validate($itemId)) {
                 $item = ItemQuery::create()->findOneById($itemId);
                 if (isset($item)) {
-                    $logger->info("item (id:$itemId) was transfered (time:$transferTime)");
+                    $this->logger->info("item (id:$itemId) was transfered (time:$transferTime)");
                     $item->setTransfered($transferTime);
                     $item->save();
                     $out['item_ids']['transfered']++;
                 } else {
-                    $logger->error("item (id:$itemId) should be transfered (time:$transferTime) but was not found");
+                    $this->logger->error("item (id:$itemId) should be transfered (time:$transferTime) but was not found");
                     $out['item_ids']['unknown']++;
                 }
             } else {
-                $logger->error("submitted item id is not a positive number ($itemId)");
+                $this->logger->error("submitted item id is not a positive number ($itemId)");
                 $out['item_ids']['invalid']++;
             }
         }
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
-    public function confirmSold(Request $request, Response $response, Logger $logger, Config $config)
+    public function confirmSold(Request $request, Response $response)
     {
-        $logger->debug('=== CashpointController:confirmSold(...) ===');
+        $this->logger->debug('=== CashpointController:confirmSold(...) ===');
 
-        if ($this->secretIsInvalid($request, $config)) {
+        if ($this->secretIsInvalid($request)) {
             return $response->withStatus(403);
         }
 
         $in = $request->getParsedBody();
 
-        $logger->debug('input', isset($in) ? $in : array());
+        $this->logger->debug('input', isset($in) ? $in : array());
 
         if ($this->itemIdsNotAvailable($in)) {
-            $logger->error('item_ids are not available');
-            return $response->withJson([ 'item_ids' => 'missing'], 400, JSON_PRETTY_PRINT);
+            $this->logger->error('item_ids are not available');
+
+            $response->getBody()->write(json_encode(['item_ids' => 'missing'], JSON_PRETTY_PRINT));
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
         }
 
         if ($this->analogItemsNotAvailable($in)) {
-            $logger->error('analog_items are not available');
-            return $response->withJson([ 'analog_items' => 'missing'], 400, JSON_PRETTY_PRINT);
+            $this->logger->error('analog_items are not available');
+
+            $response->getBody()->write(json_encode(['analog_items' => 'missing'], JSON_PRETTY_PRINT));
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
         }
 
         $transferTime = time();
@@ -122,21 +157,21 @@ class CashpointController
             if (v::intVal()->positive()->validate($itemId)) {
                 $item = ItemQuery::create()->findOneById($itemId);
                 if (isset($item)) {
-                    $logger->info("item (id:$itemId) was sold (time:$transferTime)");
+                    $this->logger->info("item (id:$itemId) was sold (time:$transferTime)");
                     $item->setSold($transferTime);
                     $item->save();
                     $out['item_ids']['sold']++;
                 } else {
-                    $logger->error("item (id:$itemId) should be sold (time:$transferTime) but was not found");
+                    $this->logger->error("item (id:$itemId) should be sold (time:$transferTime) but was not found");
                     $out['item_ids']['unknown']++;
                 }
             } else {
-                $logger->error("submitted item id is not a positive number ($itemId)");
+                $this->logger->error("submitted item id is not a positive number ($itemId)");
                 $out['item_ids']['invalid']++;
             }
         }
 
-        $nameValidator = v::alpha($this->additionalChars)->length(1, 128);
+        $nameValidator = v::alpha($this->config->get('validation.additionalAllowedChars'))->length(1, 128);
         $priceValidator = v::intVal()->between(100, 10000, true)->multiple(50);
         $analogItemDataValidator = v::allOf(v::key('seller_name', $nameValidator), v::key('item_name', $nameValidator), v::key('item_price', $priceValidator));
 
@@ -154,35 +189,39 @@ class CashpointController
                 $sellerName = isset($analogItemData['seller_name']) ? $analogItemData['seller_name'] : 'MISSING';
                 $itemName = isset($analogItemData['item_name']) ? $analogItemData['item_name'] : 'MISSING';
                 $itemPrice = isset($analogItemData['item_price']) ? $analogItemData['item_price'] : 'MISSING';
-                $logger->error("analog item  is invalid ($sellerName|$itemName|$itemPrice)", $exception->getMessages());
+                $this->logger->error("analog item  is invalid ($sellerName|$itemName|$itemPrice)", $exception->getMessages());
                 $out['analog_items']['invalid']++;
             }
         }
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
-    private function secretIsInvalid(Request $request, Config $config)
+    private function secretIsInvalid(Request $request): bool
     {
-        $validSecret = $config->get('cashpoint.secret');
-        $submittedSecret = $request->getAttribute('route')->getArgument('secret', 'null');
+        $validSecret = $this->config->get('cashpoint.secret');
+        $submittedSecret = RouteContext::fromRequest($request)->getRoute()->getArgument('secret', 'null');
         $valid = v::equals($validSecret)->validate($submittedSecret);
 
         if (!$valid) {
-            $logger->warn('invalid secret "' . $submittedSecret . '"');
+            $this->logger->warn('invalid secret "' . $submittedSecret . '"');
         }
 
         return !$valid;
     }
 
-    private function itemIdsNotAvailable($in)
+    private function itemIdsNotAvailable($in): bool
     {
         return !v::key('item_ids', v::arrayType())->validate($in);
     }
 
-    private function analogItemsNotAvailable($in)
+    private function analogItemsNotAvailable($in): bool
     {
         return !v::key('analog_items', v::arrayType())->validate($in);
     }

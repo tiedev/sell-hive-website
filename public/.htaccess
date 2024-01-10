@@ -3,3 +3,15 @@ RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . index.php [L]
+
+# TODO need to be generated!
+# will be extended by gradle under this line
+RedirectMatch 403 /controller/.*$
+RedirectMatch 403 /propel/.*$
+RedirectMatch 403 /response/.*$
+RedirectMatch 403 /service/.*$
+RedirectMatch 403 /templates/.*$
+RedirectMatch 403 /vendor/.*$
+RedirectMatch 403 /config.dist.yaml$
+RedirectMatch 403 /config.yaml$
+# restrict folders for public access

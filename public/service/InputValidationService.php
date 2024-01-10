@@ -1,19 +1,16 @@
 <?php
 
 use Psr\Log\LoggerInterface as Logger;
-use Noodlehaus\Config;
 use Respect\Validation\Validator as v;
 use Respect\Validation\Exceptions\NestedValidationException;
 
 class InputValidationService
 {
-    private $logger;
-    private $config;
+    private Logger $logger;
 
-    public function __construct(Logger $logger, Config $config)
+    public function __construct(Logger $logger)
     {
         $this->logger = $logger;
-        $this->config = $config;
     }
 
     public function invalidEditSeller($inputArray)

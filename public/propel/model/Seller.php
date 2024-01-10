@@ -14,19 +14,19 @@ use Base\Seller as BaseSeller;
  */
 class Seller extends BaseSeller
 {
-    public function getBarcodeId()
+    public function getBarcodeId(): string
     {
         $year = date("Y");
         $prefixOfTheYear = chr($year - 1953);
         return $prefixOfTheYear . $this->getId();
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
-    public function initLimit($limit, $autoAccept, $limitTill)
+    public function initLimit($limit, $autoAccept, $limitTill): void
     {
         if ($limit > $autoAccept) {
             $this->setLimit($autoAccept);
@@ -40,7 +40,7 @@ class Seller extends BaseSeller
         }
     }
 
-    public function genPassword()
+    public function genPassword(): void
     {
         $this->setPassword(Seller::genSecret(8));
     }
@@ -50,7 +50,7 @@ class Seller extends BaseSeller
         $this->setPathSecret(Seller::genSecret(32));
     }
 
-    public function toFlatArray()
+    public function toFlatArray(): array
     {
         $array = array();
         $array['id'] = $this->getId();
@@ -59,7 +59,7 @@ class Seller extends BaseSeller
         return $array;
     }
 
-    private static function genSecret($length)
+    private static function genSecret($length): string
     {
         $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
 

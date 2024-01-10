@@ -11,7 +11,7 @@ class UserLabelItemPdf extends UserLabelPdf
         parent::__construct($logger, 'etiketten');
     }
 
-    public function setSeller($id)
+    public function setSeller($id): void
     {
         parent::setSeller($id);
 
@@ -19,17 +19,17 @@ class UserLabelItemPdf extends UserLabelPdf
         $this->items = ItemQuery::create()->filterByFkSellerId($this->seller->getId())->find();
     }
 
-    public function setStartIndex($startIndex)
+    public function setStartIndex($startIndex): void
     {
         $this->startIndex = $startIndex;
     }
 
-    public function setMultiplier($multiplier)
+    public function setMultiplier($multiplier): void
     {
         $this->multiplier = $multiplier;
     }
 
-    public function generate()
+    public function generate(): string
     {
         $pdf = $this->initPdf();
 

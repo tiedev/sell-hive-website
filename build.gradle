@@ -23,7 +23,7 @@ ext {
 	testDir = "${projectDir}\\tests"
 }
 
-task define_target_environment {
+tasks.register('define_target_environment') {
 	if (project.hasProperty('env')) {
 		targetEnv = project.getProperty('env')
 		println "target environment: '${targetEnv}'\n"
@@ -37,12 +37,14 @@ task define_target_environment {
 	}
 }
 
-task composer_update(type: Exec) {
+tasks.register('composer_update', Exec) {
 	group 'composer'
 	description 'execute composer update'
 
+	def php = project.hasProperty('phpPath') ? "${phpPath} " : ''
+	def composer = project.hasProperty('composerPath') ? "${composerPath} " : 'composer'
 	def environmentParam = targetEnv == 'prod' ? ' --no-dev' : ''
-	def composerCommand = "composer update" + environmentParam
+	def composerCommand = php + composer + " update" + environmentParam
 
 	commandLine 'cmd', '/c', composerCommand
 
@@ -51,7 +53,7 @@ task composer_update(type: Exec) {
 	doLast { println 'done.' }
 }
 
-task verify_htaccess {
+tasks.register('verify_htaccess') {
 	group 'security'
 	description 'verifiy that htaccess is configuerd right'
 
@@ -67,7 +69,7 @@ task verify_htaccess {
 	doLast { println 'done.' }
 }
 
-task copy_bootstrap(type: Copy) {
+tasks.register('copy_bootstrap', Copy) {
 	group 'distribution'
 	description 'copies bootstrap from vendor to public directory'
 
@@ -79,7 +81,7 @@ task copy_bootstrap(type: Copy) {
 	doLast { println 'done.' }
 }
 
-task propel_config_prepare {
+tasks.register('propel_config_prepare') {
 	group 'propel'
 	description 'set default connection by target environment'
 
@@ -110,7 +112,7 @@ task propel_config_prepare {
 	}
 }
 
-task propel_config_build(type: Exec) {
+tasks.register('propel_config_build', Exec) {
 	group 'propel'
 	description 'generate propel startup configuration'
 
@@ -123,7 +125,7 @@ task propel_config_build(type: Exec) {
 	doLast { println 'done.' }
 }
 
-task propel_sql(type: Exec) {
+tasks.register('propel_sql', Exec) {
 	group 'propel'
 	description 'generate propel sql file'
 
@@ -134,7 +136,7 @@ task propel_sql(type: Exec) {
 	doLast { println 'done.' }
 }
 
-task propel_model_clean(type: Delete) {
+tasks.register('propel_model_clean', Delete) {
 	group 'propel'
 	description 'clean propel model'
 
@@ -143,7 +145,7 @@ task propel_model_clean(type: Delete) {
 	doLast { println 'done.' }
 }
 
-task propel_model_build(type: Exec) {
+tasks.register('propel_model_build', Exec) {
 	group 'propel'
 	description 'generate propel model'
 
@@ -155,7 +157,7 @@ task propel_model_build(type: Exec) {
 	doLast { println 'done.' }
 }
 
-task propel_diff_clean(type: Delete) {
+tasks.register('propel_diff_clean', Delete) {
 	group 'propel'
 	description 'clean propel diff scripts'
 
@@ -163,7 +165,7 @@ task propel_diff_clean(type: Delete) {
 	doLast { println 'done.' }
 }
 
-task propel_diff_build(type: Exec) {
+tasks.register('propel_diff_build', Exec) {
 	group 'propel'
 	description 'generate propel diff script'
 
@@ -175,7 +177,7 @@ task propel_diff_build(type: Exec) {
 	doLast { println 'done.' }
 }
 
-task propel_diff {
+tasks.register('propel_diff') {
 	group 'propel'
 	description 'clean and generate propel diff script'
 
@@ -183,7 +185,7 @@ task propel_diff {
 	dependsOn propel_diff_build
 }
 
-task propel_build {
+tasks.register('propel_build') {
 	group 'propel'
 	description 'complete propel build'
 
@@ -195,7 +197,7 @@ task propel_build {
 	dependsOn propel_model_build
 }
 
-task execute_unit_tests(type: Exec) {
+tasks.register('execute_unit_tests', Exec) {
 	group 'test'
 	description 'executes the phpunit tests in tests folder'
 
@@ -222,7 +224,7 @@ build {
 	doLast { println 'done.' }
 }
 
-task link_local_server(type: Exec) {
+tasks.register('link_local_server', Exec) {
 	group 'deploy'
 	description 'create symlink from distribution folder to local server'
 

@@ -6,6 +6,11 @@ monolog:
     allowLineBreaks: false
     ignoreEmptyContextAndExtra: false
 
+slim:
+    displayErrorDetails: false
+    logErrors: false
+    logErrorDetails: false
+
 twig:
     cache: true
     debug: false
@@ -29,6 +34,7 @@ phpmailer:
 
 common:
     baseUrl: need2configure
+    basePath: need2configure
 
 cashpoint:
     secret: need2configure
@@ -47,3 +53,6 @@ admin:
     active: false
     password: need2configure
     mail: need2configure
+
+validation:
+    additionalAllowedChars: ÄÖÜäöüß/_+&.-

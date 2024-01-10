@@ -6,6 +6,7 @@ use Psr\Log\LoggerInterface as Logger;
 use Respect\Validation\Validator as v;
 use Propel\Runtime\ActiveQuery\Criteria as c;
 use Noodlehaus\Config;
+use Slim\Routing\RouteContext;
 
 class SellerController
 {
@@ -83,7 +84,11 @@ class SellerController
 
         $logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
     public function get(Request $request, Response $response, Logger $logger, AuthService $auth)
@@ -94,7 +99,7 @@ class SellerController
             return $response->withStatus(403);
         }
 
-        $sellerId = $request->getAttribute('route')->getArgument('id');
+        $sellerId = RouteContext::fromRequest($request)->getRoute()->getArgument('id');
         if (!v::intVal()->positive()->validate($sellerId)) {
             $logger->debug('id ' . $sellerId . ' is not valid');
             return $response->withStatus(400);
@@ -113,7 +118,11 @@ class SellerController
 
         $logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
     public function edit(Request $request, Response $response, Logger $logger, AuthService $auth, MailService $mail, InputValidationService $v)
@@ -131,7 +140,7 @@ class SellerController
             return $response->withStatus(400);
         }
 
-        $sellerId = $request->getAttribute('route')->getArgument('id');
+        $sellerId = RouteContext::fromRequest($request)->getRoute()->getArgument('id');
         if (!v::intVal()->positive()->validate($sellerId)) {
             $logger->debug('id ' . $sellerId . ' is not valid');
             return $response->withStatus(400);
@@ -161,7 +170,11 @@ class SellerController
         $out['seller']['limit'] = $seller->getLimit();
         $out['seller']['limit_till'] = $seller->getLimitTill();
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 
     public function list(Request $request, Response $response, Logger $logger, AuthService $auth)
@@ -211,6 +224,10 @@ class SellerController
 
         $logger->debug('output', $out);
 
-        return $response->withJson($out, 200, JSON_PRETTY_PRINT);
+        $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 }
