@@ -23,7 +23,7 @@ class SellerLimitController
         $this->mail = $mail;
     }
 
-    public function get(Request $request, Response $response)
+    public function get(Request $request, Response $response): Response
     {
         $this->logger->debug('=== SellerLimitController:get(...) ===');
 
@@ -44,7 +44,7 @@ class SellerLimitController
             ->withStatus(200);
     }
 
-    public function openRequest(Request $request, Response $response)
+    public function openRequest(Request $request, Response $response): Response
     {
         $this->logger->debug('=== SellerLimitController:openRequest(...) ===');
 
@@ -92,11 +92,11 @@ class SellerLimitController
             ->withStatus(200);
     }
 
-    public function resetLimits(Request $request, Response $response)
+    public function resetLimits(Request $request, Response $response): Response
     {
         $this->logger->debug('=== SellerLimitController:resetLimits(...) ===');
 
-        if ($this->secretIsInvalid($request, $this->config)) {
+        if ($this->secretIsInvalid($request)) {
             return $response->withStatus(403);
         }
 

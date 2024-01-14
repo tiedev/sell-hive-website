@@ -12,9 +12,24 @@ class SellerController
 {
     private $additionalChars = 'ÄÖÜäöüß-';
 
-    public function create(Request $request, Response $response, Logger $logger, MailService $mail, Config $config)
+    private Logger $logger;
+    private Config $config;
+    private AuthService $auth;
+    private MailService $mail;
+    private InputValidationService $v;
+
+    public function __construct(Logger $logger, Config $config, AuthService $auth, MailService $mail, InputValidationService $v)
     {
-        $logger->debug('=== SellerController:create(...) ===');
+        $this->logger = $logger;
+        $this->config = $config;
+        $this->auth = $auth;
+        $this->mail = $mail;
+        $this->v = $v;
+    }
+
+    public function create(Request $request, Response $response)
+    {
+        $this->logger->debug('=== SellerController:create(...) ===');
 
         $out = array();
         $out['valid'] = true;
@@ -23,7 +38,7 @@ class SellerController
 
         $in = $request->getParsedBody();
 
-        $logger->debug('input', $in);
+        $this->logger->debug('input', $in);
 
         if (!v::alpha($this->additionalChars)->length(1, 64)->validate($in['lastName'])) {
             $out['lastName'] = 'invalid';
@@ -46,7 +61,7 @@ class SellerController
             $out['valid'] = false;
         }
 
-        $maxStep = $config->get('seller.limit.maxStep');
+        $maxStep = $this->config->get('seller.limit.maxStep');
         if (!v::intVal()->positive()->between(1, $maxStep)->validate($in['limit'])) {
             $out['limit'] = 'invalid';
             $out['valid'] = false;
@@ -58,31 +73,31 @@ class SellerController
         }
 
         if ($out['valid']) {
-            $logger->debug('save seller');
+            $this->logger->debug('save seller');
 
             $seller = new Seller();
             $seller->setLastName($in['lastName']);
             $seller->setFirstName($in['firstName']);
             $seller->setMail($in['mail']);
-            $seller->initLimit($in['limit'], $config->get('seller.limit.autoAccept'), $config->get('seller.limit.initTill'));
+            $seller->initLimit($in['limit'], $this->config->get('seller.limit.autoAccept'), $this->config->get('seller.limit.initTill'));
             $seller->genPassword();
             $seller->genPathSecret();
             $seller->save();
 
             $out['saved'] = true;
-            $logger->debug('seller saved');
+            $this->logger->debug('seller saved');
 
-            $out['mailed'] = $mail->sendWelcomeToSeller($seller);
+            $out['mailed'] = $this->mail->sendWelcomeToSeller($seller);
 
             if ($seller->getLimitRequest() > 0) {
-                $logger->info('send limit request');
-                $mail->sendLimitRequestToAdmin($seller);
+                $this->logger->info('send limit request');
+                $this->mail->sendLimitRequestToAdmin($seller);
             }
         } else {
-            $logger->debug('data invalid');
+            $this->logger->debug('data invalid');
         }
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
         $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
 
@@ -91,17 +106,17 @@ class SellerController
             ->withStatus(200);
     }
 
-    public function get(Request $request, Response $response, Logger $logger, AuthService $auth)
+    public function get(Request $request, Response $response)
     {
-        $logger->debug('=== SellerController:get(...) ===');
+        $this->logger->debug('=== SellerController:get(...) ===');
 
-        if ($auth->isNoAdmin()) {
+        if ($this->auth->isNoAdmin()) {
             return $response->withStatus(403);
         }
 
         $sellerId = RouteContext::fromRequest($request)->getRoute()->getArgument('id');
         if (!v::intVal()->positive()->validate($sellerId)) {
-            $logger->debug('id ' . $sellerId . ' is not valid');
+            $this->logger->debug('id ' . $sellerId . ' is not valid');
             return $response->withStatus(400);
         }
 
@@ -116,7 +131,7 @@ class SellerController
         $out['limit_till'] = $seller->getLimitTill();
         $out['limit_request'] = $seller->getLimitRequest() ?: 0;
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
         $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
 
@@ -125,16 +140,16 @@ class SellerController
             ->withStatus(200);
     }
 
-    public function edit(Request $request, Response $response, Logger $logger, AuthService $auth, MailService $mail, InputValidationService $v)
+    public function edit(Request $request, Response $response)
     {
-        $logger->debug('=== SellerController:edit(...) ===');
+        $this->logger->debug('=== SellerController:edit(...) ===');
 
-        if ($auth->isNoAdmin()) {
+        if ($this->auth->isNoAdmin()) {
             return $response->withStatus(403);
         }
 
         $in = $request->getParsedBody();
-        $messages = $v->invalidEditSeller($in);
+        $messages = $this->v->invalidEditSeller($in);
         if ($messages) {
             // TODO : give messages to client
             return $response->withStatus(400);
@@ -142,13 +157,13 @@ class SellerController
 
         $sellerId = RouteContext::fromRequest($request)->getRoute()->getArgument('id');
         if (!v::intVal()->positive()->validate($sellerId)) {
-            $logger->debug('id ' . $sellerId . ' is not valid');
+            $this->logger->debug('id ' . $sellerId . ' is not valid');
             return $response->withStatus(400);
         }
 
         $seller = SellerQuery::create()->findOneById($sellerId);
         if ($seller == null) {
-            $logger->error('seller (id:' . $sellerId . ') does not exist');
+            $this->logger->error('seller (id:' . $sellerId . ') does not exist');
             return $response->withStatus(404);
         }
 
@@ -162,7 +177,7 @@ class SellerController
         $seller->save();
 
         if ($out['limit_changed']) {
-            $out['mailed'] = $mail->sendLimitInfoToSeller($seller);
+            $out['mailed'] = $this->mail->sendLimitInfoToSeller($seller);
         }
 
         $out['valid'] = true;
@@ -177,11 +192,11 @@ class SellerController
             ->withStatus(200);
     }
 
-    public function list(Request $request, Response $response, Logger $logger, AuthService $auth)
+    public function list(Request $request, Response $response)
     {
-        $logger->debug('=== SellerController:list(...) ===');
+        $this->logger->debug('=== SellerController:list(...) ===');
 
-        if ($auth->isNoAdmin()) {
+        if ($this->auth->isNoAdmin()) {
             return $response->withStatus(403);
         }
 
@@ -222,7 +237,7 @@ class SellerController
             $out['details'][$seller->getId()] = $box;
         }
 
-        $logger->debug('output', $out);
+        $this->logger->debug('output', $out);
 
         $response->getBody()->write(json_encode($out, JSON_PRETTY_PRINT));
 
