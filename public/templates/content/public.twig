@@ -1,283 +1,336 @@
 <!doctype html>
 
 <div class="container" id="public">
-  <div class="row">
-    <div class="col-md-8">
+    <div class="row">
+        <div class="col-md-8">
 
-      <h2>13. Bremer Spiele-Tage – Flohmarkt</h2>
+            <h2>14. Bremer Spiele-Tage – Flohmarkt</h2>
 
-      <!-- <div class="alert alert-warning" role="alert"> <h4 class="alert-heading">Testbetrieb<img src="img/icons/error.png" class="float-right"/></h4> <p> Wir befinden uns aktuell im Testbetrieb.<br/>Nach Beendigung des Testbetriebs werden
-      <strong>alle</strong> eingetragenen <strong>Daten und Accounts gelöscht</strong>! </p> </div> -->
+            {% if config.displayTestModeInfo %}
+                <br>
 
-      <p>
-        Wenn du auf dem Spiele-Flohmarkt der 13. Bremer Spiele-Tage am 07. und 08. März 2020 deine Spiele zum Verkauf abgeben möchtest, musst du vorher alle Spiele in dieser Datenbank eingeben. Die Anzahl der abzugebenden Spiele ist begrenzt (siehe unten).
-      </p>
+                <div class="alert alert-warning" role="alert">
+                    <h4 class="alert-heading">Testbetrieb<img src="img/icons/error.png" class="float-right"/></h4>
+                    <p>
+                        Wir befinden uns aktuell im Testbetrieb, <strong>bis voraussichtlich 15.01.2024</strong>.<br/>
+                        Nach Beendigung des Testbetriebs werden <strong>alle</strong> eingetragenen
+                        <strong>Daten und Accounts gelöscht</strong>!
+                    </p>
+                </div>
+            {% endif %}
 
-      <p>
-        Die Daten werden nur im Zusammenhang mit dem Verkauf auf dem Flohmarkt der 13. Bremer Spiele-Tage genutzt. Alle Eingaben und Konten werden drei Monate nach der Veranstaltung gelöscht. Daher ist jedes Jahr eine neue Registrierung erforderlich.
-      </p>
+            <p>
+                Um Spiele auf dem Flohmarkt der 14. Bremer Spiele-Tage am 09. und 10. März 2024 zum Verkauf anzugeben
+                sind folgende Schritte notwendig:
+            </p>
 
-      <p>
-        Im ersten Schritt musst Du Dich registrieren und dabei ein Wunschkontingent angeben. Es wird ein Passwort an die von Dir angegebene Mailadresse gesendet. Melde Dich dann mit der Mailadresse und dem Passwort an.
-      </p>
+            <ol>
+                <li>Sich auf dieser Website <strong>registrieren</strong>.</li>
+                <li>Alle <strong>Spiele eintragen</strong>.</li>
+                <li><strong>Label drucken</strong> und auf die Spiele aufkleben.</li>
+                <li>Dokumente zur Abgabe generieren.</li>
+                <li><strong>Spiele</strong> am 08. März 2024 zwischen 16 und 18 Uhr <strong>abgeben</strong>.</li>
+                <li>Die Bremer Spiele-Tage genießen.</li>
+                <li>Erlös und nicht verkaufte Spiele am 10. März 2024 zwischen 18 und 19 Uhr abholen.</li>
+            </ol>
 
-      <p>
-        Nach der ersten Anmeldung wird für Dich sofort ein Kontingent von 10 Spielen freigegeben. Möchtest Du später mehr Spiele abgeben als bewilligt, kannst Du ein neues Wunschkontingent anfragen. Je nach Verfügbarkeit erhältst Du - spätestens am Folgetag
-        - eine Freigabe für weitere Spiele (Maximum zunächst 100 Spiele, kann später ggf. angepasst werden). Für alle Freigaben gilt: Die Eingabe muss bis zum mitgeteilten Zeitpunkt erfolgen, anschließend sinkt die Freigabe auf die bis zu dem vorgegebenen
-        Zeitpunkt eingegebene Anzahl an Spielen.
-      </p>
+            <p>Details:</p>
 
-      {# many items message #}
-      {#<p><b>Da es bereits sehr viele Anmeldungen gibt können wir gewünschte Kontingente leider nicht mehr sofort oder nur in kleinen Schritten freigeben.</b></p>#}
+            <p>
+                Die Daten werden nur im Zusammenhang mit dem Verkauf auf dem Flohmarkt der 14. Bremer Spiele-Tage
+                genutzt. Alle Eingaben und Konten werden drei Monate nach der Veranstaltung gelöscht. Daher ist jedes
+                Jahr eine neue Registrierung erforderlich.
+            </p>
 
-      {# to much items message #}
-      <p>
-        <b>Aufgrund der vielzahl an Anmeldungen können wir leider keine weitere Erhöhung der Kontingente vornehmen. Sorry.</b>
-      </p>
+            <p>
+                Im ersten Schritt musst Du Dich registrieren und dabei ein Wunschkontingent angeben. Es wird ein
+                Passwort an die von Dir angegebene Mailadresse gesendet. Melde Dich dann mit der Mailadresse und dem
+                Passwort an.
+            </p>
 
-      <p>
-        Dieses Verfahren ist verbindlich für alle Verkäufer*innen. Die richtig gekennzeichneten Spiele und weiteren Unterlagen sind am 6.3.20 (Fr.), zwischen 17 und 19 Uhr in der Bremer VHS (Raum 405) abzugeben. Am Samstag oder Sonntag nehmen wir nur noch
-        bis zu 10 Spiele pro Person an - sofern genügend Platz auf dem Flohmarkt ist.
-      </p>
+            <p>
+                Nach der ersten Anmeldung wird für Dich sofort ein Kontingent von 10 Spielen freigegeben. Möchtest Du
+                später mehr Spiele abgeben, kannst Du ein neues Wunschkontingent anfragen. Je nach Verfügbarkeit
+                erhältst Du eine Freigabe für weitere Spiele.<br>
+                Für alle Freigaben gilt: Die Eingabe muss bis zum mitgeteilten Zeitpunkt erfolgen, anschließend sinkt
+                die Freigabe auf die bis zu dem vorgegebenen Zeitpunkt eingegebene Anzahl an Spielen. Ein neues
+                Kontingent kann dann erneut angefragt werden.
+            </p>
 
-      <p>
-        Bei Fragen kannst Du an spiele@vhs-bremen.de wenden.
-      </p>
+            {% if config.manyItemsMessage %}
+                <p>
+                    <b>Da es bereits sehr viele Anmeldungen gibt, können wir gewünschte Kontingente leider nicht mehr
+                        sofort oder nur in kleinen Schritten freigeben.</b>
+                </p>
+            {% endif %}
 
-      <p>
-        Eine Beschreibung für die Eingabe, das weitere Verfahren und alle anderen wichtigen Punkte/Regeln findest Du
-        <a href="http://www.bremerspieletage.de/index.php/flohmarkt" target="_blank">hier</a>.
-      </p>
+            {% if config.tooMuchItemsMessage %}
+                <p>
+                    <b>Aufgrund der vielzahl an Anmeldungen können wir leider keine weitere Erhöhung der Kontingente
+                        vornehmen. Sorry.</b>
+                </p>
+            {% endif %}
 
+            <p>
+                Dieses Verfahren ist verbindlich für alle Verkäufer*innen. Die richtig gekennzeichneten Spiele und
+                weiteren Unterlagen sind am 08. März 2024 (Fr.) zwischen 16 und 18 Uhr in der Bremer VHS (Raum 103)
+                abzugeben.<br>
+                Am Samstag oder Sonntag ist eine Annahme nur nach Auslastung der Helfer möglich und somit eventuell mit
+                Wartezeit verbunden.
+            </p>
+
+            <p>
+                Bei Fragen kannst Du an flohmarkt@bremerspieletage.de wenden.
+            </p>
+
+            <p>
+                Weitere Informationen zum Flohmarkt und den Bremer Spiele-Tagen findest Du
+                <a href="http://www.bremerspieletage.de/index.php/flohmarkt" target="_blank">hier</a>.
+            </p>
+
+        </div>
+        <div class="col-md-4">
+
+            <div class="card border-dark" style="width: 20rem;" id="loginContainer">
+                <h4 class="card-header border-dark text-white bg-primary">{{ login.title }}</h4>
+                <div class="card-body">
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="loginMail" placeholder="{{ login.mail }}"
+                               data-toggle="tooltip" data-placement="left" title="{{ login.mail }}:">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="loginPassword"
+                               placeholder="{{ login.password }}" data-toggle="tooltip" data-placement="left"
+                               title="{{ login.password }}:">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm" id="loginButton">{{ login.submit }}</button>
+                    <button type="submit" class="btn btn-default btn-sm" id="loginRemindButton"
+                            style="display:none">{{ login.remind }}</button>
+                </div>
+            </div>
+
+            <p></p>
+
+            {% if config.enableRegistration %}
+                <div class="card border-dark" style="width: 20rem;" id="registerContainer">
+                    <h4 class="card-header border-dark text-white bg-success">{{ register.title }}</h4>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="registerMail" placeholder="{{ register.mail }}"
+                                   data-toggle="tooltip" data-placement="left" title="{{ register.mail }}:">
+                            <span class="invalid-feedback" id="registerMailText"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="registerFirstName"
+                                   placeholder="{{ register.name.first }}" data-toggle="tooltip" data-placement="left"
+                                   title="{{ register.name.first }}:">
+                            <span class="invalid-feedback" id="registerFirstNameText"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="registerLastName"
+                                   placeholder="{{ register.name.last }}" data-toggle="tooltip" data-placement="left"
+                                   title="{{ register.name.last }}:">
+                            <span class="invalid-feedback" id="registerLastNameText"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="registerLimit"
+                                   placeholder="{{ register.limit }}"
+                                   data-toggle="tooltip" data-placement="left" title="{{ register.limit }}:">
+                            <span class="invalid-feedback" id="registerLimitText"></span>
+                        </div>
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="registerContract">
+                            <label class="form-check-label" id="registerContractText"
+                                   for="registerContract">{{ register.contract|raw }}</label>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-sm"
+                                id="registerButton">{{ register.submit }}</button>
+                        <button type="submit" class="btn btn-default btn-sm" id="registerRemindButton"
+                                style="display:none">{{ login.remind }}</button>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card border-dark" style="width: 20rem;" id="registerContainer">
+                    <h4 class="card-header border-dark text-white bg-success">{{ register.title }}</h4>
+                    <div class="card-body">
+                        Für dieses Jahr sind leider keine weiteren Anmeldungen mehr möglich. Sorry.
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
     </div>
-    <div class="col-md-4">
-
-      <div class="card border-dark" style="width: 20rem;" id="loginContainer">
-        <h4 class="card-header border-dark text-white bg-primary">{{ login.title }}</h4>
-        <div class="card-body">
-          <div class="form-group">
-            <input type="email" class="form-control" id="loginMail" placeholder="{{ login.mail }}" data-toggle="tooltip" data-placement="left" title="{{ login.mail }}:">
-          </div>
-          <div class="form-group">
-            <input type="password" class="form-control" id="loginPassword" placeholder="{{ login.password }}" data-toggle="tooltip" data-placement="left" title="{{ login.password }}:">
-          </div>
-          <button type="submit" class="btn btn-primary btn-sm" id="loginButton">{{ login.submit }}</button>
-          <button type="submit" class="btn btn-default btn-sm" id="loginRemindButton" style="display:none">{{ login.remind }}</button>
-        </div>
-      </div>
-
-      <p></p>
-
-      <div class="card border-dark" style="width: 20rem;" id="registerContainer">
-        <h4 class="card-header border-dark text-white bg-success">{{ register.title }}</h4>
-        <div class="card-body">
-          <div class="form-group">
-            <input type="email" class="form-control" id="registerMail" placeholder="{{ register.mail }}" data-toggle="tooltip" data-placement="left" title="{{ register.mail }}:">
-            <span class="invalid-feedback" id="registerMailText"></span>
-          </div>
-          <div class="form-group">
-            <input type="text" class="form-control" id="registerFirstName" placeholder="{{ register.name.first }}" data-toggle="tooltip" data-placement="left" title="{{ register.name.first }}:">
-            <span class="invalid-feedback" id="registerFirstNameText"></span>
-          </div>
-          <div class="form-group">
-            <input type="text" class="form-control" id="registerLastName" placeholder="{{ register.name.last }}" data-toggle="tooltip" data-placement="left" title="{{ register.name.last }}:">
-            <span class="invalid-feedback" id="registerLastNameText"></span>
-          </div>
-          <div class="form-group">
-            <input type="text" class="form-control" id="registerLimit" placeholder="{{ register.limit }}" data-toggle="tooltip" data-placement="left" title="{{ register.limit }}:">
-            <span class="invalid-feedback" id="registerLimitText"></span>
-          </div>
-          <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="registerContract">
-            <label class="form-check-label" id="registerContractText" for="registerContract">{{ register.contract|raw }}</label>
-          </div>
-          <button type="submit" class="btn btn-success btn-sm" id="registerButton">{{ register.submit }}</button>
-          <button type="submit" class="btn btn-default btn-sm" id="registerRemindButton" style="display:none">{{ login.remind }}</button>
-        </div>
-      </div>
-
-      {# TODO : display when registration is disabled!!!
-      <div class="card border-dark" style="width: 20rem;" id="registerContainer">
-        <h4 class="card-header border-dark text-white bg-success">{{ register.title }}</h4>
-        <div class="card-body">
-          Für dieses Jahr sind leider keine weiteren Anmeldungen mehr möglich. Sorry.
-        </div>
-      </div>
-      #}
-
-    </div>
-  </div>
 </div>
 
 <div class="modal" id="modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" id="modalContent">
-      <!-- need to be loaded -->
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="modalContent">
+            <!-- need to be loaded -->
+        </div>
     </div>
-  </div>
 </div>
 
 <script>
-  function doLogin() {
-    $.post('{{ backend.url.auth }}', {
-      mail: $('#loginMail').val(),
-      password: $('#loginPassword').val()
-    }, function(data) {
-      if (data.login) {
-        if (data.admin) {
-          adminIsLoggendIn();
-          loadContent('sellerManager');
-        } else {
-          userIsLoggedIn();
-          loadContent('itemManager');
-        }
-      } else {
-        $('#loginMail').addClass('is-invalid');
-        $('#loginPassword').addClass('is-invalid');
-        if (data.mail === 'valid') {
-          $('#loginRemindButton').show();
-        }
-      }
-    }, 'json');
-  }
-
-  function doRemindByLogin() {
-    doRemind('loginMail');
-  }
-
-  function doRemindByRegister() {
-    doRemind('registerMail');
-  }
-
-  function doRemind(mailInputId) {
-    $.post('{{ backend.url.remind }}', {
-      mail: $('#' + mailInputId).val()
-    }, function(data) {
-
-      if (data.mailed) {
-        $('#modalContent').load('{{ frontend.modal.info }}/remind/success');
-      } else {
-        $('#modalContent').load('{{ frontend.modal.info }}/remind/error');
-      }
-
-      $('#modal').modal('show');
-
-    }, 'json');
-  }
-
-  function doRegister() {
-    $.post('{{ backend.url.seller }}', {
-      mail: $('#registerMail').val(),
-      firstName: $('#registerFirstName').val(),
-      lastName: $('#registerLastName').val(),
-      limit: $('#registerLimit').val(),
-      contract: $('#registerContract').prop('checked')
-    }, function(data) {
-
-      if (data.valid) {
-
-        $('#registerMail').val('');
-        $('#registerFirstName').val('');
-        $('#registerLastName').val('');
-        $('#registerLimit').val('');
-        $('#registerContract').prop('checked', false);
-
-        if (data.mailed) {
-          $('#modalContent').load('{{ frontend.modal.info }}/register/success');
-        } else {
-          $('#modalContent').load('{{ frontend.modal.info }}/register/error');
-        }
-
-        $('#modal').modal('show');
-
-      } else {
-
-        if (data.mail === 'invalid') {
-          $('#registerMail').addClass('is-invalid');
-          $('#registerMail').removeClass('is-valid');
-          $('#registerMailText').text('{{ register.invalid.mail }}');
-        } else if (data.mail === 'exists') {
-          $('#registerMail').addClass('is-invalid');
-          $('#registerMail').removeClass('is-valid');
-          $('#registerMailText').text('{{ register.exists.mail }}');
-          $('#registerRemindButton').show();
-        } else {
-          $('#registerMail').addClass('is-valid');
-          $('#registerMail').removeClass('is-invalid');
-          $('#registerMailText').text('');
-        }
-
-        if (data.firstName === 'invalid') {
-          $('#registerFirstName').addClass('is-invalid');
-          $('#registerFirstName').removeClass('is-valid');
-          $('#registerFirstNameText').text('{{ register.invalid.name.first }}');
-        } else {
-          $('#registerFirstName').addClass('is-valid');
-          $('#registerFirstName').removeClass('is-invalid');
-          $('#registerFirstNameText').text('');
-        }
-
-        if (data.lastName === 'invalid') {
-          $('#registerLastName').addClass('is-invalid');
-          $('#registerLastName').removeClass('is-valid');
-          $('#registerLastNameText').text('{{ register.invalid.name.last }}');
-        } else {
-          $('#registerLastName').addClass('is-valid');
-          $('#registerLastName').removeClass('is-invalid');
-          $('#registerLastNameText').text('');
-        }
-
-        if (data.limit === 'invalid') {
-          $('#registerLimit').addClass('is-invalid');
-          $('#registerLimit').removeClass('is-valid');
-          $('#registerLimitText').text('{{ register.invalid.limit }}');
-        } else {
-          $('#registerLimit').addClass('is-valid');
-          $('#registerLimit').removeClass('is-invalid');
-          $('#registerLimitText').text('');
-        }
-
-        if (data.contract === 'invalid') {
-          $('#registerContract').addClass('is-invalid');
-          $('#registerContract').removeClass('is-valid');
-        } else {
-          $('#registerContract').addClass('is-valid');
-          $('#registerContract').removeClass('is-invalid');
-        }
-
-      }
-    }, 'json');
-  }
-
-  function doLoginByEnter(e) {
-    if (e.which == 13) {
-      doLogin();
+    function doLogin() {
+        $.post('{{ backend.url.auth }}', {
+            mail: $('#loginMail').val(),
+            password: $('#loginPassword').val()
+        }, function (data) {
+            if (data.login) {
+                if (data.admin) {
+                    adminIsLoggendIn();
+                    loadContent('sellerManager');
+                } else {
+                    userIsLoggedIn();
+                    loadContent('itemManager');
+                }
+            } else {
+                $('#loginMail').addClass('is-invalid');
+                $('#loginPassword').addClass('is-invalid');
+                if (data.mail === 'valid') {
+                    $('#loginRemindButton').show();
+                }
+            }
+        }, 'json');
     }
-  }
 
-  function doRegisterByEnter(e) {
-    if (e.which == 13) {
-      doRegister();
+    function doRemindByLogin() {
+        doRemind('loginMail');
     }
-  }
 
-  $('#loginButton').on('click', doLogin);
-  $('#registerButton').on('click', doRegister);
+    function doRemindByRegister() {
+        doRemind('registerMail');
+    }
 
-  $('#loginRemindButton').on('click', doRemindByLogin);
-  $('#loginRemindButton').hide();
+    function doRemind(mailInputId) {
+        $.post('{{ backend.url.remind }}', {
+            mail: $('#' + mailInputId).val()
+        }, function (data) {
 
-  $('#registerRemindButton').on('click', doRemindByRegister);
-  $('#registerRemindButton').hide();
+            if (data.mailed) {
+                $('#modalContent').load('{{ frontend.modal.info }}/remind/success');
+            } else {
+                $('#modalContent').load('{{ frontend.modal.info }}/remind/error');
+            }
 
-  $('#loginMail').keypress(doLoginByEnter);
-  $('#loginPassword').keypress(doLoginByEnter);
+            $('#modal').modal('show');
 
-  $('#registerMail').keypress(doRegisterByEnter);
-  $('#registerFirstName').keypress(doRegisterByEnter);
-  $('#registerLastName').keypress(doRegisterByEnter);
-  $('#registerLimit').keypress(doRegisterByEnter);
-  $('#registerContract').keypress(doRegisterByEnter);
+        }, 'json');
+    }
 
-  $('[data-toggle="tooltip"]').tooltip();
+    function doRegister() {
+        $.post('{{ backend.url.seller }}', {
+            mail: $('#registerMail').val(),
+            firstName: $('#registerFirstName').val(),
+            lastName: $('#registerLastName').val(),
+            limit: $('#registerLimit').val(),
+            contract: $('#registerContract').prop('checked')
+        }, function (data) {
+
+            if (data.valid) {
+
+                $('#registerMail').val('');
+                $('#registerFirstName').val('');
+                $('#registerLastName').val('');
+                $('#registerLimit').val('');
+                $('#registerContract').prop('checked', false);
+
+                if (data.mailed) {
+                    $('#modalContent').load('{{ frontend.modal.info }}/register/success');
+                } else {
+                    $('#modalContent').load('{{ frontend.modal.info }}/register/error');
+                }
+
+                $('#modal').modal('show');
+
+            } else {
+
+                if (data.mail === 'invalid') {
+                    $('#registerMail').addClass('is-invalid');
+                    $('#registerMail').removeClass('is-valid');
+                    $('#registerMailText').text('{{ register.invalid.mail }}');
+                } else if (data.mail === 'exists') {
+                    $('#registerMail').addClass('is-invalid');
+                    $('#registerMail').removeClass('is-valid');
+                    $('#registerMailText').text('{{ register.exists.mail }}');
+                    $('#registerRemindButton').show();
+                } else {
+                    $('#registerMail').addClass('is-valid');
+                    $('#registerMail').removeClass('is-invalid');
+                    $('#registerMailText').text('');
+                }
+
+                if (data.firstName === 'invalid') {
+                    $('#registerFirstName').addClass('is-invalid');
+                    $('#registerFirstName').removeClass('is-valid');
+                    $('#registerFirstNameText').text('{{ register.invalid.name.first }}');
+                } else {
+                    $('#registerFirstName').addClass('is-valid');
+                    $('#registerFirstName').removeClass('is-invalid');
+                    $('#registerFirstNameText').text('');
+                }
+
+                if (data.lastName === 'invalid') {
+                    $('#registerLastName').addClass('is-invalid');
+                    $('#registerLastName').removeClass('is-valid');
+                    $('#registerLastNameText').text('{{ register.invalid.name.last }}');
+                } else {
+                    $('#registerLastName').addClass('is-valid');
+                    $('#registerLastName').removeClass('is-invalid');
+                    $('#registerLastNameText').text('');
+                }
+
+                if (data.limit === 'invalid') {
+                    $('#registerLimit').addClass('is-invalid');
+                    $('#registerLimit').removeClass('is-valid');
+                    $('#registerLimitText').text('{{ register.invalid.limit }}');
+                } else {
+                    $('#registerLimit').addClass('is-valid');
+                    $('#registerLimit').removeClass('is-invalid');
+                    $('#registerLimitText').text('');
+                }
+
+                if (data.contract === 'invalid') {
+                    $('#registerContract').addClass('is-invalid');
+                    $('#registerContract').removeClass('is-valid');
+                } else {
+                    $('#registerContract').addClass('is-valid');
+                    $('#registerContract').removeClass('is-invalid');
+                }
+
+            }
+        }, 'json');
+    }
+
+    function doLoginByEnter(e) {
+        if (e.which == 13) {
+            doLogin();
+        }
+    }
+
+    function doRegisterByEnter(e) {
+        if (e.which == 13) {
+            doRegister();
+        }
+    }
+
+    $('#loginButton').on('click', doLogin);
+    $('#registerButton').on('click', doRegister);
+
+    $('#loginRemindButton').on('click', doRemindByLogin);
+    $('#loginRemindButton').hide();
+
+    $('#registerRemindButton').on('click', doRemindByRegister);
+    $('#registerRemindButton').hide();
+
+    $('#loginMail').keypress(doLoginByEnter);
+    $('#loginPassword').keypress(doLoginByEnter);
+
+    $('#registerMail').keypress(doRegisterByEnter);
+    $('#registerFirstName').keypress(doRegisterByEnter);
+    $('#registerLastName').keypress(doRegisterByEnter);
+    $('#registerLimit').keypress(doRegisterByEnter);
+    $('#registerContract').keypress(doRegisterByEnter);
+
+    $('[data-toggle="tooltip"]').tooltip();
 </script>

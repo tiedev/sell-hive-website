@@ -68,20 +68,42 @@
     </nav>
 
     <!-- content -->
-    <div class="container" id="indexContent">
 
-      <div class="row align-items-center" style="height: 500px;">
-        <div class="col"></div>
-        <div class="col-6">
-          Seite wird geladen ...
-          <div class="progress">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+    {% if config.online %}
+      <div class="container" id="indexContent">
+
+        <div class="row align-items-center" style="height: 500px;">
+          <div class="col"></div>
+          <div class="col-6">
+            Seite wird geladen ...
+            <div class="progress">
+              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+            </div>
+          </div>
+          <div class="col"></div>
+        </div>
+
+      </div>
+    {% else %}
+      <div class="container" id="public">
+        <div class="row">
+          <div class="col-md-12">
+
+            <h2>14. Bremer Spiele-Tage – Flohmarkt</h2>
+
+            <br>
+
+            <div class="alert alert-warning" role="alert">
+              <h4 class="alert-heading">Offline<img src="img/icons/error.png" class="float-right"/></h4>
+              <p>
+                Die Anwendung ist aktuell leider offline.
+              </p>
+            </div>
+
           </div>
         </div>
-        <div class="col"></div>
       </div>
-
-    </div>
+    {% endif %}
 
     <!-- modal -->
     <div class="modal" id="modal" tabindex="-1" role="dialog">

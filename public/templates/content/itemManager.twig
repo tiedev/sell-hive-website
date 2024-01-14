@@ -6,231 +6,239 @@
 
 <div class="row" id="itemCardStorage">
 
-  <div class="col-sm-12 col-md-6 col-lg-4" id="addItemCard">
-    <div class="card" style="min-height:275px">
-      <div class="card-header font-weight-bold">
-        <span id="itemCountLabel">?</span>
-        /
-        <span id="itemLimitLabel">?</span>
-        Spiele
-      </div>
-      <div class="card-body d-flex justify-content-center">
-        <button type="submit" class="btn btn-lg btn-primary align-self-center" id="addButton">{{ button.add.text }}</button>
-        <!-- TODO : Die eingetragenen Daten wurden ins Kassensystem übernommen, Spiele hinzuzufügen oder zu bearbeiten ist leider nicht mehr möglich. -->
-      </div>
-      <div class="card-footer">
-        <button type="submit" class="btn btn-sm btn-success" id="limitRequestButton">{{ button.limitRequest }}</button>
-        <button type="submit" class="btn btn-sm btn-outline-secondary" id="unlabelAllButton">{{ button.unlabelAll }}</button>
-      </div>
+    <div class="col-sm-12 col-md-6 col-lg-4" id="addItemCard">
+        <div class="card" style="min-height:275px">
+            <div class="card-header font-weight-bold">
+                <span id="itemCountLabel">?</span>
+                /
+                <span id="itemLimitLabel">?</span>
+                Spiele
+            </div>
+            <div class="card-body d-flex justify-content-center">
+                {% if config.itemsTransferred %}
+                    Die eingetragenen Daten wurden ins Kassensystem übernommen, Spiele hinzuzufügen oder zu bearbeiten ist leider nicht mehr möglich.
+                {% else %}
+                    <button type="submit"
+                            class="btn btn-lg btn-primary align-self-center"
+                            id="addButton">{{ button.add.text }}</button>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-sm btn-success"
+                        id="limitRequestButton"
+                        disabled="{{ config.itemsTransferred }}">{{ button.limitRequest }}</button>
+                <button type="submit" class="btn btn-sm btn-outline-secondary"
+                        id="unlabelAllButton">{{ button.unlabelAll }}</button>
+            </div>
+        </div>
+        <p></p>
     </div>
-    <p></p>
-  </div>
 
-  <!-- itemCardStorage is filled by logic -->
+    <!-- itemCardStorage is filled by logic -->
 
 </div>
 
 <script>
-  var itemCount = 0;
-  var itemCardPriceAutonumericArray;
+    var itemCount = 0;
+    var itemCardPriceAutonumericArray;
 
-  function initItems(data) {
-    itemCount = 0;
-    $('#itemCountLabel').text(itemCount);
-    $('#itemCardStorage').children().not('#addItemCard').remove();
-    itemCardPriceAutonumericArray = new Array();
-    for (index = 0; index < data.length; ++index) {
-      addItem(data[index]);
-    }
-  }
-
-  function insertBlankItemCard(id) {
-
-    var card = '';
-    card += '<div class="col-sm-12 col-md-6 col-lg-4" id="itemCard' + id + '">';
-    card += ' <div class="card" style="min-height:100px">';
-    card += '   <div class="card-header font-weight-bold">';
-    card += '     <div class="float-right">'
-    card += '       <img id="itemCardComment' + id + '" src="{{ img.comment.src }}" data-toggle="tooltip" data-html="true" data-placement="left" title="?" />'
-    card += '     </div>'
-    card += '     <span id="itemCardName' + id + '">?</span>';
-    card += '   </div>';
-    card += '   <div class="card-body">';
-    card += '     <h6 class="card-subtitle mb-2 text-muted">für <span id="itemCardPrice' + id + '">0</span> Euro</h6>';
-    card += '  </div>';
-    card += '  <div class="card-footer bg-white border-top-0">';
-    card += '     <div class="float-left">'
-    card += '       <img id="itemCardBoxedAsNew' + id + '" src="{{ img.boxed_as_new.src.no }}" data-toggle="tooltip" data-html="true" data-placement="top" title="?" />'
-    card += '     </div>'
-    card += '     <div class="float-right">'
-    card += '       <img id="itemCardLabeled' + id + '" src="{{ img.labeled.src.no }}" data-toggle="tooltip" data-html="true" data-placement="top" title="?" />'
-    card += '       <img id="itemCardTransfered' + id + '" src="{{ img.transfered.src.no }}" data-toggle="tooltip" data-html="true" data-placement="top" title="?" />'
-    card += '       <img id="itemCardSold' + id + '" src="{{ img.sold.src.no }}" data-toggle="tooltip" data-html="true" data-placement="top" title="?" />'
-    card += '     </div>'
-    card += '  </div>';
-    card += '  <div class="card-footer">';
-    card += '    <button type="submit" class="btn btn-sm btn-outline-warning" id="itemEditButton' + id + '">{{ button.edit }}</button>';
-    card += '    <button type="submit" class="btn btn-sm btn-outline-secondary" id="itemUnlabelButton' + id + '">{{ button.unlabel }}</button>';
-    card += '    <button type="submit" class="btn btn-sm btn-outline-danger" id="itemDeleteButton' + id + '">{{ button.delete }}</button>';
-    card += '  </div>';
-    card += ' </div>';
-    card += ' <p></p>';
-    card += '</div>';
-    $(card).insertBefore($('#addItemCard'));
-
-    itemCardPriceAutonumericArray[id] = new AutoNumeric('#itemCardPrice' + id, {
-      digitGroupSeparator: '.',
-      decimalCharacter: ','
-    });
-
-    $('#itemEditButton' + id).on('click', {
-      id: id
-    }, openModalEditItem);
-
-    $('#itemUnlabelButton' + id).on('click', {
-      id: id
-    }, function(event) {
-      ensureToUnlabelItem(event.data.id);
-    });
-
-    $('#itemDeleteButton' + id).on('click', {
-      id: id
-    }, function(event) {
-      ensureToDeleteItem(event.data.id);
-    });
-
-    $('[data-toggle="tooltip"]').tooltip();
-  }
-
-  function fillItemCard(id, itemData) {
-
-    $('#itemCardName' + id).text(itemData['name'] + ' (' + itemData['publisher'] + ')');
-
-    var showComment = itemData['comment'] != null && itemData['comment'].length > 0;
-    $('#itemCardComment' + id).attr('data-original-title', itemData['comment']);
-    $('#itemCardComment' + id).toggle(showComment);
-
-    itemCardPriceAutonumericArray[id].set(itemData['price'] / 100);
-
-    if (itemData['boxed_as_new']) {
-      $('#itemCardBoxedAsNew' + id).attr('src', '{{ img.boxed_as_new.src.yes }}');
-      $('#itemCardBoxedAsNew' + id).attr('data-original-title', '{{ img.boxed_as_new.tooltip.yes }}');
-    } else {
-      $('#itemCardBoxedAsNew' + id).attr('src', '{{ img.boxed_as_new.src.no }}');
-      $('#itemCardBoxedAsNew' + id).attr('data-original-title', '{{ img.boxed_as_new.tooltip.no }}');
+    function initItems(data) {
+        itemCount = 0;
+        $('#itemCountLabel').text(itemCount);
+        $('#itemCardStorage').children().not('#addItemCard').remove();
+        itemCardPriceAutonumericArray = new Array();
+        for (index = 0; index < data.length; ++index) {
+            addItem(data[index]);
+        }
     }
 
-    if (itemStateWasLabeled(itemData['state'])) {
-      $('#itemCardLabeled' + id).attr('src', '{{ img.labeled.src.yes }}');
-      $('#itemCardLabeled' + id).attr('data-original-title', '{{ img.labeled.tooltip.yes }}');
-    } else {
-      $('#itemCardLabeled' + id).attr('src', '{{ img.labeled.src.no }}');
-      $('#itemCardLabeled' + id).attr('data-original-title', '{{ img.labeled.tooltip.no }}');
+    function insertBlankItemCard(id) {
+
+        var card = '';
+        card += '<div class="col-sm-12 col-md-6 col-lg-4" id="itemCard' + id + '">';
+        card += ' <div class="card" style="min-height:100px">';
+        card += '   <div class="card-header font-weight-bold">';
+        card += '     <div class="float-right">'
+        card += '       <img id="itemCardComment' + id + '" src="{{ img.comment.src }}" data-toggle="tooltip" data-html="true" data-placement="left" title="?" />'
+        card += '     </div>'
+        card += '     <span id="itemCardName' + id + '">?</span>';
+        card += '   </div>';
+        card += '   <div class="card-body">';
+        card += '     <h6 class="card-subtitle mb-2 text-muted">für <span id="itemCardPrice' + id + '">0</span> Euro</h6>';
+        card += '  </div>';
+        card += '  <div class="card-footer bg-white border-top-0">';
+        card += '     <div class="float-left">'
+        card += '       <img id="itemCardBoxedAsNew' + id + '" src="{{ img.boxed_as_new.src.no }}" data-toggle="tooltip" data-html="true" data-placement="top" title="?" />'
+        card += '     </div>'
+        card += '     <div class="float-right">'
+        card += '       <img id="itemCardLabeled' + id + '" src="{{ img.labeled.src.no }}" data-toggle="tooltip" data-html="true" data-placement="top" title="?" />'
+        card += '       <img id="itemCardTransfered' + id + '" src="{{ img.transfered.src.no }}" data-toggle="tooltip" data-html="true" data-placement="top" title="?" />'
+        card += '       <img id="itemCardSold' + id + '" src="{{ img.sold.src.no }}" data-toggle="tooltip" data-html="true" data-placement="top" title="?" />'
+        card += '     </div>'
+        card += '  </div>';
+        card += '  <div class="card-footer">';
+        card += '    <button type="submit" class="btn btn-sm btn-outline-warning" id="itemEditButton' + id + '">{{ button.edit }}</button>';
+        card += '    <button type="submit" class="btn btn-sm btn-outline-secondary" id="itemUnlabelButton' + id + '">{{ button.unlabel }}</button>';
+        card += '    <button type="submit" class="btn btn-sm btn-outline-danger" id="itemDeleteButton' + id + '">{{ button.delete }}</button>';
+        card += '  </div>';
+        card += ' </div>';
+        card += ' <p></p>';
+        card += '</div>';
+        $(card).insertBefore($('#addItemCard'));
+
+        itemCardPriceAutonumericArray[id] = new AutoNumeric('#itemCardPrice' + id, {
+            digitGroupSeparator: '.',
+            decimalCharacter: ','
+        });
+
+        $('#itemEditButton' + id).on('click', {
+            id: id
+        }, openModalEditItem);
+
+        $('#itemUnlabelButton' + id).on('click', {
+            id: id
+        }, function (event) {
+            ensureToUnlabelItem(event.data.id);
+        });
+
+        $('#itemDeleteButton' + id).on('click', {
+            id: id
+        }, function (event) {
+            ensureToDeleteItem(event.data.id);
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
     }
 
-    if (itemStateWasTransfered(itemData['state'])) {
-      $('#itemCardTransfered' + id).attr('src', '{{ img.transfered.src.yes }}');
-      $('#itemCardTransfered' + id).attr('data-original-title', '{{ img.transfered.tooltip.yes }}');
-    } else {
-      $('#itemCardTransfered' + id).attr('src', '{{ img.transfered.src.no }}');
-      $('#itemCardTransfered' + id).attr('data-original-title', '{{ img.transfered.tooltip.no }}');
+    function fillItemCard(id, itemData) {
+
+        $('#itemCardName' + id).text(itemData['name'] + ' (' + itemData['publisher'] + ')');
+
+        var showComment = itemData['comment'] != null && itemData['comment'].length > 0;
+        $('#itemCardComment' + id).attr('data-original-title', itemData['comment']);
+        $('#itemCardComment' + id).toggle(showComment);
+
+        itemCardPriceAutonumericArray[id].set(itemData['price'] / 100);
+
+        if (itemData['boxed_as_new']) {
+            $('#itemCardBoxedAsNew' + id).attr('src', '{{ img.boxed_as_new.src.yes }}');
+            $('#itemCardBoxedAsNew' + id).attr('data-original-title', '{{ img.boxed_as_new.tooltip.yes }}');
+        } else {
+            $('#itemCardBoxedAsNew' + id).attr('src', '{{ img.boxed_as_new.src.no }}');
+            $('#itemCardBoxedAsNew' + id).attr('data-original-title', '{{ img.boxed_as_new.tooltip.no }}');
+        }
+
+        if (itemStateWasLabeled(itemData['state'])) {
+            $('#itemCardLabeled' + id).attr('src', '{{ img.labeled.src.yes }}');
+            $('#itemCardLabeled' + id).attr('data-original-title', '{{ img.labeled.tooltip.yes }}');
+        } else {
+            $('#itemCardLabeled' + id).attr('src', '{{ img.labeled.src.no }}');
+            $('#itemCardLabeled' + id).attr('data-original-title', '{{ img.labeled.tooltip.no }}');
+        }
+
+        if (itemStateWasTransfered(itemData['state'])) {
+            $('#itemCardTransfered' + id).attr('src', '{{ img.transfered.src.yes }}');
+            $('#itemCardTransfered' + id).attr('data-original-title', '{{ img.transfered.tooltip.yes }}');
+        } else {
+            $('#itemCardTransfered' + id).attr('src', '{{ img.transfered.src.no }}');
+            $('#itemCardTransfered' + id).attr('data-original-title', '{{ img.transfered.tooltip.no }}');
+        }
+
+        if (itemStateWasSold(itemData['state'])) {
+            $('#itemCardSold' + id).attr('src', '{{ img.sold.src.yes }}');
+            $('#itemCardSold' + id).attr('data-original-title', '{{ img.sold.tooltip.yes }}');
+        } else {
+            $('#itemCardSold' + id).attr('src', '{{ img.sold.src.no }}');
+            $('#itemCardSold' + id).attr('data-original-title', '{{ img.sold.tooltip.no }}');
+        }
+
+        var showEditButton = itemData['state'] == 'created';
+        $('#itemEditButton' + id).toggle(showEditButton);
+
+        var showUnlabelButton = itemData['state'] == 'labeled';
+        $('#itemUnlabelButton' + id).toggle(showUnlabelButton);
+
+        var showDeleteButton = itemData['state'] == 'created';
+        $('#itemDeleteButton' + id).toggle(showDeleteButton);
     }
 
-    if (itemStateWasSold(itemData['state'])) {
-      $('#itemCardSold' + id).attr('src', '{{ img.sold.src.yes }}');
-      $('#itemCardSold' + id).attr('data-original-title', '{{ img.sold.tooltip.yes }}');
-    } else {
-      $('#itemCardSold' + id).attr('src', '{{ img.sold.src.no }}');
-      $('#itemCardSold' + id).attr('data-original-title', '{{ img.sold.tooltip.no }}');
+    function addItem(itemData) {
+
+        insertBlankItemCard(itemData['id']);
+        fillItemCard(itemData['id'], itemData)
+
+        $('#itemCountLabel').text(++itemCount);
     }
 
-    var showEditButton = itemData['state'] == 'created';
-    $('#itemEditButton' + id).toggle(showEditButton);
+    function ensureToUnlabelItem(id) {
+        loadSureModal('unlabelItem', function () {
+            unlabelItem(id);
+        });
+    }
 
-    var showUnlabelButton = itemData['state'] == 'labeled';
-    $('#itemUnlabelButton' + id).toggle(showUnlabelButton);
+    function unlabelItem(id) {
+        $.ajax({
+            url: '{{ backend.url.item }}/' + id,
+            method: 'POST',
+            data: {
+                unlabel: true
+            },
+            dataType: 'json'
+        }).done(function (data) {
+            fillItemCard(id, data.item);
+        });
+    }
 
-    var showDeleteButton = itemData['state'] == 'created';
-    $('#itemDeleteButton' + id).toggle(showDeleteButton);
-  }
+    function ensureToUnlabelAllItems() {
+        loadSureModal('unlabelAllItems', function () {
+            unlabelAllItems();
+        });
+    }
 
-  function addItem(itemData) {
+    function unlabelAllItems() {
+        $('#itemCardStorage').children().not('#addItemCard').each(function () {
+            var cardId = $(this).attr('id');
+            var id = cardId.replace('itemCard', '');
+            unlabelItem(id);
+        });
+    }
 
-    insertBlankItemCard(itemData['id']);
-    fillItemCard(itemData['id'], itemData)
+    function ensureToDeleteItem(id) {
+        loadSureModal('deleteItem', function () {
+            deleteItem(id);
+        });
+    }
 
-    $('#itemCountLabel').text(++itemCount);
-  }
+    function deleteItem(id) {
+        $.ajax({
+            url: '{{ backend.url.item }}/' + id,
+            method: 'DELETE'
+        }).done(function (data) {
+            $('#itemCard' + id).remove();
+            $('#itemCountLabel').text(--itemCount);
+        });
+    }
 
-  function ensureToUnlabelItem(id) {
-    loadSureModal('unlabelItem', function() {
-      unlabelItem(id);
-    });
-  }
+    function openModalAddItem() {
+        loadModal('{{ frontend.modal.itemEditor }}');
+    }
 
-  function unlabelItem(id) {
-    $.ajax({
-      url: '{{ backend.url.item }}/' + id,
-      method: 'POST',
-      data: {
-        unlabel: true
-      },
-      dataType: 'json'
-    }).done(function(data) {
-      fillItemCard(id, data.item);
-    });
-  }
+    function openModalEditItem(event) {
+        loadModal('{{ frontend.modal.itemEditor }}/' + event.data.id);
+    }
 
-  function ensureToUnlabelAllItems() {
-    loadSureModal('unlabelAllItems', function() {
-      unlabelAllItems();
-    });
-  }
+    function openModalLimitRequest(event) {
+        loadModal('{{ frontend.modal.openLimitRequest }}');
+    }
 
-  function unlabelAllItems() {
-    $('#itemCardStorage').children().not('#addItemCard').each(function() {
-      var cardId = $(this).attr('id');
-      var id = cardId.replace('itemCard', '');
-      unlabelItem(id);
-    });
-  }
+    $('#addButton').on('click', openModalAddItem);
+    $('#unlabelAllButton').on('click', ensureToUnlabelAllItems);
+    $('#limitRequestButton').on('click', openModalLimitRequest);
 
-  function ensureToDeleteItem(id) {
-    loadSureModal('deleteItem', function() {
-      deleteItem(id);
-    });
-  }
-
-  function deleteItem(id) {
-    $.ajax({
-      url: '{{ backend.url.item }}/' + id,
-      method: 'DELETE'
-    }).done(function(data) {
-      $('#itemCard' + id).remove();
-      $('#itemCountLabel').text(--itemCount);
-    });
-  }
-
-  function openModalAddItem() {
-    loadModal('{{ frontend.modal.itemEditor }}');
-  }
-
-  function openModalEditItem(event) {
-    loadModal('{{ frontend.modal.itemEditor }}/' + event.data.id);
-  }
-
-  function openModalLimitRequest(event) {
-    loadModal('{{ frontend.modal.openLimitRequest }}');
-  }
-
-  $('#addButton').on('click', openModalAddItem);
-  $('#unlabelAllButton').on('click', ensureToUnlabelAllItems);
-  $('#limitRequestButton').on('click', openModalLimitRequest);
-
-  /* TODO : continue
-    $('#addButtonTooltip').tooltip();
-    $.ajax({
-      url: '{{ backend.url.config.writeProtectionTime }}',
+    /* TODO : continue
+      $('#addButtonTooltip').tooltip();
+      $.ajax({
+        url: '{{ backend.url.config.writeProtectionTime }}',
       method: 'GET',
       dataType: 'json'
     }).done(function(data) {
@@ -243,11 +251,11 @@
       }
     });*/
 
-  $.ajax({url: '{{ backend.url.item }}', method: 'GET', dataType: 'json'}).done(function(data) {
-    initItems(data);
-  });
+    $.ajax({url: '{{ backend.url.item }}', method: 'GET', dataType: 'json'}).done(function (data) {
+        initItems(data);
+    });
 
-  $.ajax({url: '{{ backend.url.sellerLimit }}', method: 'GET', dataType: 'json'}).done(function(data) {
-    $('#itemLimitLabel').text(data.current);
-  });
+    $.ajax({url: '{{ backend.url.sellerLimit }}', method: 'GET', dataType: 'json'}).done(function (data) {
+        $('#itemLimitLabel').text(data.current);
+    });
 </script>

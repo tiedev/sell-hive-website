@@ -48,6 +48,8 @@ class ContextService
         $context['frontend']['modal']['openLimitRequest'] = $baseUrl . '/modal/openLimitRequest';
         $context['frontend']['modal']['sellerEditor'] = $baseUrl . '/modal/sellerEditor';
 
+        $context['config'] = $this->config->get('context');
+
         return $context;
     }
 }

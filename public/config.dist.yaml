@@ -36,6 +36,14 @@ common:
     baseUrl: need2configure
     basePath: need2configure
 
+context:
+    online: false
+    displayTestModeInfo: true
+    enableRegistration: false
+    manyItemsMessage: true
+    tooMuchItemsMessage: true
+    itemsTransferred: true
+
 cashpoint:
     secret: need2configure
 

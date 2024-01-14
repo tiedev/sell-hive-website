@@ -6,78 +6,75 @@
 
 <div class="card-deck">
 
-  <div class="card border-danger">
-    <h4 class="card-header border-danger">Erstellen</h4>
-    <div class="card-body">
+    <div class="card border-danger">
+        <h4 class="card-header border-danger">Erstellen</h4>
+        <div class="card-body">
 
-      <p class="card-text">
-        Du benötigst zur Abgabe eine Übersicht der Spiele:
-      </p>
+            <p class="card-text">
+                Du benötigst zur Abgabe eine Übersicht der Spiele:
+            </p>
 
-      <button type="submit" class="btn btn-primary" id="generateItemList">{{ button }}</button>
+            <button type="submit" class="btn btn-primary" id="generateItemList">{{ button }}</button>
 
-      <br/><br/>
+            <br/><br/>
 
-      <p class="card-text">
-        Und das Flomarkt Datenblatt, sowie den Abgabebeleg:
-      </p>
+            <p class="card-text">
+                Und das Flomarkt Datenblatt, sowie den Abgabebeleg:
+            </p>
 
-      <a class="btn btn-primary" href="{{ link.url }}" role="button" target="_blank">{{ link.text }}</a>
+            <a class="btn btn-primary" href="{{ link.url }}" role="button" target="_blank">{{ link.text }}</a>
 
+        </div>
     </div>
-  </div>
 
-  <div class="card border-dark">
-    <h4 class="card-header border-dark">Abgeben</h4>
-    <div class="card-body">
+    <div class="card border-dark">
+        <h4 class="card-header border-dark">Abgeben</h4>
+        <div class="card-body">
 
-      <p class="card-text">
-        <b>Abgabe</b>
-        der Spiele samt vorausgefüllter Formulare<br/>
-        am
-        <b>06.03.2019</b>
-        (Freitag)<br/>
-        von
-        <b>17 bis 19 Uhr</b><br/>
-        im Raum
-        <b>R 407</b>
-        (4te Etage).
-      </p>
+            <p class="card-text">
+                <b>Abgabe</b>
+                der Spiele samt vorausgefüllter Formulare<br/>
+                am <b>08.03.2024</b> (Freitag)<br/>
+                von <b>16 bis 18 Uhr</b><br/>
+                im Raum <b>R 103</b> (1te Etage).
+            </p>
 
-      <br/>
+            <br/>
 
-      <img src="img/room_blurred.png" class="mx-auto d-block"/>
+            <img src="img/room_blurred.png" class="mx-auto d-block"/>
 
-      <br/>
+            <br/>
 
-      <p class="card-text">
-        <b>Weniger als 10 Spiele?</b><br/>
-        Diese können auch während der Veranstaltung direkt bei der Kasse abgegeben werden. Allerdings nur, sofern die Spiele online eingetragen wurden und die Kapazität des Flohmarkts dies zu lässt. Außerdem sind längere Wartezeiten, je nach Andrang, leider
-        nicht auszuschließen.
-      </p>
+            <p class="card-text">
+                <b>Weniger als 10 Spiele?</b><br/>
+                Diese können auch während der Veranstaltung direkt bei der Kasse abgegeben werden. Allerdings nur,
+                sofern die Spiele online eingetragen wurden und die Kapazität des Flohmarkts dies zu lässt. Außerdem
+                sind längere Wartezeiten, je nach Andrang, leider
+                nicht auszuschließen.
+            </p>
 
+        </div>
     </div>
-  </div>
 
 </div>
 
 <script>
-  function generateItemList() {
-    $.ajax({url: '{{ backend.url.pdf.itemlist }}', method: 'GET', dataType: 'json'}).done(generateItemListDone);
-  }
-
-  function generateItemListDone(data) {
-    var openedWindow = window.open('{{ baseUrl }}/' + data.path, '_blank');
-    if (openedWindow) {
-      openedWindow.focus();
-    } else {
-      $('#modalContent').load('{{ frontend.modal.blockedPopUp }}', {
-        pdfPath: data.path
-      }, function() {
-        $('#modal').modal('show');
-      });
+    function generateItemList() {
+        $.ajax({url: '{{ backend.url.pdf.itemlist }}', method: 'GET', dataType: 'json'}).done(generateItemListDone);
     }
-  }
 
-  $('#generateItemList').on('click', generateItemList);
+    function generateItemListDone(data) {
+        var openedWindow = window.open('{{ baseUrl }}/' + data.path, '_blank');
+        if (openedWindow) {
+            openedWindow.focus();
+        } else {
+            $('#modalContent').load('{{ frontend.modal.blockedPopUp }}', {
+                pdfPath: data.path
+            }, function () {
+                $('#modal').modal('show');
+            });
+        }
+    }
+
+    $('#generateItemList').on('click', generateItemList);
 </script>

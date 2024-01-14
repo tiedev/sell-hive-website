@@ -27,7 +27,7 @@ class ItemListCreatorController
         $context['button'] = 'Spieleliste erzeugen (PDF)';
 
         $context['link']['text'] = 'Vorlagen herunterladen (PDF)';
-        $context['link']['url'] = 'data/Flohmarkt20-Datenblatt.und.Beleg.pdf';
+        $context['link']['url'] = 'data/Flohmarkt-Datenblatt_und_Beleg.pdf';
 
         return $this->twig->render($response, 'content/itemListCreator.twig', $context);
     }

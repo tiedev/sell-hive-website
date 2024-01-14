@@ -29,7 +29,7 @@ class PublicController
         $context['register']['name']['first'] = 'Vorname';
         $context['register']['name']['last'] = 'Nachname';
         $context['register']['limit'] = 'Wunschkontingent';
-        $context['register']['contract'] = '<a href="data/Flohmarkt20-Datenblatt.und.Beleg.pdf" target="_blank">Vertrag</a> gelesen und akzeptiert';
+        $context['register']['contract'] = '<a href="data/Flohmarkt-Datenblatt_und_Beleg.pdf" target="_blank">Vertrag</a> gelesen und akzeptiert';
         $context['register']['submit'] = 'anmelden';
 
         $context['register']['exists']['mail'] = 'E-Mail-Adresse ist bereits registriert.';
