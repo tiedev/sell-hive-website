@@ -26,7 +26,7 @@
             <div class="card-footer">
                 <button type="submit" class="btn btn-sm btn-success"
                         id="limitRequestButton"
-                        disabled="{{ config.itemsTransferred }}">{{ button.limitRequest }}</button>
+                        {% if config.itemsTransferred %}disabled="disabled"{% endif %}>{{ button.limitRequest }}</button>
                 <button type="submit" class="btn btn-sm btn-outline-secondary"
                         id="unlabelAllButton">{{ button.unlabelAll }}</button>
             </div>
