@@ -102,6 +102,8 @@ class MailService
 
         $context['config']['baseUrl'] = $this->config->get('common.baseUrl');
 
+        $context['sender']['mail'] = $this->config->get('phpmailer.from.mail');
+
         $this->logger->debug('context', $context);
 
         return $context;

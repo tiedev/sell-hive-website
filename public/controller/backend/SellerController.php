@@ -10,8 +10,6 @@ use Slim\Routing\RouteContext;
 
 class SellerController
 {
-    private $additionalChars = 'ÄÖÜäöüß-';
-
     private Logger $logger;
     private Config $config;
     private AuthService $auth;
@@ -27,7 +25,7 @@ class SellerController
         $this->v = $v;
     }
 
-    public function create(Request $request, Response $response)
+    public function create(Request $request, Response $response): Response
     {
         $this->logger->debug('=== SellerController:create(...) ===');
 
@@ -40,12 +38,14 @@ class SellerController
 
         $this->logger->debug('input', $in);
 
-        if (!v::alpha($this->additionalChars)->length(1, 64)->validate($in['lastName'])) {
+        $additionalAllowedChars = $this->config->get('validation.sellerName');
+
+        if (!v::alpha($additionalAllowedChars)->length(1, 64)->validate($in['lastName'])) {
             $out['lastName'] = 'invalid';
             $out['valid'] = false;
         }
 
-        if (!v::alpha($this->additionalChars)->length(1, 64)->validate($in['firstName'])) {
+        if (!v::alpha($additionalAllowedChars)->length(1, 64)->validate($in['firstName'])) {
             $out['firstName'] = 'invalid';
             $out['valid'] = false;
         }
@@ -106,7 +106,7 @@ class SellerController
             ->withStatus(200);
     }
 
-    public function get(Request $request, Response $response)
+    public function get(Request $request, Response $response): Response
     {
         $this->logger->debug('=== SellerController:get(...) ===');
 
@@ -140,7 +140,7 @@ class SellerController
             ->withStatus(200);
     }
 
-    public function edit(Request $request, Response $response)
+    public function edit(Request $request, Response $response): Response
     {
         $this->logger->debug('=== SellerController:edit(...) ===');
 
@@ -192,7 +192,7 @@ class SellerController
             ->withStatus(200);
     }
 
-    public function list(Request $request, Response $response)
+    public function list(Request $request, Response $response): Response
     {
         $this->logger->debug('=== SellerController:list(...) ===');
 

@@ -63,4 +63,5 @@ admin:
     mail: need2configure
 
 validation:
-    additionalAllowedChars: ÄÖÜäöüß/_+&.-
+    additionalAllowedChars: ÄÖÜäöü ß/_+&.-
+    sellerName: ÄÖÜäöüß-

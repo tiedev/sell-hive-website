@@ -35,7 +35,7 @@ class ItemController
      *     )
      * )
      */
-    public function getCount(Request $request, Response $response)
+    public function getCount(Request $request, Response $response): Response
     {
         $this->logger->debug('=== ItemController:getCount(...) ===');
 
@@ -77,7 +77,7 @@ class ItemController
      *     )
      * )
      */
-    public function listUserItems(Request $request, Response $response)
+    public function listUserItems(Request $request, Response $response): Response
     {
         $this->logger->debug('=== ItemController:listUserItems(...) ===');
 
@@ -129,7 +129,7 @@ class ItemController
      *     )
      * )
      */
-    public function listAllItems(Request $request, Response $response)
+    public function listAllItems(Request $request, Response $response): Response
     {
         $this->logger->debug('=== ItemController:listAllItems(...) ===');
 
@@ -154,7 +154,7 @@ class ItemController
             ->withStatus(200);
     }
 
-    public function getItem(Request $request, Response $response)
+    public function getItem(Request $request, Response $response): Response
     {
         $this->logger->debug('=== ItemController:getItem(...) ===');
 
@@ -189,7 +189,7 @@ class ItemController
             ->withStatus(200);
     }
 
-    public function createItem(Request $request, Response $response)
+    public function createItem(Request $request, Response $response): Response
     {
         $this->logger->debug('=== ItemController:createItem(...) ===');
 
@@ -264,7 +264,7 @@ class ItemController
             ->withStatus(200);
     }
 
-    public function editItem(Request $request, Response $response)
+    public function editItem(Request $request, Response $response): Response
     {
         $this->logger->debug('=== ItemController:editItem(...) ===');
 

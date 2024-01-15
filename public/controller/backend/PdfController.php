@@ -14,7 +14,7 @@ class PdfController
         $this->logger = $logger;
     }
 
-    public function genLabelItemPdf(Request $request, Response $response)
+    public function genLabelItemPdf(Request $request, Response $response): Response
     {
         $this->logger->debug('=== PdfController:genLabelItemPdf(...) ===');
 
@@ -64,7 +64,7 @@ class PdfController
             ->withStatus(200);
     }
 
-    public function genLabelTestPdf(Request $request, Response $response)
+    public function genLabelTestPdf(Request $request, Response $response): Response
     {
         $this->logger->debug('=== PdfController:genLabelTestPdf(...) ===');
 
@@ -88,7 +88,7 @@ class PdfController
             ->withStatus(200);
     }
 
-    public function getLabelSettings(Request $request, Response $response)
+    public function getLabelSettings(Request $request, Response $response): Response
     {
         $this->logger->debug('=== PdfController:getLabelSettings(...) ===');
 
@@ -110,7 +110,7 @@ class PdfController
             ->withStatus(200);
     }
 
-    public function setLabelSettings(Request $request, Response $response)
+    public function setLabelSettings(Request $request, Response $response): Response
     {
         $this->logger->debug('=== PdfController:setLabelSettings(...) ===');
 
@@ -169,7 +169,7 @@ class PdfController
             ->withStatus(200);
     }
 
-    public function genItemList(Request $request, Response $response)
+    public function genItemList(Request $request, Response $response): Response
     {
         $this->logger->debug('=== PdfController:genItemList(...) ===');
 
@@ -192,7 +192,7 @@ class PdfController
             ->withStatus(200);
     }
 
-    public function list(Request $request, Response $response)
+    public function list(Request $request, Response $response): Response
     {
         $this->logger->debug('=== PdfController:list(...) ===');
 

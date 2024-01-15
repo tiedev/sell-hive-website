@@ -7,10 +7,10 @@ Dein neues Kontingent beträgt nun <b>{{ seller.limit.current }}</b> Spiele.
 Es ist jedoch nur bis zum {{ seller.limit.till|date('d.m.Y') }} gültig, danach wird das Kontingent auf die Zahl der aktuell eingetragenen Spiele reduziert.
 {% endif %}
 
-Bei Fragen kannst Du auf diese E-Mail antworten oder an spiele@vhs-bremen.de schreiben.
+Bei Fragen kannst Du auf diese E-Mail antworten oder an {{ sender.mail }} schreiben.
 Wir bitten um Verständnis, dass das Postfach nur einmal am Tag bearbeitet wird.
 
 
-Viele Grüße,
-Dein Bremer Spiele-Tage Team
+Viele Grüße
+Dein Bremer Spiele-Tage Flohmarkt Team
 {% endautoescape %}
