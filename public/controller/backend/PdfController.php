@@ -130,23 +130,33 @@ class PdfController
             return $response->withStatus(500);
         }
 
-        if (!v::numeric()->between(1, 25, true)->validate($in['page_init_x'])) {
+        if (!v::number()->between(1, 25)->validate($in['page_init_x'])) {
             $out['page_init_x'] = 'invalid';
             $out['valid'] = false;
         }
 
-        if (!v::numeric()->between(1, 25, true)->validate($in['page_init_y'])) {
+        if (!v::number()->between(1, 25)->validate($in['page_init_y'])) {
             $out['page_init_y'] = 'invalid';
             $out['valid'] = false;
         }
 
-        if (!v::numeric()->between(0, 5, true)->validate($in['label_space_x'])) {
+        if (!v::number()->between(0, 5)->validate($in['label_space_x'])) {
             $out['label_space_x'] = 'invalid';
             $out['valid'] = false;
         }
 
-        if (!v::numeric()->between(0, 5, true)->validate($in['label_space_y'])) {
+        if (!v::number()->between(0, 5)->validate($in['label_space_y'])) {
             $out['label_space_y'] = 'invalid';
+            $out['valid'] = false;
+        }
+
+        if (!v::number()->between(63, 64)->validate($in['label_width'])) {
+            $out['label_width'] = 'invalid';
+            $out['valid'] = false;
+        }
+
+        if (!v::number()->between(28, 30)->validate($in['label_height'])) {
+            $out['label_height'] = 'invalid';
             $out['valid'] = false;
         }
 
@@ -157,6 +167,8 @@ class PdfController
             $settings->setPageInitY($in['page_init_y']);
             $settings->setLabelSpaceX($in['label_space_x']);
             $settings->setLabelSpaceY($in['label_space_y']);
+            $settings->setLabelWidth($in['label_width']);
+            $settings->setLabelHeight($in['label_height']);
             $settings->save();
         }
 

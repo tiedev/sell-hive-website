@@ -39,11 +39,17 @@
     </div>
     <div class="form-group">
       <label class="control-label" for="labelHeight">{{ label.height.label }}</label>
-      <input type="text" class="form-control" id="labelHeight" readonly="readonly">
+      <input type="text" class="form-control" id="labelHeight" placeholder="{{ label.height.help }}">
+      <div class="invalid-feedback" id="labelHeightInvalid">
+        <!-- set by logic -->
+      </div>
     </div>
     <div class="form-group">
       <label class="control-label" for="labelWidth">{{ label.width.label }}</label>
-      <input type="text" class="form-control" id="labelWidth" readonly="readonly">
+      <input type="text" class="form-control" id="labelWidth" placeholder="{{ label.width.help }}">
+      <div class="invalid-feedback" id="labelWidthInvalid">
+        <!-- set by logic -->
+      </div>
     </div>
 
   </div>
@@ -99,25 +105,31 @@
   });
 
   var labelHeight = new AutoNumeric('#labelHeight', {
+    minimumValue: 28,
+    maximumValue: 30,
     digitGroupSeparator: '.',
     decimalCharacter: ',',
     decimalPlaces: 1,
-    suffixText: ' mm',
-    readOnly: true
+    wheelStep: 0.1,
+    suffixText: ' mm'
   });
 
   var labelWidth = new AutoNumeric('#labelWidth', {
+    minimumValue: 63,
+    maximumValue: 64,
     digitGroupSeparator: '.',
     decimalCharacter: ',',
     decimalPlaces: 1,
-    suffixText: ' mm',
-    readOnly: true
+    wheelStep: 0.1,
+    suffixText: ' mm'
   });
 
   $('#pageInitX').popover({html: true, trigger: 'hover', placement: 'bottom', content: '<img src="{{ pageInit.x.img }}" />'});
   $('#pageInitY').popover({html: true, trigger: 'hover', placement: 'bottom', content: '<img src="{{ pageInit.y.img }}" />'});
   $('#labelSpaceX').popover({html: true, trigger: 'hover', placement: 'bottom', content: '<img src="{{ labelSpace.x.img }}" />'});
   $('#labelSpaceY').popover({html: true, trigger: 'hover', placement: 'bottom', content: '<img src="{{ labelSpace.y.img }}" />'});
+  // TODO : $('#labelHeight').popover({html: true, trigger: 'hover', placement: 'bottom', content: '<img src="{{ label.height.img }}" />'});
+  // TODO : $('#labelWidth').popover({html: true, trigger: 'hover', placement: 'bottom', content: '<img src="{{ label.width.img }}" />'});
 
   function saveSettings() {
     $('#modal').modal('hide');
@@ -128,7 +140,9 @@
         page_init_x: pageInitX.get(),
         page_init_y: pageInitY.get(),
         label_space_x: labelSpaceX.get(),
-        label_space_y: labelSpaceY.get()
+        label_space_y: labelSpaceY.get(),
+        label_height: labelHeight.get(),
+        label_width: labelWidth.get()
       },
       dataType: 'json'
     }).done(saveSettingsDone);
@@ -177,6 +191,26 @@
         $('#labelSpaceYInvalid').text('');
       }
 
+      if (data.label_height === 'invalid') {
+        $('#labelHeight').addClass('is-invalid');
+        $('#labelHeight').removeClass('is-valid');
+        $('#labelHeightInvalid').text('{{ label.height.invalid }}');
+      } else {
+        $('#labelHeight').addClass('is-valid');
+        $('#labelHeight').removeClass('is-invalid');
+        $('#labelHeightInvalid').text('');
+      }
+
+      if (data.label_width === 'invalid') {
+        $('#labelWidth').addClass('is-invalid');
+        $('#labelWidth').removeClass('is-valid');
+        $('#labelWidthInvalid').text('{{ label.width.invalid }}');
+      } else {
+        $('#labelWidth').addClass('is-valid');
+        $('#labelWidth').removeClass('is-invalid');
+        $('#labelWidthInvalid').text('');
+      }
+
       $('#modal').modal('show');
 
     }
@@ -187,8 +221,8 @@
     pageInitY.set(data.page_init_y);
     labelSpaceX.set(data.label_space_x);
     labelSpaceY.set(data.label_space_y);
-    labelHeight.set(data.label_width);
-    labelWidth.set(data.label_height);
+    labelHeight.set(data.label_height);
+    labelWidth.set(data.label_width);
   });
 
   $('#saveSettingsButton').on('click', saveSettings);

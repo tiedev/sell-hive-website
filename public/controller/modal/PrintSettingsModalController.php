@@ -47,8 +47,14 @@ class PrintSettingsModalController
         $context['labelSpace']['y']['img'] = 'img/PrintSettingsLabelSpaceY.png';
 
         $context['label']['height']['label'] = 'Höhe der Etiketten';
+        $context['label']['height']['help'] = 'Wert zwischen X mm und X mm';
+        $context['label']['height']['invalid'] = 'Der Wert muss zwischen X mm und X mm liegen.';
+        $context['label']['height']['img'] = 'img/TODO.png';
 
         $context['label']['width']['label'] = 'Breite der Etiketten';
+        $context['label']['width']['help'] = 'Wert zwischen X mm und X mm';
+        $context['label']['width']['invalid'] = 'Der Wert muss zwischen X mm und X mm liegen.';
+        $context['label']['width']['img'] = 'img/TODO.png';
 
         $context['submit'] = 'speichern';
         $context['cancel'] = 'abbrechen';
