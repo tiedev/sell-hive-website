@@ -73,7 +73,7 @@
     } else {
       row += '  <td class="text-center"><span id="sellerLimit' + id + '">' + sellerRowData.limit + '</span></td>';
     }
-    if (sellerRowData.limit_request > 0) {
+    if (sellerRowData.limit_request > sellerRowData.limit) {
       row += '  <td class="text-center"><span id="sellerLimitRequest' + id + '" class="badge badge-pill badge-warning">' + sellerRowData.limit_request + '</span></td>';
     } else {
       row += '  <td class="text-center"><span id="sellerLimitRequest' + id + '">' + sellerRowData.limit_request + '</span></td>';
