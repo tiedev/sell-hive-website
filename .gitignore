@@ -18,3 +18,4 @@ gradle.properties
 /public/twigcache
 /resources/diagrams/*.png
 /.db_dumps
+/tests/http-client.private.env.json

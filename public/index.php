@@ -171,7 +171,7 @@ $app->get('/backend/cashpoint/export/sellers/{secret}', CashpointController::cla
 // list items
 $app->get('/backend/cashpoint/export/items/{secret}', CashpointController::class . ':exportItems');
 
-// confirm items transfered
+// confirm items transferred
 $app->post('/backend/cashpoint/confirm/transfer/{secret}', CashpointController::class . ':confirmTransfer');
 
 // receipt for sold items
