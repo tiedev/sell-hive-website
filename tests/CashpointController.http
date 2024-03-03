@@ -1,7 +1,10 @@
 ###
-GET http://sellhive.tealtoken.de/backend/cashpoint/export/sellers/{{secret}}
+GET {{base}}/backend/cashpoint/export/sellers/{{cashpoint_secret}}
 Accept: application/json
 
 ###
-GET http://sellhive.tealtoken.de/backend/cashpoint/export/items/{{secret}}
+GET {{base}}/backend/cashpoint/export/items/{{cashpoint_secret}}
 Accept: application/json
+
+###
+DELETE {{base}}/backend/seller/limit/{{reset_secret}}

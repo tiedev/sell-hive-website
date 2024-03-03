@@ -41,7 +41,7 @@ class CashpointController
             ->withStatus(200);
     }
 
-    public function exportItems(Request $request, Response $response)
+    public function exportItems(Request $request, Response $response): Response
     {
         $this->logger->debug('=== CashpointController:exportItems(...) ===');
 
