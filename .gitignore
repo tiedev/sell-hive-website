@@ -5,7 +5,6 @@ Corel Auto-Preserve
 /build
 /config/propel.xml
 /public/bootstrap
-/public/composer.lock
 /public/config.yaml
 /public/pdf
 /public/propel/diff
