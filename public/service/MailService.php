@@ -1,5 +1,6 @@
 <?php
 
+use Propel\Runtime\Exception\PropelException;
 use Psr\Log\LoggerInterface as Logger;
 use Noodlehaus\Config;
 use Slim\Views\Twig;
@@ -18,50 +19,74 @@ class MailService
         $this->twig = $twig;
     }
 
-    public function sendWelcomeToSeller(Seller $seller)
+    public function sendWelcomeToSeller(Seller $seller): bool
     {
-        $mail = $this->init();
+        try {
+            $mail = $this->init();
 
-        $mail->addAddress($seller->getMail(), $seller->getName());
-        $mail->Subject = $this->config->get('phpmailer.subject.new');
-        $mail->Body = nl2br($this->twig->getEnvironment()->render('mail/SellerWelcome.txt', $this->toContext($seller)));
+            $mail->addAddress($seller->getMail(), $seller->getName());
+            $mail->Subject = $this->config->get('phpmailer.subject.new');
+            $mail->Body = htmlentities(nl2br($this->twig->getEnvironment()->render('mail/SellerWelcome.txt', $this->toContext($seller))));
 
-        return $this->send($mail);
+            return $this->send($mail);
+        } catch (Exception $ex) {
+            $this->logger->critical('exception while sending welcome to seller', array($ex));
+            return false;
+        }
     }
 
-    public function sendPasswordReminderToSeller(Seller $seller)
+    public function sendPasswordReminderToSeller(Seller $seller): bool
     {
-        $mail = $this->init();
+        try {
+            $mail = $this->init();
 
-        $mail->addAddress($seller->getMail(), $seller->getName());
-        $mail->Subject = $this->config->get('phpmailer.subject.remind');
-        $mail->Body = nl2br($this->twig->getEnvironment()->render('mail/SellerRemindPassword.txt', $this->toContext($seller)));
+            $mail->addAddress($seller->getMail(), $seller->getName());
+            $mail->Subject = $this->config->get('phpmailer.subject.remind');
+            $mail->Body = htmlentities(nl2br($this->twig->getEnvironment()->render('mail/SellerRemindPassword.txt', $this->toContext($seller))));
 
-        return $this->send($mail);
+            return $this->send($mail);
+        } catch (Exception $ex) {
+            $this->logger->critical('exception while sending password reminder to seller', array($ex));
+            return false;
+        }
     }
 
-    public function sendLimitRequestToAdmin(Seller $seller)
+    public function sendLimitRequestToAdmin(Seller $seller): bool
     {
-        $mail = $this->init();
+        try {
+            $mail = $this->init();
 
-        $mail->addAddress($this->config->get('admin.mail'), 'Admin');
-        $mail->Subject = $this->config->get('phpmailer.subject.limitRequest');
-        $mail->Body = nl2br($this->twig->getEnvironment()->render('mail/LimitRequestOpened.txt', $this->toContext($seller)));
+            $mail->addAddress($this->config->get('admin.mail'), 'Admin');
+            $mail->addReplyTo($seller->getMail(), $seller->getName());
+            $mail->Subject = $this->config->get('phpmailer.subject.limitRequest');
+            $mail->Body = htmlentities(nl2br($this->twig->getEnvironment()->render('mail/LimitRequestOpened.txt', $this->toContext($seller))));
 
-        return $this->send($mail);
+            return $this->send($mail);
+        } catch (Exception $ex) {
+            $this->logger->critical('exception while sending limit request to admin', array($ex));
+            return false;
+        }
     }
 
-    public function sendLimitInfoToSeller(Seller $seller)
+    public function sendLimitInfoToSeller(Seller $seller): bool
     {
-        $mail = $this->init();
+        try {
+            $mail = $this->init();
 
-        $mail->addAddress($seller->getMail(), $seller->getName());
-        $mail->Subject = $this->config->get('phpmailer.subject.limitRequest');
-        $mail->Body = nl2br($this->twig->getEnvironment()->render('mail/LimitRequestClosed.txt', $this->toContext($seller)));
+            $mail->addAddress($seller->getMail(), $seller->getName());
+            $mail->Subject = $this->config->get('phpmailer.subject.limitRequest');
+            $mail->Body = htmlentities(nl2br($this->twig->getEnvironment()->render('mail/LimitRequestClosed.txt', $this->toContext($seller))));
 
-        return $this->send($mail);
+            return $this->send($mail);
+        } catch (Exception $ex) {
+            $this->logger->critical('exception while sending limit info to seller', array($ex));
+            return false;
+        }
     }
 
+    /**
+     * @throws \PHPMailer\PHPMailer\Exception
+     */
     private function init(): PHPMailer
     {
         $this->logger->debug('mail config', $this->config->get('phpmailer'));
@@ -83,11 +108,14 @@ class MailService
         $fromName = $this->config->get('phpmailer.from.name');
         $mail->setFrom($fromMail, $fromName);
 
-        $mail->isHTML(true);
+        $mail->isHTML();
 
         return $mail;
     }
 
+    /**
+     * @throws PropelException
+     */
     private function toContext(Seller $seller): array
     {
         $context = array();
@@ -114,7 +142,7 @@ class MailService
         $successfully = $mail->send();
 
         if ($successfully) {
-            $this->logger->debug('mailed succesfully');
+            $this->logger->debug('mailed successfully');
         } else {
             $this->logger->error('mailing failed', ['error info' => $mail->ErrorInfo]);
         }

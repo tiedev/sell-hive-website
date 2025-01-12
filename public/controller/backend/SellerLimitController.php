@@ -1,5 +1,6 @@
 <?php /** @noinspection PhpUnused */
 
+use Propel\Runtime\Exception\PropelException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface as Logger;
@@ -44,6 +45,9 @@ class SellerLimitController
             ->withStatus(200);
     }
 
+    /**
+     * @throws PropelException
+     */
     public function openRequest(Request $request, Response $response): Response
     {
         $this->logger->debug('=== SellerLimitController:openRequest(...) ===');
@@ -72,13 +76,20 @@ class SellerLimitController
         if ($out['valid']) {
             $this->logger->debug('open limit request');
 
+            $limitBefore = $seller->getLimit();
+
             $seller->setLimitRequest($in['limit']);
             $seller->save();
 
             $out['saved'] = true;
             $this->logger->debug('seller saved');
 
-            $out['mailed'] = $this->mail->sendLimitRequestToAdmin($seller);
+            if ($in['limit'] > $limitBefore) {
+                $out['mailed'] = $this->mail->sendLimitRequestToAdmin($seller);
+            } else {
+                $this->logger->debug('requested limit is not higher');
+            }
+
         } else {
             $this->logger->debug('data invalid');
         }
@@ -92,6 +103,9 @@ class SellerLimitController
             ->withStatus(200);
     }
 
+    /**
+     * @throws PropelException
+     */
     public function resetLimits(Request $request, Response $response): Response
     {
         $this->logger->debug('=== SellerLimitController:resetLimits(...) ===');

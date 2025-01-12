@@ -77,9 +77,9 @@
         card += '     </div>'
         card += '  </div>';
         card += '  <div class="card-footer">';
-        card += '    <button type="submit" class="btn btn-sm btn-outline-warning" id="itemEditButton' + id + '">{{ button.edit }}</button>';
+        card += '    <button type="submit" class="btn btn-sm btn-outline-warning" id="itemEditButton' + id + '"{% if config.itemsTransferred %} disabled="disabled"{% endif %}>{{ button.edit }}</button>';
         card += '    <button type="submit" class="btn btn-sm btn-outline-secondary" id="itemUnlabelButton' + id + '">{{ button.unlabel }}</button>';
-        card += '    <button type="submit" class="btn btn-sm btn-outline-danger" id="itemDeleteButton' + id + '">{{ button.delete }}</button>';
+        card += '    <button type="submit" class="btn btn-sm btn-outline-danger" id="itemDeleteButton' + id + '"{% if config.itemsTransferred %} disabled="disabled"{% endif %}>{{ button.delete }}</button>';
         card += '  </div>';
         card += ' </div>';
         card += ' <p></p>';

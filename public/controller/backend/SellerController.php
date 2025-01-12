@@ -75,11 +75,14 @@ class SellerController
         if ($out['valid']) {
             $this->logger->debug('save seller');
 
+            $autoAcceptLimit = $this->config->get('seller.limit.autoAccept');
+            $initLimitTill = $this->config->get('seller.limit.initTill');
+
             $seller = new Seller();
             $seller->setLastName($in['lastName']);
             $seller->setFirstName($in['firstName']);
             $seller->setMail($in['mail']);
-            $seller->initLimit($in['limit'], $this->config->get('seller.limit.autoAccept'), $this->config->get('seller.limit.initTill'));
+            $seller->initLimit($in['limit'], $autoAcceptLimit, $initLimitTill);
             $seller->genPassword();
             $seller->genPathSecret();
             $seller->save();
@@ -89,7 +92,7 @@ class SellerController
 
             $out['mailed'] = $this->mail->sendWelcomeToSeller($seller);
 
-            if ($seller->getLimitRequest() > 0) {
+            if ($seller->getLimitRequest() > $autoAcceptLimit) {
                 $this->logger->info('send limit request');
                 $this->mail->sendLimitRequestToAdmin($seller);
             }
