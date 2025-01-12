@@ -12,7 +12,7 @@
     "slim/psr7": "~1.6.1",
     "slim/twig-view": "~3.3.0",
     "symfony/yaml": "~v5.4.31",
-    "twig/twig": "~v3.8.0",
+    "twig/twig": "~v3.11.2",
     "twitter/bootstrap": "~4.6.2",
     "zircote/swagger-php": "~3.0.0",
     "doctrine/annotations": "~2.0.0"
