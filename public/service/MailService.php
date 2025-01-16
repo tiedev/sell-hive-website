@@ -26,7 +26,7 @@ class MailService
 
             $mail->addAddress($seller->getMail(), $seller->getName());
             $mail->Subject = $this->config->get('phpmailer.subject.new');
-            $mail->Body = htmlentities(nl2br($this->twig->getEnvironment()->render('mail/SellerWelcome.txt', $this->toContext($seller))));
+            $mail->Body = $this->makeHtmlReady($this->twig->getEnvironment()->render('mail/SellerWelcome.txt', $this->toContext($seller)));
 
             return $this->send($mail);
         } catch (Exception $ex) {
@@ -42,7 +42,7 @@ class MailService
 
             $mail->addAddress($seller->getMail(), $seller->getName());
             $mail->Subject = $this->config->get('phpmailer.subject.remind');
-            $mail->Body = htmlentities(nl2br($this->twig->getEnvironment()->render('mail/SellerRemindPassword.txt', $this->toContext($seller))));
+            $mail->Body = $this->makeHtmlReady($this->twig->getEnvironment()->render('mail/SellerRemindPassword.txt', $this->toContext($seller)));
 
             return $this->send($mail);
         } catch (Exception $ex) {
@@ -59,7 +59,7 @@ class MailService
             $mail->addAddress($this->config->get('admin.mail'), 'Admin');
             $mail->addReplyTo($seller->getMail(), $seller->getName());
             $mail->Subject = $this->config->get('phpmailer.subject.limitRequest');
-            $mail->Body = htmlentities(nl2br($this->twig->getEnvironment()->render('mail/LimitRequestOpened.txt', $this->toContext($seller))));
+            $mail->Body = $this->makeHtmlReady($this->twig->getEnvironment()->render('mail/LimitRequestOpened.txt', $this->toContext($seller)));
 
             return $this->send($mail);
         } catch (Exception $ex) {
@@ -75,7 +75,7 @@ class MailService
 
             $mail->addAddress($seller->getMail(), $seller->getName());
             $mail->Subject = $this->config->get('phpmailer.subject.limitRequest');
-            $mail->Body = htmlentities(nl2br($this->twig->getEnvironment()->render('mail/LimitRequestClosed.txt', $this->toContext($seller))));
+            $mail->Body = $this->makeHtmlReady($this->twig->getEnvironment()->render('mail/LimitRequestClosed.txt', $this->toContext($seller)));
 
             return $this->send($mail);
         } catch (Exception $ex) {
@@ -148,5 +148,14 @@ class MailService
         }
 
         return $successfully;
+    }
+
+    private function makeHtmlReady($input): string
+    {
+        return nl2br(str_replace(
+            array("Ä", "Ö", "Ü", "ä", "ö", "ü", "ß"),
+            array("&Auml;", "&Ouml;", "&Uuml;", "&auml;", "&ouml;", "&uuml;", "&szlig;"),
+            $input
+        ));
     }
 }
