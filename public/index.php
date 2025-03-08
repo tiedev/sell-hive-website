@@ -178,4 +178,6 @@ $app->post('/backend/cashpoint/confirm/transfer/{secret}', CashpointController::
 $app->post('/backend/cashpoint/confirm/sold/{secret}', CashpointController::class . ':confirmSold');
 
 
+$app->addBodyParsingMiddleware();
+
 $app->run();

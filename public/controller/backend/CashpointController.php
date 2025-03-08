@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnused */
 
 use Noodlehaus\Config;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -64,7 +64,7 @@ class CashpointController
             ->withStatus(200);
     }
 
-    public function confirmTransfer(Request $request, Response $response)
+    public function confirmTransfer(Request $request, Response $response) : Response
     {
         $this->logger->debug('=== CashpointController:confirmTransfer(...) ===');
 
@@ -73,13 +73,22 @@ class CashpointController
         }
 
         $in = $request->getParsedBody();
+        if ($in == null) {
+            $this->logger->error('body is null');
 
-        $this->logger->debug('input', isset($in) ? $in : array());
+            $response->getBody()->write(json_encode(['body' => 'missing'], JSON_PRETTY_PRINT));
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
+        }
+
+        $this->logger->debug('input', $in);
 
         if ($this->itemIdsNotAvailable($in)) {
-            $this->logger->error('item_ids invalid');
+            $this->logger->error('item_ids are not available');
 
-            $response->getBody()->write(json_encode(['item_ids' => 'invalid'], JSON_PRETTY_PRINT));
+            $response->getBody()->write(json_encode(['item_ids' => 'missing'], JSON_PRETTY_PRINT));
 
             return $response
                 ->withHeader('Content-Type', 'application/json')
@@ -117,7 +126,7 @@ class CashpointController
             ->withStatus(200);
     }
 
-    public function confirmSold(Request $request, Response $response)
+    public function confirmSold(Request $request, Response $response) : Response
     {
         $this->logger->debug('=== CashpointController:confirmSold(...) ===');
 
@@ -126,8 +135,17 @@ class CashpointController
         }
 
         $in = $request->getParsedBody();
+        if ($in == null) {
+            $this->logger->error('body is null');
 
-        $this->logger->debug('input', isset($in) ? $in : array());
+            $response->getBody()->write(json_encode(['body' => 'missing'], JSON_PRETTY_PRINT));
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
+        }
+
+        $this->logger->debug('input', $in);
 
         if ($this->itemIdsNotAvailable($in)) {
             $this->logger->error('item_ids are not available');
@@ -186,10 +204,10 @@ class CashpointController
                 $analogItem->save();
                 $out['analog_items']['added']++;
             } catch (NestedValidationException $exception) {
-                $sellerName = isset($analogItemData['seller_name']) ? $analogItemData['seller_name'] : 'MISSING';
-                $itemName = isset($analogItemData['item_name']) ? $analogItemData['item_name'] : 'MISSING';
-                $itemPrice = isset($analogItemData['item_price']) ? $analogItemData['item_price'] : 'MISSING';
-                $this->logger->error("analog item  is invalid ($sellerName|$itemName|$itemPrice)", $exception->getMessages());
+                $sellerName = $analogItemData['seller_name'] ?? 'MISSING';
+                $itemName = $analogItemData['item_name'] ?? 'MISSING';
+                $itemPrice = $analogItemData['item_price'] ?? 'MISSING';
+                $this->logger->error("analog item is invalid ($sellerName|$itemName|$itemPrice)", $exception->getMessages());
                 $out['analog_items']['invalid']++;
             }
         }
